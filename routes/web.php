@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +13,10 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
+Route::get('/users', [UserController::class, 'index'])->name('users');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
