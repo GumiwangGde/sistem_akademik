@@ -29,7 +29,7 @@
                                     <td class="border px-4 py-2">{{ $item->nidn }}</td>
                                     <td class="border px-4 py-2">
                                         
-                                        <form action="{{ route('dosen.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dosen ini?');">
+                                        <form action="{{ route('dosen.destroy', $item->id_dosen) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dosen ini?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500 hover:text-red-700">Hapus</button>

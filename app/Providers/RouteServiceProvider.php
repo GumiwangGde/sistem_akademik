@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
@@ -36,5 +37,25 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+    }
+
+    public function redirectTo()
+    {
+        if (Auth::check()) {
+            $role = Auth::user()->role; 
+            // Arahkan berdasarkan role
+            switch ($role) {
+                case 'admin':
+                    return route('admin.dashboard');
+                case 'dosen':
+                    return route('dosen.dashboard');
+                case 'mahasiswa':
+                    return route('dashboard.mahasiswa');
+                default:
+                    return route('dashboard');
+            }
+        }
+
+        return route('login');
     }
 }

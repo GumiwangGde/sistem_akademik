@@ -46,7 +46,7 @@ class DosenController extends Controller
             'nidn' => $request->nidn,
             'is_dosen_wali' => $request->has('is_dosen_wali'),
         ]);
-    
+
         // Redirect ke halaman edit dosen yang baru saja dibuat
         return redirect()->route('dosen.index', $dosen->id)->with('success', 'Dosen berhasil ditambahkan.');
     }
