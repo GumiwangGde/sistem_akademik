@@ -7,6 +7,7 @@
     use Illuminate\Auth\Events\Verified;
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\Auth\LoginController;
+    use App\http\Controller\MatakuliahController;
 
     Route::get('/', function () {
         return view('welcome');
@@ -27,39 +28,40 @@
         Route::get('/users', [UserController::class, 'index'])->name('users');
     });    
 
-    // Rute Admin
-    Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-        Route::get('admin', function () {
-            return view('dashboard'); 
-        })->name('admin.dashboard');
+// Rute Admin
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    // Dashboard untuk admin
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');  
+    })->name('admin.dashboard');
 
-    // CRUD Dosen oleh admin
+    Route::get('/admin/matakuliah', function() {
+        return view('admin.matakuliah.index');
+    })->name('admin.matakuliah.index');
 
-        // Menampilkan daftar dosen
-        Route::get('dosen', [DosenController::class, 'index'])->name('dosen.index');
+    Route::get('/admin/dosen', function() {
+        return view('admin.dosen.index');
+    })->name('admin.dosen.index');
 
-        // Menampilkan form tambah dosen
-        Route::get('dosen/create', [DosenController::class, 'create'])->name('dosen.create');
+    // Tambah rute create untuk dosen
+    Route::get('/admin/dosen/create', [DosenController::class, 'create'])->name('admin.dosen.create');
+    Route::post('/admin/dosen', [DosenController::class, 'store'])->name('admin.dosen.store');
 
-        // Proses simpan dosen
-        Route::post('dosen', [DosenController::class, 'store'])->name('dosen.store');
+});
 
-        // Hapus dosen
-        Route::delete('dosen/{id}', [DosenController::class, 'destroy'])->name('dosen.destroy');
-    });
     
-    // Rute Dosen
-    Route::middleware(['auth', 'verified', 'role:dosen'])->group(function () {
-        Route::get('/dashboard', function () {
-            return view('dashboard');
-        })->name('dashboard');
-    });
+    // // Rute Dosen
+    // Route::middleware(['auth', 'verified', 'role:dosen'])->group(function () {
+    //     Route::get('/dashboard', function () {
+    //         return view('dashboard');
+    //     })->name('dashboard');
+    // });
 
-    // Rute Mahasiswa
-    Route::middleware(['auth', 'verified', 'role:mahasiswa'])->group(function () {
-        Route::get('/dashboard', function () {
-            return view('dashboard');
-        })->name('dashboard');
-    });
+    // // Rute Mahasiswa
+    // Route::middleware(['auth', 'verified', 'role:mahasiswa'])->group(function () {
+    //     Route::get('/dashboard', function () {
+    //         return view('dashboard');
+    //     })->name('dashboard');
+    // });
 
     require __DIR__ . '/auth.php';

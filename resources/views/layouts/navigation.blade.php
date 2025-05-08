@@ -12,13 +12,13 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('Matakuliah')">
+                    <x-nav-link :href="route('admin.matakuliah.index')" :active="request()->routeIs('Matakuliah')">
                         {{ __('Matakuliah') }}
                     </x-nav-link>
                 </div>
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dosen.index')" :active="request()->routeIs('dosen*')">
+                    <x-nav-link :href="route('admin.dosen.index')" :active="request()->routeIs('admin.dosen*')">
                         {{ __('Dosen') }}
                     </x-nav-link>
                 </div>

@@ -22,12 +22,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($dosen as $item) <!-- Pastikan $dosen ada di sini -->
+                            @foreach ($dosen as $item)
                                 <tr>
                                     <td class="border px-4 py-2">{{ $item->user->name }}</td>
                                     <td class="border px-4 py-2">{{ $item->user->email }}</td>
                                     <td class="border px-4 py-2">{{ $item->nidn }}</td>
                                     <td class="border px-4 py-2">
+                                        
                                         <form action="{{ route('admin.dosen.destroy', $item->id_dosen) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dosen ini?');">
                                             @csrf
                                             @method('DELETE')

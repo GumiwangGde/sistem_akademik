@@ -13,12 +13,12 @@ class DosenController extends Controller
     public function index()
     {
         $dosen = Dosen::with('user')->get();
-        return view('dosen.index', compact('dosen'));
+        return view('admin.dosen.index', compact('dosen'));
     }
 
     public function create()
     {
-        return view('dosen.create');
+        return view('admin.dosen.create');
     }
 
     public function store(Request $request)
@@ -48,7 +48,7 @@ class DosenController extends Controller
         ]);
 
         // Redirect ke halaman edit dosen yang baru saja dibuat
-        return redirect()->route('dosen.index', $dosen->id)->with('success', 'Dosen berhasil ditambahkan.');
+        return redirect()->route('admin.dosen.index')->with('success', 'Dosen berhasil ditambahkan.');
     }
 
     public function destroy($id)
@@ -57,6 +57,6 @@ class DosenController extends Controller
         $dosen->user()->delete();  // Hapus user juga
         $dosen->delete();
 
-        return redirect()->route('dosen.index')->with('success', 'Dosen berhasil dihapus.');
+        return redirect()->route('admin.dosen.index')->with('success', 'Dosen berhasil dihapus.');
     }
 }
