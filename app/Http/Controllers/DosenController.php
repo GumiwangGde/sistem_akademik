@@ -59,4 +59,47 @@ class DosenController extends Controller
 
         return redirect()->route('admin.dosen.index')->with('success', 'Dosen berhasil dihapus.');
     }
+
+    public function edit($id)
+    {
+        $dosen = Dosen::findOrFail($id);
+        return view('admin.dosen.edit', compact('dosen'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $dosen = Dosen::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $dosen->user_id,
+            'nidn' => 'required|unique:dosen,nidn,' . $id . ',id_dosen',
+        ]);
+        
+        // Update user data
+        $dosen->user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+        
+        // Update password jika diisi
+        if ($request->filled('password')) {
+            $request->validate([
+                'password' => 'min:8',
+            ]);
+            
+            $dosen->user->update([
+                'password' => Hash::make($request->password),
+            ]);
+        }
+        
+        // Update dosen data
+        $dosen->update([
+            'nidn' => $request->nidn,
+            'is_dosen_wali' => $request->has('is_dosen_wali'),
+        ]);
+        
+        return redirect()->route('admin.dosen.index')
+            ->with('success', 'Data dosen berhasil diperbarui.');
+    }
 }

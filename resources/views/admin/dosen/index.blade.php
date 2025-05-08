@@ -28,12 +28,17 @@
                                     <td class="border px-4 py-2">{{ $item->user->email }}</td>
                                     <td class="border px-4 py-2">{{ $item->nidn }}</td>
                                     <td class="border px-4 py-2">
-                                        
-                                        <form action="{{ route('admin.dosen.destroy', $item->id_dosen) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dosen ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-500 hover:text-red-700">Hapus</button>
-                                        </form>
+                                        <div class="flex gap-2">
+                                            <!-- Tombol Edit -->
+                                            <a href="{{ route('admin.dosen.edit', $item->id_dosen) }}" class="text-blue-500 hover:text-blue-700">Edit</a>
+                                            
+                                            <!-- Tombol Hapus -->
+                                            <form action="{{ route('admin.dosen.destroy', $item->id_dosen) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dosen ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-500 hover:text-red-700">Hapus</button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

@@ -38,24 +38,4 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
         });
     }
-
-    public function redirectTo()
-    {
-        if (Auth::check()) {
-            $role = Auth::user()->role; 
-            // Arahkan berdasarkan role
-            switch ($role) {
-                case 'admin':
-                    return route('admin.dashboard');
-                case 'dosen':
-                    return route('dosen.dashboard');
-                case 'mahasiswa':
-                    return route('dashboard.mahasiswa');
-                default:
-                    return route('dashboard');
-            }
-        }
-
-        return route('login');
-    }
 }
