@@ -48,7 +48,7 @@ class DosenController extends Controller
         ]);
 
         // Redirect ke halaman edit dosen yang baru saja dibuat
-        return redirect()->route('admin.dosen.index')->with('success', 'Dosen berhasil ditambahkan.');
+        return redirect()->route('dosen.index')->with('success', 'Dosen berhasil ditambahkan.');
     }
 
     public function destroy($id)
@@ -57,6 +57,51 @@ class DosenController extends Controller
         $dosen->user()->delete();  // Hapus user juga
         $dosen->delete();
 
-        return redirect()->route('admin.dosen.index')->with('success', 'Dosen berhasil dihapus.');
+        return redirect()->route('dosen.index')->with('success', 'Dosen berhasil dihapus.');
     }
+    public function edit($id)
+{
+    // Ambil data dosen berdasarkan id dan hubungan dengan user
+    $dosen = Dosen::with('user')->findOrFail($id);
+
+    // Kirim data dosen ke halaman edit
+    return view('admin.dosen.edit', compact('dosen'));
+}
+
+public function update(Request $request, $id)
+{
+    // Validasi input
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:users,email,' . $id, // Pastikan email tidak duplikat
+        'password' => 'nullable|min:8', // Password boleh kosong, tapi kalau ada harus min 8 karakter
+        'nidn' => 'required|unique:dosen,nidn,' . $id . ',id_dosen',
+    ]);
+
+    // Temukan dosen berdasarkan id
+    $dosen = Dosen::findOrFail($id);
+
+    // Update data user yang terkait dengan dosen
+    $dosen->user->update([
+        'name' => $request->name,
+        'email' => $request->email,
+    ]);
+
+    // Update password jika diisi
+    if ($request->filled('password')) {
+        $dosen->user->update([
+            'password' => Hash::make($request->password),
+        ]);
+    }
+
+    // Update data dosen
+    $dosen->update([
+        'nidn' => $request->nidn,
+        'is_dosen_wali' => $request->has('is_dosen_wali'),
+    ]);
+
+    // Redirect ke halaman daftar dosen dengan pesan sukses
+    return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil diperbarui.');
+}
+
 }

@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form action="{{ route('admin.dosen.store') }}" method="POST">
+                    <form action="{{ route('dosen.store') }}" method="POST">
                         @csrf
                         <div class="mb-4">
                             <label for="name" class="block text-gray-700">Nama</label>
@@ -17,7 +17,11 @@
                         </div>
                         <div class="mb-4">
                             <label for="email" class="block text-gray-700">Email</label>
-                            <input type="email" id="email" name="email" class="w-full p-2 border border-gray-300 rounded" required>
+                            <div class="flex">
+                                <input type="text" id="username" name="username" class="w-full p-2 border border-gray-300 rounded-l" required placeholder="Masukkan username" oninput="updateEmail()">
+                                <span class="bg-gray-300 p-2 rounded-r">@it.lecturer.pens.ac.id</span>
+                            </div>
+                            <input type="hidden" id="email" name="email"> <!-- Hidden field untuk email lengkap -->
                         </div>
                         <div class="mb-4">
                             <label for="password" class="block text-gray-700">Password</label>
@@ -41,4 +45,12 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function updateEmail() {
+            const username = document.getElementById('username').value;
+            const domain = '@it.lecturer.pens.ac.id';
+            document.getElementById('email').value = username + domain;  // Set email hidden field
+        }
+    </script>
 </x-app-layout>
