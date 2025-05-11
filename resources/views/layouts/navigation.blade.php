@@ -3,7 +3,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 
-<nav x-data="{ open: false }" class="bg-indigo-600 border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-blue-900 border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
@@ -17,29 +17,30 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('dashboard')" class="text-white hover:text-indigo-100 transition duration-200 ease-in-out">
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('dashboard')" class="text-white hover:text-blue-100 transition duration-200 ease-in-out">
                         <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
                     </x-nav-link>
 
-                    <x-nav-link :href="route('admin.matakuliah.index')" :active="request()->routeIs('Matakuliah')" class="text-white hover:text-indigo-100 transition duration-200 ease-in-out">
+                    <x-nav-link :href="route('admin.matakuliah.index')" :active="request()->routeIs('Matakuliah')" class="text-white hover:text-blue-100 transition duration-200 ease-in-out">
                         <i class="fas fa-book mr-2"></i> Matakuliah
                     </x-nav-link>
 
-                    <x-nav-link :href="route('kelas')" :active="request()->routeIs('kelas')" class="text-white hover:text-indigo-100 transition duration-200 ease-in-out">
+                    <x-nav-link :href="route('kelas.index')" :active="request()->routeIs('kelas.index')" class="text-white hover:text-blue-100 transition duration-200 ease-in-out">
                         <i class="fas fa-chalkboard-teacher mr-2"></i> Kelas
                     </x-nav-link>
 
-                    <x-nav-link :href="route('dosen.index')" :active="request()->routeIs('admin.dosen*')" class="text-white hover:text-indigo-100 transition duration-200 ease-in-out">
+                    <x-nav-link :href="route('dosen.index')" :active="request()->routeIs('admin.dosen*')" class="text-white hover:text-blue-100 transition duration-200 ease-in-out">
                         <i class="fas fa-users mr-2"></i> Dosen
                     </x-nav-link>
 
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('Mahasiswa')" class="text-white hover:text-indigo-100 transition duration-200 ease-in-out">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('Mahasiswa')" class="text-white hover:text-blue-100 transition duration-200 ease-in-out">
                         <i class="fas fa-graduation-cap mr-2"></i> Mahasiswa
                     </x-nav-link>
 
-                    <x-nav-link :href="route('users')" :active="request()->routeIs('users')" class="text-white hover:text-indigo-100 transition duration-200 ease-in-out">
-                        <i class="fas fa-users-cog mr-2"></i> Users
-                    </x-nav-link>
+                   <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')" class="text-white hover:text-blue-100 transition duration-200 ease-in-out">
+    <i class="fas fa-users-cog mr-2"></i> Users
+</x-nav-link>
+
                 </div>
             </div>
 
@@ -47,7 +48,7 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-700 hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-700 hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">

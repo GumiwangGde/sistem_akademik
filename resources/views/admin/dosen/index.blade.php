@@ -5,14 +5,15 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-3xl text-gray-900 leading-tight">
+        <h2 class="font-semibold text-3xl text-blue-900 leading-tight p-4 rounded-lg shadow-md bg-gradient-to-r from-blue-200 to-blue-400">
             {{ __('Daftar Dosen') }}
         </h2>
     </x-slot>
 
-    <div class="py-12 bg-gradient-to-r from-blue-50 to-indigo-100">
+    <!-- Latar belakang keseluruhan halaman putih -->
+    <div class="py-12 bg-white">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div class="bg-gradient-to-r from-blue-200 to-blue-400 overflow-hidden shadow-lg sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
                     {{-- Pesan Error jika ada --}}
@@ -23,16 +24,17 @@
                     @endif
 
                     {{-- Tombol untuk tambah dosen --}}
-                    <a href="{{ route('dosen.create') }}" class="inline-block bg-gradient-to-r from-indigo-500 to-indigo-600 text-white py-3 px-6 rounded-full shadow-md hover:bg-gradient-to-r hover:from-indigo-400 hover:to-indigo-500 transition-all duration-300 ease-in-out mb-6">
+                    <a href="{{ route('dosen.create') }}" class="inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-full shadow-md hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out mb-6">
                         <i class="fas fa-user-plus mr-2"></i> Tambah Dosen
                     </a>
 
                     {{-- Cek jika ada data dosen --}}
                     @if(isset($dosen) && $dosen->isNotEmpty())
-                        <div class="overflow-x-auto rounded-lg shadow-md bg-white">
-                            <table class="min-w-full table-auto bg-white border-collapse border border-gray-300 rounded-lg">
+                        <!-- Tabel dengan latar belakang biru -->
+                        <div class="overflow-x-auto rounded-lg shadow-md bg-blue-50"> <!-- Latar belakang biru untuk tabel -->
+                            <table class="min-w-full table-auto border-collapse border border-gray-300 rounded-lg">
                                 <thead>
-                                    <tr class="bg-gradient-to-r from-indigo-600 to-indigo-700 text-white text-sm font-semibold">
+                                    <tr class="bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold">
                                         <th class="px-6 py-4 text-left">Nama</th>
                                         <th class="px-6 py-4 text-left">Email</th>
                                         <th class="px-6 py-4 text-left">NIDN</th>
@@ -41,14 +43,14 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($dosen as $item)
-                                        <tr class="border-b hover:bg-indigo-50">
+                                        <tr class="border-b hover:bg-blue-100">
                                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $item->user->name ?? 'N/A' }}</td>
                                             <td class="px-6 py-4 text-sm text-gray-600">{{ $item->user->email ?? 'N/A' }}</td>
                                             <td class="px-6 py-4 text-sm text-gray-600">{{ $item->nidn ?? 'N/A' }}</td>
                                             <td class="px-6 py-4 text-sm">
                                                 <div class="flex gap-4 items-center">
                                                     <!-- Tombol Edit -->
-                                                    <a href="{{ route('dosen.edit', $item->id_dosen) }}" class="text-indigo-600 hover:text-indigo-800 transition duration-300 ease-in-out hover:underline">
+                                                    <a href="{{ route('dosen.edit', $item->id_dosen) }}" class="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out hover:underline">
                                                         <i class="fas fa-edit mr-1"></i> Edit
                                                     </a>
 

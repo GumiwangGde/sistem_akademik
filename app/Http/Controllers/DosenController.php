@@ -73,23 +73,28 @@ public function update(Request $request, $id)
     // Validasi input
     $request->validate([
         'name' => 'required',
-        'email' => 'required|email|unique:users,email,' . $id, // Pastikan email tidak duplikat
-        'password' => 'nullable|min:8', // Password boleh kosong, tapi kalau ada harus min 8 karakter
+        'email' => 'required|email', // Validasi dasar email
         'nidn' => 'required|unique:dosen,nidn,' . $id . ',id_dosen',
     ]);
 
     // Temukan dosen berdasarkan id
     $dosen = Dosen::findOrFail($id);
+    
+    // Validasi email unik kecuali untuk user ini sendiri
+    $request->validate([
+        'email' => 'unique:users,email,' . $dosen->user_id
+    ]);
 
     // Update data user yang terkait dengan dosen
-    $dosen->user->update([
+    $user = User::findOrFail($dosen->user_id);
+    $user->update([
         'name' => $request->name,
         'email' => $request->email,
     ]);
 
     // Update password jika diisi
     if ($request->filled('password')) {
-        $dosen->user->update([
+        $user->update([
             'password' => Hash::make($request->password),
         ]);
     }
@@ -97,7 +102,7 @@ public function update(Request $request, $id)
     // Update data dosen
     $dosen->update([
         'nidn' => $request->nidn,
-        'is_dosen_wali' => $request->has('is_dosen_wali'),
+        'is_dosen_wali' => $request->has('is_dosen_wali') ? 1 : 0,
     ]);
 
     // Redirect ke halaman daftar dosen dengan pesan sukses

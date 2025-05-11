@@ -25,11 +25,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Rute Kelas dan Users hanya untuk pengguna yang terverifikasi
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
-    Route::get('/users', [UserController::class, 'index'])->name('users');
-});
+// // Rute Kelas dan Users hanya untuk pengguna yang terverifikasi
+// Route::middleware(['auth', 'verified'])->group(function () {
+//     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
+//     Route::get('admin/users', [UserController::class, 'index'])->name('users');
+// });
 
 // Rute Admin yang hanya bisa diakses oleh admin terverifikasi
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
@@ -46,7 +46,15 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     // Rute Dosen (menggunakan resource untuk CRUD)
     Route::prefix('admin')->group(function () {
         Route::resource('dosen', DosenController::class);
-        Route::put('/dosen/update/{id}', [DosenController::class, 'update'])->name('dosen.update');
+
+        // Pindahkan rute users ke sini, dalam grup admin
+        Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy'); // Route delete user
+
+        // Route untuk Kelas
+        Route::resource('kelas', KelasController::class);
+        Route::post('kelas/{kelas}/activate', [KelasController::class, 'activate'])->name('kelas.activate');
+        Route::get('admin/kelas/{kelas}/edit', [KelasController::class, 'edit'])->name('kelas.edit');
 
     });
 });
