@@ -25,7 +25,14 @@
                         </div>
                     @endif
 
-                    {{-- Pesan Error jika ada --}}
+                    {{-- Pesan Error jika ada (perbaikan) --}}
+                    @if(session('error'))
+                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 px-6 py-4 rounded-lg shadow-md mb-6">
+                            <strong>Error!</strong> {{ session('error') }}
+                        </div>
+                    @endif
+
+                    {{-- Tambahkan handling untuk error lama --}}
                     @if(isset($error_message))
                         <div class="bg-red-100 border-l-4 border-red-500 text-red-700 px-6 py-4 rounded-lg shadow-md mb-6">
                             <strong>Error!</strong> {{ $error_message }}
@@ -56,7 +63,7 @@
                                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $item->nama_kelas ?? 'N/A' }}</td>
                                             <td class="px-6 py-4 text-sm text-gray-600">{{ $item->status }}</td>
                                             <td class="px-6 py-4 text-sm text-gray-600">
-                                                {{ $item->dosenWali ? $item->dosenWali->nama : 'N/A' }}
+                                                {{ $item->dosenWali && $item->dosenWali->user ? $item->dosenWali->user->name : 'N/A' }}
                                             </td>
                                             <td class="px-6 py-4 text-sm">
                                                 <div class="flex gap-4 items-center">
@@ -65,18 +72,19 @@
                                                         <i class="fas fa-edit mr-1"></i> Edit
                                                     </a>
 
-                                                    <!-- Tombol Hapus -->
-                                                    <form action="{{ route('kelas.destroy', $item->id_kelas) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kelas ini?');">
+                                                    <!-- Tombol Hapus (Perbaikan) -->
+                                                    <form action="{{ route('kelas.destroy', $item->id_kelas) }}" method="POST" class="inline-block">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="text-red-600 hover:text-red-800 transition duration-300 ease-in-out hover:underline">
+                                                        <button type="submit" class="text-red-600 hover:text-red-800 transition duration-300 ease-in-out hover:underline" 
+                                                            onclick="return confirm('Apakah Anda yakin ingin menghapus kelas {{ $item->nama_kelas }}?');">
                                                             <i class="fas fa-trash-alt mr-1"></i> Hapus
                                                         </button>
                                                     </form>
 
                                                     <!-- Tombol Aktifkan Kelas -->
                                                     @if($item->status == 'inactive')
-                                                        <form action="{{ route('kelas.activate', $item->id_kelas) }}" method="POST" class="d-inline">
+                                                        <form action="{{ route('kelas.activate', $item->id_kelas) }}" method="POST" class="inline-block">
                                                             @csrf
                                                             <button type="submit" class="text-green-600 hover:text-green-800 transition duration-300 ease-in-out hover:underline">
                                                                 <i class="fas fa-check-circle mr-1"></i> Aktifkan

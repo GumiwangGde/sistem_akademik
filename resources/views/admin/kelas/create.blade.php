@@ -57,7 +57,7 @@
                             <select name="id_dosen_wali" id="id_dosen_wali" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                                 <option value="">-- Pilih Dosen Wali --</option>
                                 @foreach($dosen as $dosenItem)
-                                    <option value="{{ $dosenItem->id_dosen }}">{{ $dosenItem->nama }}</option>
+                                    <option value="{{ $dosenItem->id_dosen }}">{{ $dosenItem->user->name }}</option>
                                 @endforeach
                             </select>
                         </div>

@@ -52,9 +52,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy'); // Route delete user
 
         // Route untuk Kelas
-        Route::resource('kelas', KelasController::class);
-        Route::post('kelas/{kelas}/activate', [KelasController::class, 'activate'])->name('kelas.activate');
-        Route::get('admin/kelas/{kelas}/edit', [KelasController::class, 'edit'])->name('kelas.edit');
+        Route::resource('kelas', KelasController::class); // Ini sudah mencakup route DELETE /kelas/{kelas}
+        Route::post('/kelas/{kelas}/activate', [KelasController::class, 'activate'])->name('kelas.activate');
+        
 
     });
 });
