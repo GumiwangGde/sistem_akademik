@@ -18,7 +18,7 @@ class Dosen extends Model
 
     // Relasi ke tabel users
     public function user()
-    {
+    {   
         return $this->belongsTo(User::class);
     }
 }

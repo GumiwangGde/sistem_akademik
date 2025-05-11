@@ -1,33 +1,37 @@
 <?php
 
-    use App\Http\Controllers\DosenController;
-    use App\Http\Controllers\KelasController;
-    use App\Http\Controllers\ProfileController;
-    use App\Http\Controllers\UserController;
-    use Illuminate\Auth\Events\Verified;
-    use Illuminate\Support\Facades\Route;
-    use App\Http\Controllers\Auth\LoginController;
-    use App\http\Controller\MatakuliahController;
+use App\Http\Controllers\DosenController;
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\MatakuliahController;
 
-    Route::get('/', function () {
-        return view('welcome');
-    });
+// Halaman Utama
+Route::get('/', function () {
+    return view('welcome');
+});
 
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
+// Dashboard untuk pengguna yang sudah terverifikasi
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-    Route::middleware('auth')->group(function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    });
+// Rute Profile untuk pengguna terautentikasi
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-    Route::middleware(['auth', 'verified'])->group(function () {
-        Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
-        Route::get('/users', [UserController::class, 'index'])->name('users');
-    });    
+// // Rute Kelas dan Users hanya untuk pengguna yang terverifikasi
+// Route::middleware(['auth', 'verified'])->group(function () {
+//     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
+//     Route::get('admin/users', [UserController::class, 'index'])->name('users');
+// });
 
+<<<<<<< HEAD
     // Rute Admin
     Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         // Dashboard untuk admin
@@ -49,20 +53,35 @@
         Route::put('/admin/dosen/{id}', [DosenController::class, 'update'])->name('admin.dosen.update');
         Route::delete('/admin/dosen/{id}', [DosenController::class, 'destroy'])->name('admin.dosen.destroy');
     });
+=======
+// Rute Admin yang hanya bisa diakses oleh admin terverifikasi
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    // Dashboard untuk Admin
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
 
-    
-    // // Rute Dosen
-    // Route::middleware(['auth', 'verified', 'role:dosen'])->group(function () {
-    //     Route::get('/dashboard', function () {
-    //         return view('dashboard');
-    //     })->name('dashboard');
-    // });
+    // Rute Matakuliah untuk Admin
+    Route::get('/admin/matakuliah', function () {
+        return view('admin.matakuliah.index');
+    })->name('admin.matakuliah.index');
 
-    // // Rute Mahasiswa
-    // Route::middleware(['auth', 'verified', 'role:mahasiswa'])->group(function () {
-    //     Route::get('/dashboard', function () {
-    //         return view('dashboard');
-    //     })->name('dashboard');
-    // });
+    // Rute Dosen (menggunakan resource untuk CRUD)
+    Route::prefix('admin')->group(function () {
+        Route::resource('dosen', DosenController::class);
 
-    require __DIR__ . '/auth.php';
+        // Pindahkan rute users ke sini, dalam grup admin
+        Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy'); // Route delete user
+
+        // Route untuk Kelas
+        Route::resource('kelas', KelasController::class); // Ini sudah mencakup route DELETE /kelas/{kelas}
+        Route::post('/kelas/{kelas}/activate', [KelasController::class, 'activate'])->name('kelas.activate');
+        
+
+    });
+});
+>>>>>>> b14932984dce4cc973d7da3846db6fb335b6a551
+
+// Menyertakan rute autentikasi
+require __DIR__ . '/auth.php';

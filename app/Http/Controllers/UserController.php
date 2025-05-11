@@ -10,7 +10,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all(); 
-        return view('users.index', compact('users'));
+        return view('admin.users.index', compact('users'));
     }
 
     public function create()
@@ -47,8 +47,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+      public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        $user->delete(); // Hapus user
+        return redirect()->route('admin.users.index'); // Kembali ke daftar users
     }
 }

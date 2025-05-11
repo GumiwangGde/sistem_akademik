@@ -48,7 +48,7 @@ class DosenController extends Controller
         ]);
 
         // Redirect ke halaman edit dosen yang baru saja dibuat
-        return redirect()->route('admin.dosen.index')->with('success', 'Dosen berhasil ditambahkan.');
+        return redirect()->route('dosen.index')->with('success', 'Dosen berhasil ditambahkan.');
     }
 
     public function destroy($id)
@@ -57,8 +57,9 @@ class DosenController extends Controller
         $dosen->user()->delete();  // Hapus user juga
         $dosen->delete();
 
-        return redirect()->route('admin.dosen.index')->with('success', 'Dosen berhasil dihapus.');
+        return redirect()->route('dosen.index')->with('success', 'Dosen berhasil dihapus.');
     }
+<<<<<<< HEAD
 
     public function edit($id)
     {
@@ -102,4 +103,56 @@ class DosenController extends Controller
         return redirect()->route('admin.dosen.index')
             ->with('success', 'Data dosen berhasil diperbarui.');
     }
+=======
+    public function edit($id)
+{
+    // Ambil data dosen berdasarkan id dan hubungan dengan user
+    $dosen = Dosen::with('user')->findOrFail($id);
+
+    // Kirim data dosen ke halaman edit
+    return view('admin.dosen.edit', compact('dosen'));
+}
+
+public function update(Request $request, $id)
+{
+    // Validasi input
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email', // Validasi dasar email
+        'nidn' => 'required|unique:dosen,nidn,' . $id . ',id_dosen',
+    ]);
+
+    // Temukan dosen berdasarkan id
+    $dosen = Dosen::findOrFail($id);
+    
+    // Validasi email unik kecuali untuk user ini sendiri
+    $request->validate([
+        'email' => 'unique:users,email,' . $dosen->user_id
+    ]);
+
+    // Update data user yang terkait dengan dosen
+    $user = User::findOrFail($dosen->user_id);
+    $user->update([
+        'name' => $request->name,
+        'email' => $request->email,
+    ]);
+
+    // Update password jika diisi
+    if ($request->filled('password')) {
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+    }
+
+    // Update data dosen
+    $dosen->update([
+        'nidn' => $request->nidn,
+        'is_dosen_wali' => $request->has('is_dosen_wali') ? 1 : 0,
+    ]);
+
+    // Redirect ke halaman daftar dosen dengan pesan sukses
+    return redirect()->route('dosen.index')->with('success', 'Data dosen berhasil diperbarui.');
+}
+
+>>>>>>> b14932984dce4cc973d7da3846db6fb335b6a551
 }
