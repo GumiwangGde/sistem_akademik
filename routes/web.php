@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MatakuliahController;
+use App\Http\Controllers\MahasiswaController;
 
 // Halaman Utama
 Route::get('/', function () {
@@ -56,6 +57,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::post('/kelas/{kelas}/activate', [KelasController::class, 'activate'])->name('kelas.activate');
 
         Route::resource('matakuliah', MatakuliahController::class); // Resource route for Matakuliah
+
+        // Route untuk Mahasiswa
+    Route::resource('mahasiswa', MahasiswaController::class);
         
 
     });

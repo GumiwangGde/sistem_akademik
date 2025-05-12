@@ -33,7 +33,7 @@
                         <i class="fas fa-users mr-2"></i> Dosen
                     </x-nav-link>
 
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('Mahasiswa')" class="text-white hover:text-blue-100 transition duration-200 ease-in-out">
+                    <x-nav-link :href="route('mahasiswa.index')" :active="request()->routeIs('mahasiswa.index')" class="text-white hover:text-blue-100 transition duration-200 ease-in-out">
                         <i class="fas fa-graduation-cap mr-2"></i> Mahasiswa
                     </x-nav-link>
 
