@@ -38,10 +38,10 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
 
-    // Rute Matakuliah untuk Admin
-    Route::get('/admin/matakuliah', function () {
-        return view('admin.matakuliah.index');
-    })->name('admin.matakuliah.index');
+    // // Rute Matakuliah untuk Admin
+    // Route::get('/admin/matakuliah', function () {
+    //     return view('admin.matakuliah.index');
+    // })->name('admin.matakuliah.index');
 
     // Rute Dosen (menggunakan resource untuk CRUD)
     Route::prefix('admin')->group(function () {
@@ -54,6 +54,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         // Route untuk Kelas
         Route::resource('kelas', KelasController::class); // Ini sudah mencakup route DELETE /kelas/{kelas}
         Route::post('/kelas/{kelas}/activate', [KelasController::class, 'activate'])->name('kelas.activate');
+
+        Route::resource('matakuliah', MatakuliahController::class); // Resource route for Matakuliah
         
 
     });
