@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dosen;
+use App\Models\Kelas;
+use App\Models\Matakuliah;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MatakuliahController extends Controller
 {
@@ -11,11 +15,8 @@ class MatakuliahController extends Controller
      */
     public function index()
     {
-         // Ambil data matakuliah jika diperlukan
-         $matakuliah = Matakuliah::all();
-        
-         // Return view admin/matakuliah/index dengan data
-         return view('admin.matakuliah.index', compact('matakuliah'));
+        $matakuliah = Matakuliah::with(['dosen.user', 'kelas'])->get();
+        return view('admin.matakuliah.index', compact('matakuliah'));
     }
 
     /**
@@ -23,7 +24,10 @@ class MatakuliahController extends Controller
      */
     public function create()
     {
-        //
+        $dosen = Dosen::with('user')->get();
+        $kelas = Kelas::all();
+        
+        return view('admin.matakuliah.create', compact('dosen', 'kelas'));
     }
 
     /**
@@ -31,15 +35,31 @@ class MatakuliahController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'id_dosen' => 'required|exists:dosen,id_dosen',
+            'kelas_id' => 'required|exists:kelas,id_kelas',
+            'kode_mk' => 'required|string|max:20|unique:matakuliah,kode_mk',
+            'nama_mk' => 'required|string|max:255',
+            'sks' => 'required|integer|min:1|max:6',
+            'semester' => 'required|string|max:20',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+            'hari' => 'required|string|max:20',
+            'ruang' => 'required|string|max:50',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        if ($validator->fails()) {
+            return redirect()->route('matakuliah.create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Buat matakuliah baru
+        Matakuliah::create($request->all());
+
+        return redirect()->route('matakuliah.index')
+            ->with('success', 'Mata kuliah berhasil ditambahkan!');
     }
 
     /**
@@ -47,7 +67,11 @@ class MatakuliahController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $matakuliah = Matakuliah::findOrFail($id);
+        $dosen = Dosen::with('user')->get();
+        $kelas = Kelas::all();
+        
+        return view('admin.matakuliah.edit', compact('matakuliah', 'dosen', 'kelas'));
     }
 
     /**
@@ -55,7 +79,33 @@ class MatakuliahController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $matakuliah = Matakuliah::findOrFail($id);
+
+        // Validasi input
+        $validator = Validator::make($request->all(), [
+            'id_dosen' => 'required|exists:dosen,id_dosen',
+            'kelas_id' => 'required|exists:kelas,id_kelas',
+            'kode_mk' => 'required|string|max:20|unique:matakuliah,kode_mk,' . $id . ',id_mk',
+            'nama_mk' => 'required|string|max:255',
+            'sks' => 'required|integer|min:1|max:6',
+            'semester' => 'required|string|max:20',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
+            'hari' => 'required|string|max:20',
+            'ruang' => 'required|string|max:50',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('matakuliah.edit', $id)
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Update matakuliah
+        $matakuliah->update($request->all());
+
+        return redirect()->route('matakuliah.index')
+            ->with('success', 'Mata kuliah berhasil diperbarui!');
     }
 
     /**
@@ -63,6 +113,10 @@ class MatakuliahController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $matakuliah = Matakuliah::findOrFail($id);
+        $matakuliah->delete();
+
+        return redirect()->route('matakuliah.index')
+            ->with('success', 'Mata kuliah berhasil dihapus!');
     }
 }

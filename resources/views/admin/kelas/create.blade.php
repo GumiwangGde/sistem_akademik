@@ -116,24 +116,40 @@
     </div>
 
     <script>
-        // Function to update the class name based on dropdown selections
-        function updateClassName() {
-            var classYear = document.getElementById('class_year').value;
-            var program = document.getElementById('program').value;
-            var prodi = document.getElementById('prodi').value;
-            var classType = document.getElementById('class_type').value;
-            var className = classYear + ' ' + program + ' ' + prodi + ' ' + classType;
-            document.getElementById('nama_kelas').value = className; // Update the hidden input field
-        }
+        // Fungsi untuk memperbarui nama kelas berdasarkan pilihan dropdown
+function updateClassName() {
+    var classYear = document.getElementById('class_year').value;
+    var program = document.getElementById('program').value;
+    var prodi = document.getElementById('prodi').value;
+    var classType = document.getElementById('class_type').value;
+    var className = classYear + ' ' + program + ' ' + prodi + ' ' + classType;
+    document.getElementById('nama_kelas').value = className; // Update hidden input
+}
 
-        // Attach event listeners to the dropdowns
-        document.getElementById('class_year').addEventListener('change', updateClassName);
-        document.getElementById('program').addEventListener('change', updateClassName);
-        document.getElementById('prodi').addEventListener('change', updateClassName);
-        document.getElementById('class_type').addEventListener('change', updateClassName);
+// Fungsi untuk menyembunyikan atau menampilkan Dosen Wali tergantung pada status kelas
+function toggleDosenWali() {
+    var status = document.getElementById('status').value;
+    var dosenWaliDiv = document.getElementById('dosen_wali_div');
+    if (status === 'inactive') {
+        dosenWaliDiv.style.display = 'none'; // Menyembunyikan Dosen Wali
+    } else {
+        dosenWaliDiv.style.display = 'block'; // Menampilkan Dosen Wali
+    }
+}
 
-        // Update class name on page load
-        window.addEventListener('load', updateClassName);
+// Menambahkan event listener pada dropdown yang terkait
+document.getElementById('class_year').addEventListener('change', updateClassName);
+document.getElementById('program').addEventListener('change', updateClassName);
+document.getElementById('prodi').addEventListener('change', updateClassName);
+document.getElementById('class_type').addEventListener('change', updateClassName);
+document.getElementById('status').addEventListener('change', toggleDosenWali);
+
+// Memanggil fungsi saat halaman pertama kali dimuat
+window.addEventListener('load', function() {
+    updateClassName(); // Memperbarui nama kelas saat halaman dimuat
+    toggleDosenWali(); // Menyembunyikan/menampilkan Dosen Wali berdasarkan status kelas
+});
+
     </script>
 
 </x-app-layout>
