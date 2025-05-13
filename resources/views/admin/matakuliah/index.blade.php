@@ -1,12 +1,14 @@
 {{-- resources/views/admin/matakuliah/index.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-3xl text-blue-900 leading-tight p-4 rounded-lg shadow-md bg-gradient-to-r from-blue-200 to-blue-400">
-            {{ __('Daftar Mata Kuliah') }}
-        </h2>
+        <div class="ml-48">
+            <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
+                {{ __('Daftar Matakuliah') }}
+            </h2>
+        </div>
     </x-slot>
 
-    <div class="py-12 bg-white">
+    <div class="pl-80 bg-white">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gradient-to-r from-blue-200 to-blue-400 overflow-hidden shadow-lg sm:rounded-lg">
                 <div class="p-6 text-gray-900">

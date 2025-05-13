@@ -16,7 +16,7 @@ Route::get('/', function () {
 
 // Dashboard untuk pengguna yang sudah terverifikasi
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rute Profile untuk pengguna terautentikasi
@@ -32,29 +32,6 @@ Route::middleware('auth')->group(function () {
 //     Route::get('admin/users', [UserController::class, 'index'])->name('users');
 // });
 
-<<<<<<< HEAD
-    // Rute Admin
-    Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-        // Dashboard untuk admin
-        Route::get('/admin/dashboard', function () {
-            return view('admin.dashboard');  
-        })->name('admin.dashboard');
-
-        Route::get('/admin/matakuliah', function() {
-            return view('admin.matakuliah.index');
-        })->name('admin.matakuliah.index');
-        
-        Route::get('/admin/dosen', [DosenController::class, 'index'])->name('admin.dosen.index');
-
-        // Tambah rute CRUD untuk dosen
-        Route::get('/admin/dosen', [DosenController::class, 'index'])->name('admin.dosen.index');
-        Route::get('/admin/dosen/create', [DosenController::class, 'create'])->name('admin.dosen.create');
-        Route::post('/admin/dosen', [DosenController::class, 'store'])->name('admin.dosen.store');
-        Route::get('/admin/dosen/{id}/edit', [DosenController::class, 'edit'])->name('admin.dosen.edit');
-        Route::put('/admin/dosen/{id}', [DosenController::class, 'update'])->name('admin.dosen.update');
-        Route::delete('/admin/dosen/{id}', [DosenController::class, 'destroy'])->name('admin.dosen.destroy');
-    });
-=======
 // Rute Admin yang hanya bisa diakses oleh admin terverifikasi
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     // Dashboard untuk Admin
@@ -82,12 +59,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         Route::resource('matakuliah', MatakuliahController::class); // Resource route for Matakuliah
 
         // Route untuk Mahasiswa
-    Route::resource('mahasiswa', MahasiswaController::class);
-        
-
+        Route::resource('mahasiswa', MahasiswaController::class);
     });
 });
->>>>>>> b14932984dce4cc973d7da3846db6fb335b6a551
 
 // Menyertakan rute autentikasi
 require __DIR__ . '/auth.php';

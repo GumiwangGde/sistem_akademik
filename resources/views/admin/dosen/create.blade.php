@@ -1,11 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-3xl text-gray-900 leading-tight">
-            {{ __('Tambah Dosen') }}
-        </h2>
+        <div class="ml-48">
+            <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
+                {{ __('Create Dosen') }}
+            </h2>
+        </div>
     </x-slot>
 
-    <div class="py-12 bg-gradient-to-r from-blue-50 to-indigo-100">
+    <div class="py-12 pl-80 bg-gradient-to-r from-blue-50 to-indigo-100">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 text-gray-900">
@@ -52,6 +54,7 @@
                                     Simpan
                                 </button>
                             </div>
+
                         </div>
                     </form>
                 </div>

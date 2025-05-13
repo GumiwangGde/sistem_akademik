@@ -2,51 +2,18 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-3xl text-blue-900 leading-tight p-4 rounded-lg shadow-md bg-gradient-to-r from-blue-200 to-blue-400">
-            {{ __('Daftar Dosen') }}
-        </h2>
+        <div class="ml-48">
+            <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
+                {{ __('Daftar Dosen') }}
+            </h2>
+        </div>
     </x-slot>
 
     <!-- Latar belakang keseluruhan halaman putih -->
-    <div class="py-12 bg-white">
+    <div class="pl-80 bg-white">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gradient-to-r from-blue-200 to-blue-400 overflow-hidden shadow-lg sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-<<<<<<< HEAD
-                    <a href="{{ route('admin.dosen.create') }}" class="inline-block bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">Tambah Dosen</a>
-                    <table class="mt-4 w-full text-left">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-2">Nama</th>
-                                <th class="px-4 py-2">Email</th>
-                                <th class="px-4 py-2">NIDN</th>
-                                <th class="px-4 py-2">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($dosen as $item)
-                                <tr>
-                                    <td class="border px-4 py-2">{{ $item->user->name }}</td>
-                                    <td class="border px-4 py-2">{{ $item->user->email }}</td>
-                                    <td class="border px-4 py-2">{{ $item->nidn }}</td>
-                                    <td class="border px-4 py-2">
-                                        <div class="flex gap-2">
-                                            <!-- Tombol Edit -->
-                                            <a href="{{ route('admin.dosen.edit', $item->id_dosen) }}" class="text-blue-500 hover:text-blue-700">Edit</a>
-                                            
-                                            <!-- Tombol Hapus -->
-                                            <form action="{{ route('admin.dosen.destroy', $item->id_dosen) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dosen ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-500 hover:text-red-700">Hapus</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-=======
 
                     {{-- Pesan Error jika ada --}}
                     @if(isset($error_message))
@@ -125,7 +92,6 @@
                         </div>
                     @endif
 
->>>>>>> b14932984dce4cc973d7da3846db6fb335b6a551
                 </div>
             </div>
         </div>

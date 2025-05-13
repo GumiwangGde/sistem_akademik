@@ -1,11 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-3xl text-gray-900 leading-tight">
-            {{ __('Edit Dosen') }}
-        </h2>
+        <div class="ml-48">
+            <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
+                {{ __('Edit Dosen') }}
+            </h2>
+        </div>
     </x-slot>
 
-    <div class="py-12 bg-gradient-to-r from-blue-50 to-indigo-100">
+    <div class="py-12 pl-80 bg-gradient-to-r from-blue-50 to-indigo-100">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 text-gray-900">
@@ -67,10 +69,13 @@
                             </div>
 
                             <!-- Submit Button -->
-                            <div class="mb-4">
-                                <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition duration-300">
+                            <div class="flex items-center justify-end gap-4">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 active:from-blue-700 active:to-blue-800 focus:outline-none focus:border-blue-700 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
                                     Simpan
                                 </button>
+                                <a href="{{ route('dosen.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 active:bg-gray-500 focus:outline-none focus:border-gray-500 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                    <i class="fas fa-arrow-left mr-2"></i> Kembali
+                                </a>
                             </div>
                         </div>
                     </form>
