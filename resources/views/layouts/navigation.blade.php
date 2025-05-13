@@ -9,6 +9,7 @@
             <h6 class="block antialiased tracking-normal font-sans text-base font-semibold leading-relaxed text-white">Akademik</h6>
         </a>
     </div>
+    
     <div class="m-4">
         <ul class="mb-4 flex flex-col gap-1">
             <li>
@@ -60,5 +61,33 @@
                 </a>
             </li>
         </ul>
+    </div>
+
+    <!-- User Profile -->
+    <div class="px-6 py-4">
+        <div class="flex items-center space-x-3">
+            <div class=" rounded-full p-2">
+                <i class="fas fa-user text-white"></i>
+            </div>
+            <div x-data="{ open: false }" class="relative">
+                <button @click="open = !open" class="flex items-center text-white space-x-1 focus:outline-none">
+                    <span>{{ Auth::user()->name }}</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                        
+                <div x-show="open" @click.away="open = false" class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-user-circle mr-2"></i> Profile
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Log Out
+                    </button>
+                </form>
+                    </div>
+                </div>
+            </div>
+        <div class="text-blue-300 text-sm mt-1">{{ Auth::user()->email }}</div>
     </div>
 </aside>
