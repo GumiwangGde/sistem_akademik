@@ -45,6 +45,14 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('admin.ruang.index') }}">
+                    <button class="{{ request()->routeIs('admin.ruang.index') ? 'bg-blue-700 text-white shadow-lg' : 'text-white hover:bg-white/10 active:bg-white/30' }} middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg w-full flex items-center gap-4 px-4 capitalize">
+                        <i class="fas fa-door-open w-5 h-5"></i>
+                        <p class="block antialiased font-sans text-base leading-relaxed text-inherit font-medium capitalize">Ruang</p>
+                    </button>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('mahasiswa.index') }}">
                     <button class="{{ request()->routeIs('mahasiswa.index') ? 'bg-blue-700 text-white shadow-lg' : 'text-white hover:bg-white/10 active:bg-white/30' }} middle none font-sans font-bold center transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none text-xs py-3 rounded-lg w-full flex items-center gap-4 px-4 capitalize">
                         <i class="fas fa-graduation-cap w-5 h-5"></i>
