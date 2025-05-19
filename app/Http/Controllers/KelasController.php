@@ -64,6 +64,26 @@ class KelasController extends Controller
     }
 
     /**
+     * Menampilkan detail kelas
+     *
+     * @param  int  $id
+     * @return \Illuminate\View\View
+     */
+    public function detail($id)
+    {
+        // Ambil kelas beserta dosen wali dan mahasiswa
+        $kelas = Kelas::with(['dosenWali.user', 'mahasiswa.user'])->findOrFail($id);
+        
+        // Ambil mahasiswa dalam kelas ini
+        $mahasiswa = $kelas->mahasiswa;
+        
+        // Hitung jumlah mahasiswa
+        $mahasiswaCount = $mahasiswa->count();
+        
+        return view('admin.kelas.detail', compact('kelas', 'mahasiswa', 'mahasiswaCount'));
+    }
+
+    /**
      * Menampilkan form untuk mengedit kelas
      *
      * @param  \App\Models\Kelas  $kelas

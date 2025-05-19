@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
         // Route untuk Kelas
         Route::resource('kelas', KelasController::class); // Ini sudah mencakup route DELETE /kelas/{kelas}
         Route::post('/kelas/{kelas}/activate', [KelasController::class, 'activate'])->name('kelas.activate');
+        Route::get('/kelas/{id}/detail', [KelasController::class, 'detail'])->name('kelas.detail');
 
         Route::resource('matakuliah', MatakuliahController::class); // Resource route for Matakuliah
 

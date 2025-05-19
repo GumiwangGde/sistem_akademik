@@ -1,5 +1,3 @@
-{{-- resources/views/admin/kelas/index.blade.php --}}
-
 <head>
     <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -56,7 +54,7 @@
                                         <th class="px-6 py-4 text-left">Nama Kelas</th>
                                         <th class="px-6 py-4 text-left">Status</th>
                                         <th class="px-6 py-4 text-left">Dosen Wali</th>
-                                        <th class="px-6 py-4 text-left">Status Kelas</th>
+                                        <th class="px-6 py-4 text-left">Lihat Kelas</th>
                                         <th class="px-6 py-4 text-left">Aksi</th>
                                     </tr>
                                 </thead>
@@ -64,11 +62,20 @@
                                     @foreach ($kelas as $item)
                                         <tr class="border-b hover:bg-blue-100">
                                             <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $item->nama_kelas ?? 'N/A' }}</td>
-                                            <td class="px-6 py-4 text-sm text-gray-600">{{ $item->status }}</td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <span class="px-3 py-1 rounded-full text-xs font-semibold
+                                                    {{ $item->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                                    {{ ucfirst($item->status) }}
+                                                </span>
+                                            </td>
                                             <td class="px-6 py-4 text-sm text-gray-600">
                                                 {{ $item->dosenWali && $item->dosenWali->user ? $item->dosenWali->user->name : 'N/A' }}
                                             </td>
-                                            <td>Aktif</td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <a href="{{ route('kelas.detail', $item->id_kelas) }}" class="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out hover:underline">
+                                                    <i class="fas fa-eye mr-1"></i> Detail
+                                                </a>
+                                            </td>
                                             <td class="px-6 py-4 text-sm">
                                                 <div class="flex gap-4 items-center">
                                                     <!-- Tombol Edit -->
