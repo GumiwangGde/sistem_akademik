@@ -57,6 +57,6 @@ class RuangController extends Controller
     {
         $ruang = Ruang::findOrFail($id);
         $ruang->delete();
-        return redirect()->route('ruang.index')->with('success', 'Ruang berhasil dihapus');
+        return redirect()->route('admin.ruang.index')->with('success', 'Ruang berhasil dihapus');
     }
 }

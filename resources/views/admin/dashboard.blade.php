@@ -1,20 +1,17 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h1 class="text-3xl font-bold">{{ __('Dashboard Admin') }}</h1>
-                        <p class="mt-1 text-slate-300">{{ __('Kelola sistem universitas dengan mudah') }}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm text-slate-300">{{ __('Terakhir diperbarui') }}: {{ now()->format('d M Y, H:i') }}</p>
-                        <p class="text-xs text-slate-400">{{ __('Selamat datang kembali') }}, {{ Auth::user()->name }}</p>
-                    </div>
+<x-slot name="header">
+    <div class="bg-gradient-to-r from-blue-800 to-blue-900 text-white rounded-l-xl rounded-r-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold">{{ __('Dashboard Admin') }}</h1>
+                    <p class="mt-1 text-slate-300">{{ __('Sistem Informai Akademik') }}</p>
                 </div>
             </div>
         </div>
-    </x-slot>
+    </div>
+</x-slot>
+
 
     <div class="py-6 bg-slate-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -341,56 +338,6 @@
                             <p class="text-xs text-gray-500">
                                 {{ __('Sistem berjalan dengan baik. Monitoring otomatis aktif 24/7.') }}
                             </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity (Optional Enhancement) -->
-            <div class="mt-8">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">{{ __('Aktivitas Terbaru') }}</h3>
-                        <a href="#" class="text-sm text-blue-600 hover:text-blue-800 font-medium">{{ __('Lihat Semua') }}</a>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-                            <div class="bg-blue-100 p-2 rounded-full">
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-900">{{ __('User baru terdaftar') }}</p>
-                                <p class="text-xs text-gray-500">{{ __('5 mahasiswa baru bergabung hari ini') }}</p>
-                            </div>
-                            <span class="text-xs text-gray-400">{{ __('2 jam yang lalu') }}</span>
-                        </div>
-                        
-                        <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-                            <div class="bg-green-100 p-2 rounded-full">
-                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-900">{{ __('Mata kuliah diperbarui') }}</p>
-                                <p class="text-xs text-gray-500">{{ __('3 mata kuliah telah diperbarui jadwalnya') }}</p>
-                            </div>
-                            <span class="text-xs text-gray-400">{{ __('4 jam yang lalu') }}</span>
-                        </div>
-                        
-                        <div class="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-                            <div class="bg-yellow-100 p-2 rounded-full">
-                                <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-gray-900">{{ __('Ruang kelas ditambahkan') }}</p>
-                                <p class="text-xs text-gray-500">{{ __('2 ruang laboratorium baru tersedia') }}</p>
-                            </div>
-                            <span class="text-xs text-gray-400">{{ __('1 hari yang lalu') }}</span>
                         </div>
                     </div>
                 </div>
