@@ -1,14 +1,14 @@
 {{-- resources/views/admin/matakuliah/create.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <div class="ml-48">
+        <div class="">
             <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
                 {{ __('Tambah Matakuliah') }}
             </h2>
         </div>
     </x-slot>
 
-    <div class="py-12 pl-80 bg-gradient-to-r from-blue-50 to-indigo-100">
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-100">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gradient-to-r from-blue-100 to-blue-300 overflow-hidden shadow-lg sm:rounded-lg p-6">
                 

@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="ml-48">
+        <div class="">
             <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
                 {{ __('Manajemen Users') }}
             </h2>
         </div>
     </x-slot>
 
-    <div class="pl-80 bg-white min-h-screen">
+    <div class="bg-white min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gradient-to-r from-blue-200 to-blue-400 overflow-hidden shadow-lg sm:rounded-lg">
                 <div class="p-6 text-gray-900">
