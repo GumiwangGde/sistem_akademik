@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MatakuliahController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\RuangController;
 
 // Halaman Utama
 Route::get('/', function () {
@@ -18,6 +19,25 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Route untuk ruang
+// Rute Ruang untuk Admin
+Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    // Rute Ruang
+    Route::resource('admin/ruang', RuangController::class)->names([
+        'index' => 'admin.ruang.index',
+        'create' => 'admin.ruang.create',
+        'store' => 'admin.ruang.store',
+        'show' => 'admin.ruang.show',
+        'edit' => 'admin.ruang.edit',
+        'update' => 'admin.ruang.update',
+        'destroy' => 'admin.ruang.destroy'
+    ])->middleware(['auth', 'verified', 'role:admin']);
+});
 
 // Rute Profile untuk pengguna terautentikasi
 Route::middleware('auth')->group(function () {

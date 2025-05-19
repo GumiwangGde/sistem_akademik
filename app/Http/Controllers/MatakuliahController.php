@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dosen;
-use App\Models\Kelas;
+use App\Http\Controllers\Controller;
 use App\Models\Matakuliah;
+use App\Models\Kelas;
+use App\Models\Dosen;
+use App\Models\Ruang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -24,10 +26,10 @@ class MatakuliahController extends Controller
      */
     public function create()
     {
-        $dosen = Dosen::with('user')->get();
         $kelas = Kelas::all();
-        
-        return view('admin.matakuliah.create', compact('dosen', 'kelas'));
+        $dosen = Dosen::with('user')->get();
+        $ruang = Ruang::all();
+        return view('admin.matakuliah.create', compact('kelas', 'dosen', 'ruang'));
     }
 
     /**

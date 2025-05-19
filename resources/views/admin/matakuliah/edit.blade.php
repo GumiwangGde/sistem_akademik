@@ -90,8 +90,15 @@
                         </div>
 
                         <div>
-                            <label for="ruang" class="block text-sm font-medium text-gray-700 mb-1">Ruang</label>
-                            <input type="text" id="ruang" name="ruang" value="{{ old('ruang', $matakuliah->ruang) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Contoh: R301" required />
+                            <label for="ruang_id" class="block text-sm font-medium text-gray-700 mb-1">Ruang</label>
+                            <select id="ruang_id" name="ruang_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <option value="">-- Pilih Ruang --</option>
+                                @foreach($ruang as $ruang_item)
+                                    <option value="{{ $ruang_item->id }}" {{ (old('ruang_id', $matakuliah->ruang_id) == $ruang_item->id) ? 'selected' : '' }}>
+                                        {{ $ruang_item->nama_ruang }} (Kapasitas: {{ $ruang_item->kapasitas }})
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div>

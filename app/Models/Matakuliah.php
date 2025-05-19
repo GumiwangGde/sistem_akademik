@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Ruang;
+use App\Models\Dosen;
+use App\Models\Kelas;
 
 class Matakuliah extends Model
 {
@@ -12,6 +15,7 @@ class Matakuliah extends Model
     protected $fillable = [
         'id_dosen',
         'kelas_id',
+        'ruang_id',
         'kode_mk',
         'nama_mk',
         'sks',
@@ -19,8 +23,12 @@ class Matakuliah extends Model
         'jam_mulai',
         'jam_selesai',
         'hari',
-        'ruang',
     ];
+
+    public function ruang()
+    {
+        return $this->belongsTo(Ruang::class, 'ruang_id');
+    }
 
     // Relasi ke tabel dosen
     public function dosen()
