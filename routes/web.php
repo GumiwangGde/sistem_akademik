@@ -9,6 +9,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MatakuliahController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\RuangController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
 
 // Halaman Utama
 Route::get('/', function () {
@@ -54,10 +56,8 @@ Route::middleware('auth')->group(function () {
 
 // Rute Admin yang hanya bisa diakses oleh admin terverifikasi
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    // Dashboard untuk Admin
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/laporan/unduh', [ReportController::class, 'download'])->name('admin.laporan.unduh');
 
     // // Rute Matakuliah untuk Admin
     // Route::get('/admin/matakuliah', function () {
