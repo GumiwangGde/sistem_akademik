@@ -9,8 +9,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all(); 
-        return view('admin.users.index', compact('users'));
+        // Memisahkan user berdasarkan domain email
+        $admins = User::where('email', 'like', '%admin.pens.ac.id')->get();
+        $lecturers = User::where('email', 'like', '%lecturer.pens.ac.id')->get();
+        $students = User::where('email', 'like', '%student.pens.ac.id')->get();
+        
+        return view('admin.users.index', compact('admins', 'lecturers', 'students'));
     }
 
     public function create()
@@ -28,30 +32,20 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $user = User::find($id);
-        $user->delete(); // Hapus user
-        return redirect()->route('admin.users.index'); // Kembali ke daftar users
+        $user->delete();
+        return redirect()->route('admin.users.index')->with('success', 'User berhasil dihapus!');
     }
-
 }
