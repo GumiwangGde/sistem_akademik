@@ -27,7 +27,7 @@ class Matakuliah extends Model
 
     public function ruang()
     {
-        return $this->belongsTo(Ruang::class, 'ruang_id');
+        return $this->belongsTo(Ruang::class, 'id');
     }
 
     // Relasi ke tabel dosen

@@ -48,7 +48,7 @@ class MatakuliahController extends Controller
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'hari' => 'required|string|max:20',
-            'ruang' => 'required|string|max:50',
+            'ruang_id' => 'required|exists:ruang,id',
         ]);
 
         if ($validator->fails()) {
@@ -72,8 +72,9 @@ class MatakuliahController extends Controller
         $matakuliah = Matakuliah::findOrFail($id);
         $dosen = Dosen::with('user')->get();
         $kelas = Kelas::all();
+        $ruang = Ruang::all();
         
-        return view('admin.matakuliah.edit', compact('matakuliah', 'dosen', 'kelas'));
+        return view('admin.matakuliah.edit', compact('matakuliah', 'dosen', 'kelas', 'ruang'));
     }
 
     /**
@@ -94,7 +95,7 @@ class MatakuliahController extends Controller
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
             'hari' => 'required|string|max:20',
-            'ruang' => 'required|string|max:50',
+            'ruang_id' => 'required|exists:ruang,id',
         ]);
 
         if ($validator->fails()) {

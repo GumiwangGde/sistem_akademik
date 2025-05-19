@@ -22,7 +22,7 @@ return new class extends Migration
         $table->time('jam_mulai');
         $table->time('jam_selesai');
         $table->string('hari');
-        $table->string('ruang');
+        $table->foreignId('ruang_id')->constrained('ruang')->onDelete('cascade');
 
         // Foreign keys
         $table->foreign('id_dosen')->references('id_dosen')->on('dosen')->onDelete('cascade');

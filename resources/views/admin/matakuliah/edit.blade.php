@@ -94,7 +94,7 @@
                             <select id="ruang_id" name="ruang_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                 <option value="">-- Pilih Ruang --</option>
                                 @foreach($ruang as $ruang_item)
-                                    <option value="{{ $ruang_item->id }}" {{ (old('ruang_id', $matakuliah->ruang_id) == $ruang_item->id) ? 'selected' : '' }}>
+                                    <option value="{{ $ruang_item->id_ruang }}" {{ (old('ruang_id', $matakuliah->ruang_id) == $ruang_item->id_ruang) ? 'selected' : '' }}>
                                         {{ $ruang_item->nama_ruang }} (Kapasitas: {{ $ruang_item->kapasitas }})
                                     </option>
                                 @endforeach

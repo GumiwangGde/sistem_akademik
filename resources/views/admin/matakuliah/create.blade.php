@@ -89,7 +89,7 @@
 
                         <div>
                             <label for="ruang_id" class="block text-sm font-medium text-gray-700 mb-1">Ruang</label>
-                            <select id="ruang_id" name="ruang_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                            <select id="ruang_id" name="ruang_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
                                 <option value="">-- Pilih Ruang --</option>
                                 @foreach($ruang as $ruang_item)
                                     <option value="{{ $ruang_item->id }}" {{ old('ruang_id') == $ruang_item->id ? 'selected' : '' }}>
