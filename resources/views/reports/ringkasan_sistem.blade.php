@@ -3,58 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Ringkasan Sistem</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
             color: #333;
         }
         .container {
-            width: 80%;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 30px;
         }
         .header {
             text-align: center;
-            padding: 20px 0;
-            border-bottom: 2px solid #1e40af;
+            padding: 40px 0;
+            border-bottom: 3px solid #1e40af;
+            margin-bottom: 40px;
         }
         .header h1 {
-            margin: 0;
-            font-size: 28px;
+            font-size: 36px;
+            font-weight: 700;
             color: #1e40af;
+            margin-bottom: 10px;
         }
         .header p {
-            margin: 5px 0;
-            color: #4b5563;
+            color: #6b7280;
+            font-size: 18px;
         }
         .section {
-            margin-top: 20px;
+            margin-top: 40px;
         }
         .section h2 {
-            font-size: 20px;
+            font-size: 24px;
             color: #1e40af;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 5px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
         }
         .section p {
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 16px;
+            line-height: 1.8;
+            color: #4b5563;
         }
         .metrics {
-            margin-top: 10px;
+            margin-top: 30px;
         }
         .metrics ul {
             list-style: none;
             padding: 0;
         }
         .metrics li {
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #4b5563;
         }
         .metrics li strong {
             color: #1e40af;
+            font-weight: 600;
         }
         .metrics .sub-list {
             margin-left: 20px;
@@ -62,9 +70,25 @@
         }
         .footer {
             text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
+            margin-top: 60px;
+            font-size: 14px;
             color: #6b7280;
+        }
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .card p {
+            font-size: 16px;
+            color: #4b5563;
         }
     </style>
 </head>
@@ -73,17 +97,16 @@
         <!-- Header -->
         <div class="header">
             <h1>Laporan Ringkasan Sistem</h1>
-            <p>Sistem Manajemen Universitas</p>
-            <p>Dibuat pada {{ $tanggal }}</p>
-            <p>Disusun oleh Admin</p>
+            <p>Sistem Informasi Akademik PENS</p>
+            <p class="text-gray-500">{{ $tanggal }} | Disusun oleh Admin</p>
         </div>
 
         <!-- Gambaran Umum -->
         <div class="section">
             <h2>Gambaran Umum</h2>
             <p>
-                Laporan ini memberikan ringkasan metrik utama dari Sistem Manajemen Universitas per {{ $tanggal }}. 
-                Data mencakup jumlah pengguna (terkategori sebagai admin, dosen, dan mahasiswa), dosen, mahasiswa, mata kuliah, kelas, dan ruangan.
+                Laporan ini memberikan ringkasan metrik utama dari SIAKAD per <strong>{{ $tanggal }}</strong>.
+                Data mencakup informasi tentang jumlah pengguna (terkategori sebagai admin, dosen, dan mahasiswa), dosen, mahasiswa, mata kuliah, kelas, dan ruangan yang ada di sistem.
             </p>
         </div>
 
@@ -114,18 +137,96 @@
         <div class="section">
             <h2>Ringkasan</h2>
             <p>
-                Sistem saat ini mengelola total {{ $total_pengguna }} pengguna, dengan {{ $total_admin }} admin, 
-                {{ $total_dosen_user }} dosen (berdasarkan email), dan {{ $total_mahasiswa_user }} mahasiswa (berdasarkan email). 
-                Terdapat {{ $total_dosen }} dosen dan {{ $total_mahasiswa }} mahasiswa, dengan {{ $total_matakuliah }} mata kuliah 
-                yang didistribusikan di {{ $total_kelas }} kelas, menggunakan {{ $total_ruang }} ruangan. 
-                Laporan ini berfungsi sebagai gambaran untuk pengawasan dan perencanaan administratif.
+                Sistem saat ini mengelola total <strong>{{ $total_pengguna }}</strong> pengguna, dengan <strong>{{ $total_admin }}</strong> admin, 
+                <strong>{{ $total_dosen_user }}</strong> dosen (berdasarkan email), dan <strong>{{ $total_mahasiswa_user }}</strong> mahasiswa (berdasarkan email). 
+                Terdapat <strong>{{ $total_dosen }}</strong> dosen dan <strong>{{ $total_mahasiswa }}</strong> mahasiswa, dengan <strong>{{ $total_matakuliah }}</strong> mata kuliah 
+                yang didistribusikan di <strong>{{ $total_kelas }}</strong> kelas, menggunakan <strong>{{ $total_ruang }}</strong> ruangan. 
+                Laporan ini berfungsi sebagai gambaran untuk pengawasan dan perencanaan administratif yang lebih baik.
             </p>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            <p>Laporan ini dihasilkan oleh Sistem Manajemen Universitas</p>
+            <p>Laporan ini dihasilkan oleh Sistem Informasi Akademik PENS</p>
         </div>
     </div>
+
+    <script>
+        // Data for User Distribution
+        const userDistributionData = {
+            labels: ['Admin', 'Dosen', 'Mahasiswa'],
+            datasets: [{
+                label: 'Distribusi Pengguna',
+                data: [
+                    {{ $total_admin }},
+                    {{ $total_dosen_user }},
+                    {{ $total_mahasiswa_user }}
+                ],
+                backgroundColor: ['#ef4444', '#3b82f6', '#10b981'],
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        };
+
+        // Data for System Overview
+        const systemOverviewData = {
+            labels: ['Dosen', 'Mahasiswa', 'Mata Kuliah', 'Kelas', 'Ruangan'],
+            datasets: [{
+                label: 'Gambaran Umum Sistem',
+                data: [
+                    {{ $total_dosen }},
+                    {{ $total_mahasiswa }},
+                    {{ $total_matakuliah }},
+                    {{ $total_kelas }},
+                    {{ $total_ruang }}
+                ],
+                backgroundColor: '#3b82f6',
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        };
+
+        // User Distribution Pie Chart
+        const ctx1 = document.getElementById('userDistributionChart').getContext('2d');
+        const userDistributionChart = new Chart(ctx1, {
+            type: 'pie',
+            data: userDistributionData,
+            options: {
+                responsive: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // System Overview Bar Chart
+        const ctx2 = document.getElementById('systemOverviewChart').getContext('2d');
+        const systemOverviewChart = new Chart(ctx2, {
+            type: 'bar',
+            data: systemOverviewData,
+            options: {
+                responsive: true,
+                scales: {
+                    x: { beginAtZero: true },
+                    y: { beginAtZero: true }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
