@@ -45,11 +45,16 @@
                                         <tr class="border-b hover:bg-blue-100">
                                             <td class="px-4 py-3 text-sm text-gray-600 font-medium">{{ $item->kode_mk }}</td>
                                             <td class="px-4 py-3 text-sm text-gray-600">{{ $item->nama_mk }}</td>
-                                            <td class="px-4 py-3 text-sm text-gray-600">{{ $item->kelas->nama_kelas }}</td>
-                                            <td class="px-4 py-3 text-sm text-gray-600">{{ $item->dosen->user->name }}</td>
+                                            {{-- Pastikan relasi kelas dan nama_kelas ada --}}
+                                            <td class="px-4 py-3 text-sm text-gray-600">{{ $item->kelas->nama_kelas ?? 'N/A' }}</td>
+                                            {{-- Pastikan relasi dosen dan user serta name ada --}}
+                                            <td class="px-4 py-3 text-sm text-gray-600">{{ $item->dosen->user->name ?? 'N/A' }}</td>
                                             <td class="px-4 py-3 text-sm text-gray-600">{{ $item->sks }}</td>
                                             <td class="px-4 py-3 text-sm text-gray-600">{{ $item->hari }}, {{ substr($item->jam_mulai, 0, 5) }} - {{ substr($item->jam_selesai, 0, 5) }}</td>
-                                            <td class="px-4 py-3 text-sm text-gray-600">{{ $item->ruang }}</td>
+                                            {{-- PERBAIKAN DI SINI --}}
+                                            <td class="px-4 py-3 text-sm text-gray-600">
+                                                {{ $item->ruang?->nama_ruang ?? 'N/A' }}
+                                            </td>
                                             <td class="px-4 py-3 text-sm flex justify-center space-x-2">
                                                 <a href="{{ route('matakuliah.edit', $item->id_mk) }}" class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
                                                     <i class="fas fa-edit"></i> Edit
