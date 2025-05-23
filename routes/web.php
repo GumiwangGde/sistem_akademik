@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
+    Route::post('/admin/calendar/upload', [DashboardController::class, 'uploadCalendar'])->name('admin.calendar.upload');
 
     // Rute Ruang
     Route::resource('admin/ruang', RuangController::class)->names([
