@@ -1,14 +1,8 @@
 <x-app-layout>
 <x-slot name="header">
-    <div class="bg-gradient-to-r from-blue-800 to-blue-900 text-white rounded-l-xl rounded-r-xl">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold">{{ __('Dashboard Admin') }}</h1>
-                    <p class="mt-1 text-slate-300">{{ __('Sistem Informai Akademik') }}</p>
-                </div>
-            </div>
-        </div>
+    <div class="bg-gradient-to-r text-black ">
+        <h1 class="text-3xl font-bold">{{ __('Dashboard Admin') }}</h1>
+        <p class="mt-1 text-slate-950">{{ __('Sistem Informai Akademik') }}</p>
     </div>
 </x-slot>
 

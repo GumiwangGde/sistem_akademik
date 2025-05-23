@@ -2,17 +2,21 @@
 
 <x-app-layout>
     <x-slot name="header">
-        <div class="">
-            <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
-                {{ __('Daftar Dosen') }}
-            </h2>
+    <div class="bg-gradient-to-r from-blue-800 to-blue-900 text-white rounded-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold">{{ __('Daftar Dosen') }}</h1>
+                </div>
+            </div>
         </div>
+    </div>
     </x-slot>
 
     <!-- Latar belakang keseluruhan halaman putih -->
     <div class="bg-white">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-gradient-to-r from-blue-200 to-blue-400 overflow-hidden shadow-lg sm:rounded-lg">
+            <div class="bg-gradient-to-r color-blue- overflow-hidden shadow-lg sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
                     {{-- Pesan Error jika ada --}}
@@ -23,7 +27,7 @@
                     @endif
 
                     {{-- Tombol untuk tambah dosen --}}
-                    <a href="{{ route('dosen.create') }}" class="inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-full shadow-md hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out mb-6">
+                    <a href="{{ route('dosen.create') }}" class="inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-md shadow-md hover:bg-gradient-to-r hover:from-blue-400 hover:to-blue-500 transition-all duration-300 ease-in-out mb-6">
                         <i class="fas fa-user-plus mr-2"></i> Tambah Dosen
                     </a>
 
