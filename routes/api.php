@@ -2,10 +2,19 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Mobile\AuthController as MobileAuthController;
-use App\Http\Controllers\Mobile\DosenController;
+// Import the new Dosen controllers
+use App\Http\Controllers\Mobile\Dosen\ProfileController as DosenProfileController;
+use App\Http\Controllers\Mobile\Dosen\MatakuliahController as DosenMatakuliahController;
+use App\Http\Controllers\Mobile\Dosen\FrsController as DosenFrsController;
+use App\Http\Controllers\Mobile\Dosen\NilaiController as DosenNilaiController;
+use App\Http\Controllers\Mobile\Dosen\WaliController as DosenWaliController;
+// The old DosenController is no longer needed here if all its methods are moved
+// use App\Http\Controllers\Mobile\DosenController;
 use App\Http\Controllers\Mobile\MahasiswaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Mobile\Dosen\DosenDashboardController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -52,18 +61,22 @@ Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa'
 // Mobile Dosen Routes
 Route::middleware(['auth:sanctum', 'role:dosen'])->prefix('mobile/dosen')->group(function () {
     // Profile
-    Route::get('/profile', [DosenController::class, 'profile']);
+    Route::get('/profile', [DosenProfileController::class, 'profile']);
+    Route::put('/profile', [DosenProfileController::class, 'updateProfile']); // Changed from post to put for updates
     
     // Matakuliah & Jadwal
-    Route::get('/matakuliah', [DosenController::class, 'getMatakuliah']);
-    Route::get('/jadwal', [DosenController::class, 'getJadwal']);
+    Route::get('/matakuliah', [DosenMatakuliahController::class, 'getMatakuliah']);
+    Route::get('/jadwal', [DosenMatakuliahController::class, 'getJadwal']);
+    Route::get('/dashboard/jadwal-hari-ini', [DosenDashboardController::class, 'getJadwalHariIni']);
     
     // FRS Approval (for dosen wali)
-    Route::get('/frs/pending', [DosenController::class, 'getPendingFRS']);
-    Route::put('/frs/approve', [DosenController::class, 'approveFRS']);
-    Route::get('/mahasiswa-wali', [DosenController::class, 'getMahasiswaWali']);
+    Route::get('/frs/pending', [DosenFrsController::class, 'getPendingFRS']);
+    Route::put('/frs/approve', [DosenFrsController::class, 'approveFRS']); // Changed from post to put for updates/status changes
+    
+    // Wali specific
+    Route::get('/mahasiswa-wali', [DosenWaliController::class, 'getMahasiswaWali']);
     
     // Nilai Management
-    Route::get('/matakuliah/{id_mk}/mahasiswa', [DosenController::class, 'getMahasiswaByMatakuliah']);
-    Route::put('/nilai', [DosenController::class, 'inputNilai']);
+    Route::get('/matakuliah/{id_mk}/mahasiswa', [DosenNilaiController::class, 'getMahasiswaByMatakuliah']);
+    Route::put('/nilai', [DosenNilaiController::class, 'inputNilai']); // Changed from post to put for inputting/updating nilai
 });
