@@ -29,11 +29,16 @@ class MatakuliahController extends Controller
             ], 404);
         }
         
-        // Get matakuliah taught by this dosen
-        // Adjust 'with' as per your Matakuliah model relations for kelas and ruang
-        $matakuliah = Matakuliah::with(['kelas', 'ruang']) 
-            ->where('id_dosen', $dosen->id_dosen)
-            ->get();
+        $query = Matakuliah::with(['kelas', 'ruang']) 
+            ->where('id_dosen', $dosen->id_dosen);
+
+        $semester = $request->query('semester');
+
+        if ($semester) {
+            $query->where('semester', $semester); 
+        }
+
+        $matakuliah = $query->get();
             
         return response()->json([
             'matakuliah' => $matakuliah,
