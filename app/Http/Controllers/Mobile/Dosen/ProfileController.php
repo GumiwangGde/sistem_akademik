@@ -6,15 +6,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Dosen;
 use App\Models\User;
-use App\Models\Kelas; // Needed for kelas_wali in profile
+use App\Models\Kelas; // Diperlukan untuk kelas_wali dalam profil
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log; // Tambahkan Log untuk debugging jika perlu
 use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
     /**
-     * Get authenticated dosen profile
+     * Mengambil profil dosen yang terautentikasi.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -23,43 +24,46 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         
-        // Get dosen data with user relationships
+        // Ambil data dosen beserta relasi user
+        // Penting: Pastikan relasi 'user' sudah didefinisikan dengan benar di model Dosen
         $dosen = Dosen::with('user')->where('user_id', $user->id)->first();
             
         if (!$dosen) {
             return response()->json([
-                'message' => 'Data dosen tidak ditemukan'
+                'message' => 'Data dosen tidak ditemukan.'
             ], 404);
         }
         
-        // Prepare profile data including NIDN and email
+        // Siapkan data profil
+        // Pastikan field yang dikembalikan sesuai dengan yang dibutuhkan oleh model Dosen di Flutter
         $profileData = [
             'id_dosen' => $dosen->id_dosen,
             'user_id' => $dosen->user_id,
             'nidn' => $dosen->nidn,
             'nama' => $dosen->user->name, // Ambil nama dari tabel users
-            'email' => $dosen->user->email,
-            'tanggal_lahir' => $dosen->tanggal_lahir, // Added this, was missing in original output but present in update logic
-            'jenis_kelamin' => $dosen->jenis_kelamin, // Added this
-            'is_dosen_wali' => $dosen->is_dosen_wali,
-            'created_at' => $dosen->created_at,
-            'updated_at' => $dosen->updated_at
+            'email' => $dosen->user->email, // Ambil email dari tabel users
+            'tanggal_lahir' => $dosen->tanggal_lahir,
+            'jenis_kelamin' => $dosen->jenis_kelamin,
+            'is_dosen_wali' => (bool) $dosen->is_dosen_wali, // Cast ke boolean untuk konsistensi
+            'created_at' => $dosen->created_at?->toIso8601String(), // Format ke ISO8601
+            'updated_at' => $dosen->updated_at?->toIso8601String(), // Format ke ISO8601
         ];
         
-        // If dosen wali, get assigned kelas
+        // Jika dosen adalah dosen wali, ambil data kelas yang diampu
         if ($dosen->is_dosen_wali) {
-            $kelas = Kelas::where('id_dosen_wali', $dosen->id_dosen)->get();
+            // Anda mungkin ingin memilih field tertentu dari Kelas untuk mengurangi ukuran respons
+            $kelas = Kelas::where('id_dosen_wali', $dosen->id_dosen)->select(['id_kelas', 'nama_kelas', 'status'])->get();
             $profileData['kelas_wali'] = $kelas;
         }
         
         return response()->json([
             'dosen' => $profileData,
-            'message' => 'Data dosen berhasil diambil'
+            'message' => 'Data dosen berhasil diambil.'
         ]);
     }
     
     /**
-     * Update dosen profile
+     * Memperbarui profil dosen yang terautentikasi.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -67,71 +71,73 @@ class ProfileController extends Controller
     public function updateProfile(Request $request)
     {
         $user = $request->user();
-        
-        // Get dosen data
         $dosen = Dosen::where('user_id', $user->id)->first();
         
         if (!$dosen) {
             return response()->json([
-                'message' => 'Data dosen tidak ditemukan'
+                'message' => 'Data dosen tidak ditemukan.'
             ], 404);
         }
         
-        // Validation rules
+        // Aturan validasi
+        // 'sometimes' berarti field hanya divalidasi jika ada dalam request.
         $validator = Validator::make($request->all(), [
             'nama' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
-            'tanggal_lahir' => 'sometimes|nullable|date',
-            'jenis_kelamin' => 'sometimes|nullable|in:L,P',
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id, // Pastikan user_id disertakan untuk mengabaikan email user saat ini
+            'tanggal_lahir' => 'sometimes|nullable|date_format:Y-m-d', // Spesifikasikan format tanggal
+            'jenis_kelamin' => 'sometimes|nullable|string|in:L,P',
+            // PENTING: 'confirmed' berarti request HARUS menyertakan field 'password_confirmation' yang cocok.
+            // Jika Flutter tidak mengirim 'password_confirmation', validasi akan gagal jika 'password' ada.
             'password' => 'sometimes|nullable|string|min:8|confirmed',
         ]);
         
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validation failed',
+                'message' => 'Validasi gagal.',
                 'errors' => $validator->errors()
-            ], 422);
+            ], 422); // Kode status 422 untuk Unprocessable Entity
         }
         
         try {
             DB::beginTransaction();
             
-            // Update dosen data
-            $dosenData = $request->only(['tanggal_lahir', 'jenis_kelamin']);
-            $dosenData = array_filter($dosenData, function($value) {
-                return $value !== null;
-            });
-            
-            if (!empty($dosenData)) {
-                $dosen->fill($dosenData);
-                $dosen->save();
+            // Update data pada tabel Dosen (tanggal_lahir, jenis_kelamin)
+            // Hanya update field yang ada dalam request dan tidak null (sesuai logika array_filter sebelumnya)
+            $dosenUpdateData = [];
+            if ($request->has('tanggal_lahir')) { // Cek 'has' untuk bisa mengirim null secara eksplisit jika 'nullable'
+                $dosenUpdateData['tanggal_lahir'] = $request->input('tanggal_lahir');
+            }
+            if ($request->has('jenis_kelamin')) {
+                $dosenUpdateData['jenis_kelamin'] = $request->input('jenis_kelamin');
+            }
+
+            if (!empty($dosenUpdateData)) {
+                $dosen->update($dosenUpdateData);
             }
             
-            // Update user data (name, email and password)
-            $userData = [];
-            if ($request->has('nama')) {
-                $userData['name'] = $request->nama;
+            // Update data pada tabel User (name, email, password)
+            $userUpdateData = [];
+            if ($request->filled('nama')) { // 'filled' mengecek apakah field ada dan tidak kosong
+                $userUpdateData['name'] = $request->input('nama');
             }
-            if ($request->has('email')) {
-                $userData['email'] = $request->email;
+            if ($request->filled('email')) {
+                $userUpdateData['email'] = $request->input('email');
+            }
+            if ($request->filled('password')) { // Hanya hash dan update password jika field 'password' diisi dan tidak kosong
+                $userUpdateData['password'] = Hash::make($request->input('password'));
             }
             
-            if ($request->filled('password')) {
-                $userData['password'] = Hash::make($request->password);
-            }
-            
-            if (!empty($userData)) {
-                $user->fill($userData);
-                $user->save();
+            if (!empty($userUpdateData)) {
+                $user->update($userUpdateData);
             }
             
             DB::commit();
             
-            // Return updated profile
-            // It's good practice to reload the model to get all transformations/casts applied
+            // Ambil ulang data dosen yang sudah terupdate beserta relasi user untuk respons
+            // Ini adalah praktik yang baik untuk memastikan data yang dikembalikan adalah yang paling baru.
             $updatedDosen = Dosen::with('user')->find($dosen->id_dosen); 
             
-            $profileData = [
+            $profileDataResponse = [
                 'id_dosen' => $updatedDosen->id_dosen,
                 'user_id' => $updatedDosen->user_id,
                 'nidn' => $updatedDosen->nidn,
@@ -139,21 +145,28 @@ class ProfileController extends Controller
                 'email' => $updatedDosen->user->email,
                 'tanggal_lahir' => $updatedDosen->tanggal_lahir,
                 'jenis_kelamin' => $updatedDosen->jenis_kelamin,
-                'is_dosen_wali' => $updatedDosen->is_dosen_wali,
-                'created_at' => $updatedDosen->created_at,
-                'updated_at' => $updatedDosen->updated_at
+                'is_dosen_wali' => (bool) $updatedDosen->is_dosen_wali,
+                'created_at' => $updatedDosen->created_at?->toIso8601String(),
+                'updated_at' => $updatedDosen->updated_at?->toIso8601String(),
             ];
             
+            // CATATAN PENTING MENGENAI CACHING (jika ada):
+            // Jika Anda menggunakan sistem caching (misalnya Redis, Memcached, Laravel Route/Config/Model Caching)
+            // untuk endpoint GET /profile, Anda PERLU meng-invalidate atau memperbarui cache di sini
+            // setelah data berhasil diupdate agar request GET berikutnya dari Flutter mendapatkan data terbaru.
+            // Contoh (konseptual): Cache::forget('dosen_profile_' . $user->id);
+
             return response()->json([
-                'dosen' => $profileData,
-                'message' => 'Profile berhasil diperbarui'
+                'dosen' => $profileDataResponse,
+                'message' => 'Profil berhasil diperbarui.'
             ]);
             
         } catch (\Exception $e) {
             DB::rollback();
+            Log::error('Update Profile Error: ' . $e->getMessage(), ['user_id' => $user->id]); // Log error untuk diagnosis
             return response()->json([
-                'message' => 'Terjadi kesalahan saat memperbarui profile',
-                'error' => $e->getMessage()
+                'message' => 'Terjadi kesalahan saat memperbarui profil.',
+                'error' => $e->getMessage() // Di produksi, mungkin jangan kirim detail error mentah
             ], 500);
         }
     }

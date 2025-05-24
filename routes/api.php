@@ -74,6 +74,7 @@ Route::middleware(['auth:sanctum', 'role:dosen'])->prefix('mobile/dosen')->group
     // FRS Approval (for dosen wali)
     Route::get('/frs/pending', [DosenFrsController::class, 'getPendingFRS']);
     Route::put('/frs/approve', [DosenFrsController::class, 'approveFRS']);
+    Route::get('/frs/mahasiswa/{id_mahasiswa}', [DosenFrsController::class, 'getAllFrsForMahasiswa']);
     
     // Wali specific
     Route::get('/mahasiswa-wali', [DosenWaliController::class, 'getMahasiswaWali']);
