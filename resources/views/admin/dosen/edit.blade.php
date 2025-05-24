@@ -1,82 +1,109 @@
+{{-- resources/views/admin/dosen/edit.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <div class="">
-            <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
-                {{ __('Edit Dosen') }}
-            </h2>
+        <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
+            <div class="px-6 py-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-blue-500 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">{{ __('Edit Dosen') }}</h1>
+                            <p class="text-sm text-gray-500">Perbarui data dosen {{ $dosen->user->name }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </x-slot>
 
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-100">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <!-- Tampilkan pesan error jika ada -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
                     @if ($errors->any())
-                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                            <strong>Error!</strong>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                        <div class="mb-5 flex w-full overflow-hidden bg-white rounded-lg shadow-md">
+                            <div class="flex items-center justify-center w-12 bg-red-500">
+                                <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM22 27.3333H18V23.3333H22V27.3333ZM22 19.9999H18V12.6666H22V19.9999Z"></path>
+                                </svg>
+                            </div>
+                            <div class="px-4 py-3 -mx-3">
+                                <div class="mx-3">
+                                    <span class="font-semibold text-red-500">Terjadi kesalahan:</span>
+                                    <ul class="text-sm text-gray-600 mt-1 list-disc list-inside">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     @endif
 
-                    <form action="{{ route('dosen.update', $dosen->id_dosen) }}" method="POST">
+                    <form action="{{ route('dosen.update', $dosen->id_dosen) }}" method="POST" class="space-y-6">
                         @csrf
-                        @method('PUT') <!-- Metode PUT untuk update -->
-
-                        <!-- Form Grid -->
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        @method('PUT')
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Nama -->
-                            <div class="mb-4">
-                                <label for="name" class="block text-gray-700 font-medium mb-2">Nama</label>
-                                <input type="text" id="name" name="name" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-200" value="{{ old('name', $dosen->user->name) }}" required>
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                                <input type="text" id="name" name="name" value="{{ old('name', $dosen->user->name) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
                             </div>
                             
                             <!-- Email -->
-                            <div class="mb-4">
-                                <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                                 <div class="flex">
                                     @php
                                         $emailParts = explode('@', $dosen->user->email);
                                         $username = $emailParts[0] ?? '';
                                     @endphp
-                                    <input type="text" id="username" name="username" class="w-full p-3 border border-gray-300 rounded-l-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-200" value="{{ old('username', $username) }}" required oninput="updateEmail()">
-                                    <span class="bg-gray-300 p-3 rounded-r-lg text-gray-700">@it.lecturer.pens.ac.id</span>
+                                    <input type="text" id="username" name="username" value="{{ old('username', $username) }}" class="mt-1 block w-full rounded-l-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required placeholder="Username" oninput="updateEmail()">
+                                    <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
+                                        @it.lecturer.pens.ac.id
+                                    </span>
                                 </div>
-                                <input type="hidden" id="email" name="email" value="{{ old('email', $dosen->user->email) }}"> <!-- Hidden field untuk email lengkap -->
+                                <input type="hidden" id="email" name="email" value="{{ old('email', $dosen->user->email) }}">
                             </div>
 
                             <!-- Password -->
-                            <div class="mb-4">
-                                <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
-                                <input type="password" id="password" name="password" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-200">
-                                <small class="text-gray-500">Kosongkan jika tidak ingin mengubah password</small>
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                <input type="password" id="password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengubah password</p>
                             </div>
 
                             <!-- NIDN -->
-                            <div class="mb-4">
-                                <label for="nidn" class="block text-gray-700 font-medium mb-2">NIDN</label>
-                                <input type="text" id="nidn" name="nidn" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 transition duration-200" value="{{ old('nidn', $dosen->nidn) }}" required>
+                            <div>
+                                <label for="nidn" class="block text-sm font-medium text-gray-700 mb-1">NIDN</label>
+                                <input type="text" id="nidn" name="nidn" value="{{ old('nidn', $dosen->nidn) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
                             </div>
 
                             <!-- Dosen Wali -->
-                            <div class="mb-4 flex items-center">
-                                <input type="checkbox" id="is_dosen_wali" name="is_dosen_wali" class="mr-2 text-indigo-600" {{ $dosen->is_dosen_wali ? 'checked' : '' }}>
-                                <label for="is_dosen_wali" class="text-gray-700">Dosen Wali</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="is_dosen_wali" name="is_dosen_wali" {{ $dosen->is_dosen_wali ? 'checked' : '' }} class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <label for="is_dosen_wali" class="ml-2 block text-sm text-gray-700">Dosen Wali</label>
                             </div>
+                        </div>
 
-                            <!-- Submit Button -->
-                            <div class="flex items-center justify-end gap-4">
-                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 active:from-blue-700 active:to-blue-800 focus:outline-none focus:border-blue-700 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                    Simpan
-                                </button>
-                                <a href="{{ route('dosen.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-400 active:bg-gray-500 focus:outline-none focus:border-gray-500 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-                                    <i class="fas fa-arrow-left mr-2"></i> Kembali
-                                </a>
-                            </div>
+                        <div class="flex items-center justify-between mt-8">
+                            <a href="{{ route('dosen.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-gray transition ease-in-out duration-150">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                Kembali
+                            </a>
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-800 focus:shadow-outline-blue transition ease-in-out duration-150">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                                </svg>
+                                Simpan Perubahan
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -85,16 +112,15 @@
     </div>
 
     <script>
-        // Jalankan fungsi updateEmail saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', function() {
-            updateEmail();
-        });
-        
         function updateEmail() {
             const username = document.getElementById('username').value;
             const domain = '@it.lecturer.pens.ac.id';
-            document.getElementById('email').value = username + domain;  // Set email hidden field
-            console.log("Email updated to: " + username + domain); // Debug
+            document.getElementById('email').value = username + domain;
         }
+        
+        // Initialize email value on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateEmail();
+        });
     </script>
 </x-app-layout>

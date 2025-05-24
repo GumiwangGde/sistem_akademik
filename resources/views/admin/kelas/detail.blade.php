@@ -1,141 +1,146 @@
-<head>
-    <!-- Font Awesome CDN -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-</head>
-
+{{-- resources/views/admin/kelas/detail.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <div class="">
-            <h2 class="font-semibold text-3xl text-blue-800 leading-tight">
-                {{ __('Detail Kelas: ') }} {{ $kelas->nama_kelas }}
-            </h2>
-        </div>
-    </x-slot>
-
-    <!-- Latar belakang keseluruhan halaman putih -->
-    <div class="bg-white">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-gradient-to-r from-blue-200 to-blue-400 overflow-hidden shadow-lg sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-
-                    {{-- Tombol Kembali --}}
-                    <a href="{{ route('kelas.index') }}" class="inline-block bg-gradient-to-r from-gray-500 to-gray-600 text-white py-3 px-6 rounded-full shadow-md hover:bg-gradient-to-r hover:from-gray-400 hover:to-gray-500 transition-all duration-300 ease-in-out mb-6">
-                        <i class="fas fa-arrow-left mr-2"></i> Kembali ke Daftar Kelas
-                    </a>
-
-                    {{-- Informasi Umum Kelas --}}
-                    <div class="bg-white rounded-lg shadow-md mb-6 p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                            <i class="fas fa-info-circle mr-2 text-blue-600"></i>Informasi Kelas
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-blue-800">Nama Kelas</h4>
-                                <p class="text-gray-700">{{ $kelas->nama_kelas }}</p>
-                            </div>
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-blue-800">Status</h4>
-                                <span class="px-3 py-1 rounded-full text-sm font-semibold
-                                    {{ $kelas->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                    {{ ucfirst($kelas->status) }}
-                                </span>
-                            </div>
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-blue-800">Dosen Wali</h4>
-                                <p class="text-gray-700">
-                                    {{ $kelas->dosenWali && $kelas->dosenWali->user ? $kelas->dosenWali->user->name : 'Belum ada dosen wali' }}
-                                </p>
-                            </div>
+        <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
+            <div class="px-6 py-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-blue-500 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-900">{{ __('Detail Kelas') }}</h1>
+                            <p class="text-sm text-gray-500">{{ $kelas->nama_kelas }}</p>
                         </div>
                     </div>
-
-                    {{-- Summary Card --}}
-                    <div class="bg-white rounded-lg shadow-md mb-6 p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                            <i class="fas fa-chart-pie mr-2 text-blue-600"></i>Statistik Kelas
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-gradient-to-r from-blue-100 to-blue-200 p-4 rounded-lg">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-users text-blue-600 text-2xl"></i>
-                                    </div>
-                                    <div class="ml-4">
-                                        <h4 class="font-semibold text-blue-800">Total Mahasiswa</h4>
-                                        <p class="text-2xl font-bold text-blue-900">{{ $mahasiswaCount }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-gradient-to-r from-green-100 to-green-200 p-4 rounded-lg">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0">
-                                        <i class="fas fa-user-tie text-green-600 text-2xl"></i>
-                                    </div>
-                                    <div class="ml-4">
-                                        <h4 class="font-semibold text-green-800">Dosen Wali</h4>
-                                        <p class="text-lg font-semibold text-green-900">
-                                            {{ $kelas->dosenWali && $kelas->dosenWali->user ? 'Tersedia' : 'Belum Ada' }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Daftar Mahasiswa --}}
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">
-                            <i class="fas fa-list mr-2 text-blue-600"></i>Daftar Mahasiswa
-                        </h3>
-
-                        @if($mahasiswa->isNotEmpty())
-                            <div class="overflow-x-auto rounded-lg shadow-md bg-blue-50">
-                                <table class="min-w-full table-auto border-collapse border border-gray-300 rounded-lg">
-                                    <thead>
-                                        <tr class="bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-semibold">
-                                            <th class="px-6 py-4 text-left">NRP</th>
-                                            <th class="px-6 py-4 text-left">Nama Mahasiswa</th>
-                                            <th class="px-6 py-4 text-left">Email</th>
-                                            <th class="px-6 py-4 text-left">Program Studi</th>
-                                            <th class="px-6 py-4 text-left">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($mahasiswa as $mhs)
-                                            <tr class="border-b hover:bg-blue-100">
-                                                <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $mhs->nrp }}</td>
-                                                <td class="px-6 py-4 text-sm text-gray-900">{{ $mhs->nama }}</td>
-                                                <td class="px-6 py-4 text-sm text-gray-600">{{ $mhs->user->email ?? 'N/A' }}</td>
-                                                <td class="px-6 py-4 text-sm text-gray-600">{{ $mhs->prodi }}</td>
-                                                <td class="px-6 py-4 text-sm">
-                                                    <div class="flex gap-4 items-center">
-                                                        <!-- Tombol Lihat Detail Mahasiswa -->
-                                                        <a href="{{ route('mahasiswa.show', $mhs->id_mahasiswa) }}" class="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out hover:underline">
-                                                            <i class="fas fa-eye mr-1"></i> Detail
-                                                        </a>
-                                                        
-                                                        <!-- Tombol Edit Mahasiswa -->
-                                                        <a href="{{ route('mahasiswa.edit', $mhs->id_mahasiswa) }}" class="text-green-600 hover:text-green-800 transition duration-300 ease-in-out hover:underline">
-                                                            <i class="fas fa-edit mr-1"></i> Edit
-                                                        </a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <div class="mt-6 p-6 bg-yellow-100 text-yellow-700 rounded-lg shadow-md">
-                                <i class="fas fa-info-circle mr-2"></i>
-                                Belum ada mahasiswa yang terdaftar di kelas ini.
-                            </div>
-                        @endif
-                    </div>
-
                 </div>
             </div>
         </div>
+    </x-slot>
+
+<div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            
+            {{-- Back Button --}}
+            <div>
+                <a href="{{ route('kelas.index') }}" class="inline-flex items-center text-blue-600 hover:text-blue-800">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Kembali ke Daftar Kelas
+                </a>
+            </div>
+
+            {{-- Class Information --}}
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold mb-4">Informasi Kelas</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Nama Kelas</label>
+                        <p class="text-gray-900 font-medium">{{ $kelas->nama_kelas }}</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Status</label>
+                        <p>
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                {{ $kelas->status == 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                {{ ucfirst($kelas->status) }}
+                            </span>
+                        </p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-500">Dosen Wali</label>
+                        <p class="text-gray-900 font-medium">
+                            {{ $kelas->dosenWali && $kelas->dosenWali->user ? $kelas->dosenWali->user->name : 'Belum ada dosen wali' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Statistics --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 rounded-lg p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Total Mahasiswa</p>
+                            <p class="text-2xl font-bold text-blue-600">{{ $mahasiswaCount }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm text-gray-600">Dosen Wali</p>
+                            <p class="text-lg font-semibold text-green-600">
+                                {{ $kelas->dosenWali && $kelas->dosenWali->user ? 'Tersedia' : 'Belum Ada' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Student List --}}
+            <div class="bg-white rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold">Daftar Mahasiswa</h2>
+                </div>
+                
+                @if($mahasiswa->isNotEmpty())
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">NRP</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Program Studi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @foreach ($mahasiswa as $mhs)
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 text-sm text-gray-900">{{ $mhs->nrp }}</td>
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $mhs->nama }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">{{ $mhs->user->email ?? 'N/A' }}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">{{ $mhs->prodi }}</td>
+                                        <td class="px-6 py-4 text-sm">
+                                            <div class="flex space-x-3">
+                                                <a href="{{ route('mahasiswa.show', $mhs->id_mahasiswa) }}" 
+                                                   class="text-blue-600 hover:text-blue-800">Detail</a>
+                                                <a href="{{ route('mahasiswa.edit', $mhs->id_mahasiswa) }}" 
+                                                   class="text-green-600 hover:text-green-800">Edit</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="p-6">
+                        <div class="text-center text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <p class="mt-2">Belum ada mahasiswa yang terdaftar di kelas ini.</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
-    
 </x-app-layout>
