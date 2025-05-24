@@ -20,7 +20,6 @@ class ProfileController extends Controller
         $user = Auth::user(); // Menggunakan Auth::user() lebih umum
         
         // Get mahasiswa data with relationships
-        // Asumsi relasi 'kelas.dosenWali.user' untuk mendapatkan nama dosen wali
         $mahasiswa = Mahasiswa::with(['user', 'kelas', 'kelas.dosenWali.user']) 
             ->where('user_id', $user->id)
             ->first();
@@ -31,13 +30,14 @@ class ProfileController extends Controller
             ], 404);
         }
         
-        // Format data jika diperlukan, misalnya untuk menyertakan nama dosen wali
+        // Format data jika diperlukan
         $profileData = [
             'id_mahasiswa' => $mahasiswa->id_mahasiswa,
             'user_id' => $mahasiswa->user_id,
             'id_kelas' => $mahasiswa->id_kelas,
             'nrp' => $mahasiswa->nrp,
-            'nama' => $mahasiswa->user->name, // Mengambil nama dari relasi user
+            'nama' => $mahasiswa->user->name, 
+            'email' => $user->email, 
             'prodi' => $mahasiswa->prodi,
             'kelas' => $mahasiswa->kelas ? $mahasiswa->kelas->nama_kelas : null,
             'dosen_wali' => $mahasiswa->kelas && $mahasiswa->kelas->dosenWali && $mahasiswa->kelas->dosenWali->user
@@ -45,11 +45,10 @@ class ProfileController extends Controller
                             : null,
             'created_at' => $mahasiswa->created_at,
             'updated_at' => $mahasiswa->updated_at,
-            // tambahkan field lain dari tabel mahasiswa jika ada dan diperlukan
         ];
         
         return response()->json([
-            'mahasiswa' => $profileData,
+            'profile' => $profileData, 
             'message' => 'Data mahasiswa berhasil diambil'
         ]);
     }
