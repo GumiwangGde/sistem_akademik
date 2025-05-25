@@ -15,10 +15,7 @@ class MasterMatakuliah extends Model
     protected $fillable = [
         'kode_mk',
         'nama_mk',
-        'sks_teori',
-        'sks_praktek',
-        'sks_lapangan',
-        // 'sks_total' adalah virtual, tidak perlu di fillable
+        'sks',
         'semester_default',
         'id_prodi',
         'deskripsi',
@@ -39,7 +36,7 @@ class MasterMatakuliah extends Model
      */
     public function getSksTotalAttribute()
     {
-        return ($this->sks_teori ?? 0) + ($this->sks_praktek ?? 0) + ($this->sks_lapangan ?? 0);
+        return ($this->sks ?? 0);
     }
 
 
