@@ -1,11 +1,9 @@
 {{-- resources/views/layouts/navigation.blade.php --}}
 <head>
-    <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <aside class="bg-white fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 -translate-x-80 shadow-md overflow-hidden border border-gray-200">
-    <!-- Modern Logo Header -->
     <div class="px-6 py-6 border-b border-white">
         <a class="flex items-center" href="{{ route('admin.dashboard') }}">
             <div class="bg-blue-500 w-10 h-10 rounded-lg flex items-center justify-center">
@@ -18,16 +16,15 @@
         </a>
     </div>
     
-    <!-- Navigation Menu with visual interest -->
-    <div class="px-4 py-5">
+    <div class="px-4 py-5 overflow-y-auto h-[calc(100%-150px)]"> {{-- Added overflow-y-auto and height --}}
         <nav>
             <ul class="space-y-1.5">
                 <li>
                     <a href="{{ route('admin.dashboard') }}" 
                        class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 
-                              {{ request()->routeIs('admin.dashboard') 
-                                 ? 'bg-blue-500 text-white shadow-sm' 
-                                 : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                             {{ request()->routeIs('admin.dashboard') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
                         <div class="w-8 h-8 flex items-center justify-center">
                             <i class="fas fa-tachometer-alt {{ request()->routeIs('admin.dashboard') ? 'text-white' : 'text-blue-500' }}"></i>
                         </div>
@@ -38,104 +35,154 @@
                         @endif
                     </a>
                 </li>
-                
+
+                {{-- Menu Data Master --}}
+                <li class="pt-3 pb-1 px-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase">Data Master</span>
+                </li>
                 <li>
-                    <a href="{{ route('matakuliah.index') }}" 
+                    <a href="{{ route('admin.tahunajaran.index') }}" 
                        class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                              {{ request()->routeIs('matakuliah.index') 
-                                 ? 'bg-blue-500 text-white shadow-sm' 
-                                 : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                             {{ request()->routeIs('admin.tahunajaran.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
                         <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="fas fa-book {{ request()->routeIs('matakuliah.index') ? 'text-white' : 'text-blue-500' }}"></i>
+                            <i class="fas fa-calendar-alt {{ request()->routeIs('admin.tahunajaran.*') ? 'text-white' : 'text-blue-500' }}"></i>
                         </div>
-                        <span class="ml-3">Matakuliah</span>
-                        
-                        @if(request()->routeIs('matakuliah.index'))
+                        <span class="ml-3">Tahun Ajaran</span>
+                        @if(request()->routeIs('admin.tahunajaran.*'))
                         <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
                         @endif
                     </a>
                 </li>
-                
                 <li>
-                    <a href="{{ route('kelas.index') }}" 
+                    <a href="{{ route('admin.prodi.index') }}" 
                        class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                              {{ request()->routeIs('kelas.index') 
-                                 ? 'bg-blue-500 text-white shadow-sm' 
-                                 : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                             {{ request()->routeIs('admin.prodi.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
                         <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="fas fa-chalkboard-teacher {{ request()->routeIs('kelas.index') ? 'text-white' : 'text-blue-500' }}"></i>
+                            <i class="fas fa-sitemap {{ request()->routeIs('admin.prodi.*') ? 'text-white' : 'text-blue-500' }}"></i>
                         </div>
-                        <span class="ml-3">Kelas</span>
-                        
-                        @if(request()->routeIs('kelas.index'))
+                        <span class="ml-3">Program Studi</span>
+                        @if(request()->routeIs('admin.prodi.*'))
                         <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
                         @endif
                     </a>
                 </li>
-                
-                <li>
-                    <a href="{{ route('dosen.index') }}" 
+                 <li>
+                    <a href="{{ route('admin.mastermatakuliah.index') }}" 
                        class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                              {{ request()->routeIs('dosen.index') 
-                                 ? 'bg-blue-500 text-white shadow-sm' 
-                                 : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                             {{ request()->routeIs('admin.mastermatakuliah.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
                         <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="fas fa-users {{ request()->routeIs('dosen.index') ? 'text-white' : 'text-blue-500' }}"></i>
+                            <i class="fas fa-layer-group {{ request()->routeIs('admin.mastermatakuliah.*') ? 'text-white' : 'text-blue-500' }}"></i>
                         </div>
-                        <span class="ml-3">Dosen</span>
-                        
-                        @if(request()->routeIs('dosen.index'))
+                        <span class="ml-3">Master MK</span>
+                        @if(request()->routeIs('admin.mastermatakuliah.*'))
                         <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
                         @endif
                     </a>
                 </li>
-                
-                <li>
+                 <li>
                     <a href="{{ route('admin.ruang.index') }}" 
                        class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                              {{ request()->routeIs('admin.ruang.index') 
-                                 ? 'bg-blue-500 text-white shadow-sm' 
-                                 : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                             {{ request()->routeIs('admin.ruang.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
                         <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="fas fa-door-open {{ request()->routeIs('admin.ruang.index') ? 'text-white' : 'text-blue-500' }}"></i>
+                            <i class="fas fa-door-open {{ request()->routeIs('admin.ruang.*') ? 'text-white' : 'text-blue-500' }}"></i>
                         </div>
                         <span class="ml-3">Ruang</span>
-                        
-                        @if(request()->routeIs('admin.ruang.index'))
+                        @if(request()->routeIs('admin.ruang.*'))
                         <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
                         @endif
                     </a>
                 </li>
-                
+
+                {{-- Menu Akademik --}}
+                <li class="pt-3 pb-1 px-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase">Akademik</span>
+                </li>
                 <li>
-                    <a href="{{ route('mahasiswa.index') }}" 
+                    <a href="{{ route('admin.kelas.index') }}" 
                        class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                              {{ request()->routeIs('mahasiswa.index') 
-                                 ? 'bg-blue-500 text-white shadow-sm' 
-                                 : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                             {{ request()->routeIs('admin.kelas.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
                         <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="fas fa-graduation-cap {{ request()->routeIs('mahasiswa.index') ? 'text-white' : 'text-blue-500' }}"></i>
+                            <i class="fas fa-chalkboard-teacher {{ request()->routeIs('admin.kelas.*') ? 'text-white' : 'text-blue-500' }}"></i>
+                        </div>
+                        <span class="ml-3">Kelas</span>
+                        @if(request()->routeIs('admin.kelas.*'))
+                        <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
+                        @endif
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.matakuliah.index') }}" 
+                       class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+                             {{ request()->routeIs('admin.matakuliah.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="fas fa-book-reader {{ request()->routeIs('admin.matakuliah.*') ? 'text-white' : 'text-blue-500' }}"></i>
+                        </div>
+                        <span class="ml-3">Jadwal Kuliah</span> {{-- Diubah dari Matakuliah menjadi Jadwal Kuliah --}}
+                        @if(request()->routeIs('admin.matakuliah.*'))
+                        <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
+                        @endif
+                    </a>
+                </li>
+                {{-- Tambahkan FRS dan Nilai di sini jika sudah ada controllernya --}}
+
+
+                {{-- Menu Pengguna --}}
+                <li class="pt-3 pb-1 px-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase">Pengguna</span>
+                </li>
+                <li>
+                    <a href="{{ route('admin.dosen.index') }}" 
+                       class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+                             {{ request()->routeIs('admin.dosen.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="fas fa-user-tie {{ request()->routeIs('admin.dosen.*') ? 'text-white' : 'text-blue-500' }}"></i>
+                        </div>
+                        <span class="ml-3">Dosen</span>
+                        @if(request()->routeIs('admin.dosen.*'))
+                        <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
+                        @endif
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.mahasiswa.index') }}" 
+                       class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+                             {{ request()->routeIs('admin.mahasiswa.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="fas fa-user-graduate {{ request()->routeIs('admin.mahasiswa.*') ? 'text-white' : 'text-blue-500' }}"></i>
                         </div>
                         <span class="ml-3">Mahasiswa</span>
-                        
-                        @if(request()->routeIs('mahasiswa.index'))
+                        @if(request()->routeIs('admin.mahasiswa.*'))
                         <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
                         @endif
                     </a>
                 </li>
-                
                 <li>
                     <a href="{{ route('admin.users.index') }}" 
                        class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
-                              {{ request()->routeIs('admin.users.index') 
-                                 ? 'bg-blue-500 text-white shadow-sm' 
-                                 : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                             {{ request()->routeIs('admin.users.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
                         <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="fas fa-users-cog {{ request()->routeIs('admin.users.index') ? 'text-white' : 'text-blue-500' }}"></i>
+                            <i class="fas fa-users-cog {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-blue-500' }}"></i>
                         </div>
-                        <span class="ml-3">Users</span>
-                        
-                        @if(request()->routeIs('admin.users.index'))
+                        <span class="ml-3">Manajemen User</span>
+                        @if(request()->routeIs('admin.users.*'))
                         <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
                         @endif
                     </a>
@@ -144,11 +191,9 @@
         </nav>
     </div>
 
-    <!-- Modern User Profile Section -->
     <div class="absolute bottom-0 left-0 right-0 p-4">
         <div class="bg-white rounded-lg border border-gray-200 p-3 shadow-sm">
             <div x-data="{ open: false }" class="relative">
-                <!-- Stylish user button -->
                 <button @click="open = !open" class="flex w-full items-center gap-3 focus:outline-none">
                     <div class="relative">
                         <div class="h-9 w-9 rounded-lg bg-blue-500 flex items-center justify-center">
@@ -156,12 +201,12 @@
                         </div>
                         <div class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-white"></div>
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-1 text-left"> {{-- Added text-left --}}
                         <p class="text-sm font-medium text-gray-800 truncate">
                             {{ Auth::user()->name }}
                         </p>
                         <p class="text-xs text-gray-500">
-                            Admin
+                            Admin {{-- Atau bisa ambil dari role user jika dinamis --}}
                         </p>
                     </div>
                     <div class="w-6 h-6 rounded-full flex items-center justify-center text-gray-400 bg-white shadow-sm border border-gray-200">
@@ -169,16 +214,15 @@
                     </div>
                 </button>
                 
-                <!-- Dropdown menu with animation -->
                 <div x-show="open" 
-                    x-transition:enter="transition ease-out duration-200"
-                    x-transition:enter-start="opacity-0 -translate-y-2"
-                    x-transition:enter-end="opacity-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 -translate-y-2"
-                    @click.away="open = false" 
-                    class="absolute left-0 bottom-full mb-3 w-full bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 z-50">
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-2"
+                     @click.away="open = false" 
+                     class="absolute left-0 bottom-full mb-3 w-full bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 z-50">
                     <div class="py-2">
                         <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                             <i class="fas fa-user-circle mr-3 text-blue-500"></i> 

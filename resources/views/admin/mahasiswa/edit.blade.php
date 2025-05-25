@@ -1,194 +1,187 @@
-{{-- resources/views/admin/mahasiswa/edit.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <div class="max-w-7xl mx-auto"> {{-- Wrapper untuk alignment header card --}}
-            <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
-                <div class="px-4 py-4 sm:px-6 sm:py-5"> {{-- Padding internal header card disesuaikan --}}
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="p-2 bg-blue-500 rounded-lg">
-                                {{-- Menggunakan ikon user standar --}}
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h1 class="text-xl font-bold text-gray-900">{{ __('Edit Mahasiswa') }}</h1>
-                                <p class="text-sm text-gray-500">Perbarui data mahasiswa: {{ $mahasiswa->nama }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Edit Mahasiswa: ') }} <span class="text-indigo-600">{{ $mahasiswa->user->name ?? $mahasiswa->nama }}</span>
+            </h2>
+            <a href="{{ route('admin.mahasiswa.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                {{ __('Kembali ke Daftar Mahasiswa') }}
+            </a>
         </div>
     </x-slot>
 
-    <div class="py-8 sm:py-12"> {{-- Padding vertikal halaman --}}
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="space-y-6"> {{-- Jarak antar flash message dan card form --}}
-                {{-- Flash Message Success --}}
-                @if(session('success'))
-                    <div class="flex w-full overflow-hidden bg-green-50 rounded-lg shadow-sm border border-green-300">
-                        <div class="flex items-center justify-center w-12 bg-green-500">
-                            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM16.6667 28.3333L8.33337 20L10.6834 17.65L16.6667 23.6166L29.3167 10.9666L31.6667 13.3333L16.6667 28.3333Z"></path>
-                            </svg>
-                        </div>
-                        <div class="px-4 py-3">
-                            <span class="font-semibold text-green-600">Sukses!</span>
-                            <p class="text-sm text-green-500">{{ session('success') }}</p>
-                        </div>
-                    </div>
-                @endif
+    <div class="py-12">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="p-6 sm:px-10 bg-white border-b border-gray-200">
 
-                {{-- Flash Message Error ($errors->any()) --}}
-                @if ($errors->any())
-                    <div class="flex w-full overflow-hidden bg-red-50 rounded-lg shadow-sm border border-red-300">
-                        <div class="flex items-center justify-center w-12 bg-red-500">
-                            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM22 27.3333H18V23.3333H22V27.3333ZM22 19.9999H18V12.6666H22V19.9999Z"></path>
-                            </svg>
-                        </div>
-                        <div class="px-4 py-3">
-                            <span class="font-semibold text-red-600">Terjadi kesalahan:</span>
-                            <ul class="text-sm text-red-500 mt-1 list-disc list-inside">
+                    @if ($errors->any())
+                        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+                            <strong class="font-bold">Oops! Ada beberapa masalah dengan input Anda:</strong>
+                            <ul class="mt-2 list-disc list-inside text-sm">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                    @if(session('error'))
+                        <div class="mb-4 px-4 py-3 leading-normal text-red-700 bg-red-100 rounded-lg" role="alert">
+                             <p class="font-semibold">Error!</p>
+                            <p>{{ session('error') }}</p>
+                        </div>
+                    @endif
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                    <div class="p-6 sm:p-8">
-                        <form action="{{ route('mahasiswa.update', $mahasiswa->id_mahasiswa) }}" method="POST" class="space-y-6">
-                            @csrf
-                            @method('PUT')
+                    <form method="POST" action="{{ route('admin.mahasiswa.update', $mahasiswa->id_mahasiswa) }}" id="editMahasiswaForm">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div class="md:col-span-2">
+                                <h3 class="text-lg font-medium text-gray-900 mb-1">Informasi Akun Pengguna</h3>
+                                <p class="text-sm text-gray-500 mb-4">Nama Akun juga akan digunakan sebagai Nama Profil Mahasiswa.</p>
+                            </div>
+
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700">{{ __('Nama Lengkap Mahasiswa') }} <span class="text-red-500">*</span></label>
+                                <input type="text" name="name" id="name" value="{{ old('name', $mahasiswa->user->name ?? $mahasiswa->nama) }}" required 
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('name') border-red-500 @enderror">
+                                @error('name')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="username" class="block text-sm font-medium text-gray-700">{{ __('Username Email') }} <span class="text-red-500">*</span></label>
+                                <div class="mt-1 flex rounded-md shadow-sm">
+                                    <input type="text" name="username" id="username" 
+                                           value="{{ old('username', $email_username_edit) }}" 
+                                           required
+                                           class="flex-1 block w-full min-w-0 rounded-none rounded-l-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('username') border-red-500 @enderror @error('email') border-red-500 @enderror"
+                                           placeholder="username.unik">
+                                    <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                                        @it.student.pens.ac.id
+                                    </span>
+                                </div>
+                                {{-- Input hidden 'email' tidak diperlukan jika controller membuat email dari 'username' --}}
+                                {{-- Namun, jika controller Anda memvalidasi 'email' dari request, ini diperlukan --}}
+                                {{-- <input type="hidden" id="email_hidden" name="email" value="{{ old('email', $mahasiswa->user->email ?? '') }}"> --}}
+                                @error('username')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                                @error('email')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                                <p class="mt-1 text-xs text-gray-500">Email lengkap: <code id="email_preview" class="font-semibold text-gray-700"></code></p>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label for="password" class="block text-sm font-medium text-gray-700">{{ __('Password Baru (Opsional)') }}</label>
+                                <input type="password" name="password" id="password" 
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('password') border-red-500 @enderror"
+                                       placeholder="Kosongkan jika tidak ingin mengubah">
+                                @error('password')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                                <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
-                                    <input type="text" id="name" name="name" value="{{ old('name', $mahasiswa->user->name ?? $mahasiswa->nama) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Masukkan nama lengkap" required>
-                                    @error('name')
-                                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                
-                                <div>
-                                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Email PENS <span class="text-red-500">*</span></label>
-                                    @php
-                                        $currentUsername = '';
-                                        if (isset($mahasiswa->user->email)) {
-                                            $emailParts = explode('@', $mahasiswa->user->email);
-                                            $currentUsername = $emailParts[0] ?? '';
-                                        }
-                                    @endphp
-                                    <div class="flex mt-1">
-                                        <input type="text" id="username" name="username" value="{{ old('username', $currentUsername) }}" class="block w-full rounded-l-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required placeholder="Username" oninput="updateEmail()">
-                                        <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                                            @it.student.pens.ac.id
-                                        </span>
-                                    </div>
-                                    <input type="hidden" id="email" name="email" value="{{ old('email', $mahasiswa->user->email ?? '') }}">
-                                    @error('email')
-                                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                    @enderror
-                                    @error('username')
-                                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div>
-                                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password Baru</label>
-                                    <input type="password" id="password" name="password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Kosongkan jika tidak diubah">
-                                    <p class="mt-1 text-xs text-gray-500">Kosongkan jika tidak ingin mengubah password.</p>
-                                    @error('password')
-                                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                
-                                <div>
-                                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password Baru</label>
-                                    <input type="password" id="password_confirmation" name="password_confirmation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Ulangi password baru">
-                                </div>
-
-                                <div>
-                                    <label for="nrp" class="block text-sm font-medium text-gray-700 mb-1">NRP <span class="text-red-500">*</span></label>
-                                    <input type="text" id="nrp" name="nrp" value="{{ old('nrp', $mahasiswa->nrp) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Masukkan NRP" required>
-                                    @error('nrp')
-                                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div>
-                                    <label for="prodi" class="block text-sm font-medium text-gray-700 mb-1">Program Studi <span class="text-red-500">*</span></label>
-                                    <select id="prodi" name="prodi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                                        <option value="">-- Pilih Program Studi --</option>
-                                        <option value="Teknik Informatika" {{ old('prodi', $mahasiswa->prodi) == 'Teknik Informatika' ? 'selected' : '' }}>Teknik Informatika</option>
-                                        <option value="Sistem Informasi" {{ old('prodi', $mahasiswa->prodi) == 'Sistem Informasi' ? 'selected' : '' }}>Sistem Informasi</option>
-                                        <option value="Teknik Komputer" {{ old('prodi', $mahasiswa->prodi) == 'Teknik Komputer' ? 'selected' : '' }}>Teknik Komputer</option>
-                                        <option value="Multimedia Broadcasting" {{ old('prodi', $mahasiswa->prodi) == 'Multimedia Broadcasting' ? 'selected' : '' }}>Multimedia Broadcasting</option>
-                                        {{-- Tambahkan prodi lain jika perlu --}}
-                                    </select>
-                                    @error('prodi')
-                                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div>
-                                    <label for="id_kelas" class="block text-sm font-medium text-gray-700 mb-1">Kelas <span class="text-red-500">*</span></label>
-                                    <select id="id_kelas" name="id_kelas" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                                        <option value="">-- Pilih Kelas --</option>
-                                        @foreach($kelas as $kelasItem)
-                                            <option value="{{ $kelasItem->id_kelas }}" {{ old('id_kelas', $mahasiswa->id_kelas ?? ($mahasiswa->kelas->id_kelas ?? null)) == $kelasItem->id_kelas ? 'selected' : '' }}>
-                                                {{ $kelasItem->nama_kelas }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('id_kelas')
-                                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                            <div class="md:col-span-2 mt-4">
+                                <h3 class="text-lg font-medium text-gray-900 mb-1">Informasi Detail Akademik</h3>
                             </div>
 
-                            <div class="flex items-center justify-end pt-4 space-x-3">
-                                <a href="{{ route('mahasiswa.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-300 focus:ring-offset-1 transition ease-in-out duration-150">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                    </svg>
-                                    Batal
-                                </a>
-                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition ease-in-out duration-150">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                                    </svg>
-                                    Simpan Perubahan
-                                </button>
+                            <div>
+                                <label for="nrp" class="block text-sm font-medium text-gray-700">{{ __('NRP') }} <span class="text-red-500">*</span></label>
+                                <input type="text" name="nrp" id="nrp" value="{{ old('nrp', $mahasiswa->nrp) }}" required 
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('nrp') border-red-500 @enderror">
+                                @error('nrp')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                        </form>
-                    </div>
+                            
+                            <div>
+                                <label for="prodi" class="block text-sm font-medium text-gray-700">{{ __('Program Studi') }} <span class="text-red-500">*</span></label>
+                                <select name="prodi" id="prodi" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('prodi') border-red-500 @enderror">
+                                    <option value="">Pilih Program Studi</option>
+                                    @foreach ($prodiModelList as $prodi_item)
+                                        <option value="{{ $prodi_item->nama_prodi }}" {{ old('prodi', $selected_prodi_nama) == $prodi_item->nama_prodi ? 'selected' : '' }}>
+                                            {{ $prodi_item->nama_prodi }} ({{ $prodi_item->jenjang }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('prodi')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label for="id_kelas" class="block text-sm font-medium text-gray-700">{{ __('Kelas') }} <span class="text-red-500">*</span></label>
+                                <select name="id_kelas" id="id_kelas" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('id_kelas') border-red-500 @enderror">
+                                    <option value="">Pilih Kelas</option>
+                                    @foreach ($kelasList as $kelas_item)
+                                        <option value="{{ $kelas_item->id_kelas }}" {{ old('id_kelas', $mahasiswa->id_kelas) == $kelas_item->id_kelas ? 'selected' : '' }}>
+                                            {{ $kelas_item->nama_kelas }} 
+                                            (@if($kelas_item->prodi){{ $kelas_item->prodi->nama_prodi }}@endif 
+                                            - TA: @if($kelas_item->tahunAjaran){{ $kelas_item->tahunAjaran->nama_tahun_ajaran }}@endif)
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('id_kelas')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-end">
+                            <a href="{{ route('admin.mahasiswa.index') }}" class="mr-3 inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                {{ __('Batal') }}
+                            </a>
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                <svg class="w-4 h-4 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                {{ __('Simpan Perubahan') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const usernameInput = document.getElementById('username');
-            const emailInput = document.getElementById('email');
-            const domain = '@it.student.pens.ac.id'; // Pastikan domain ini benar
+            const usernameEl = document.getElementById('username');
+            // const emailHiddenEl = document.getElementById('email_hidden'); // Dihilangkan jika controller tidak menggunakannya
+            const emailPreviewEl = document.getElementById('email_preview');
+            const formEl = document.getElementById('editMahasiswaForm'); // ID form edit
+            const domain = '@it.student.pens.ac.id';
 
-            function updateEmail() {
-                const username = usernameInput.value;
-                emailInput.value = username ? username + domain : '';
+            function updateEmailPreview() {
+                if (!usernameEl) return;
+                const usernameValue = usernameEl.value.trim();
+                const fullEmail = usernameValue ? usernameValue + domain : '';
+                
+                // Jika controller Anda membuat email dari 'username', input hidden 'email' tidak perlu di-update oleh JS
+                // if (emailHiddenEl) {
+                //     emailHiddenEl.value = fullEmail;
+                // }
+                if (emailPreviewEl) {
+                    emailPreviewEl.textContent = fullEmail || '(username akan ditambahkan domain otomatis)';
+                }
             }
 
-            if (usernameInput) {
-                usernameInput.addEventListener('input', updateEmail);
-                updateEmail(); 
+            if (usernameEl) {
+                usernameEl.addEventListener('input', updateEmailPreview);
+                updateEmailPreview(); // Panggil saat load
             }
+
+            // Jika controller membuat email dari 'username', tidak perlu update hidden field saat submit
+            // if (formEl) {
+            //     formEl.addEventListener('submit', function() {
+            //         updateEmailPreview(); // Cukup update preview, atau jika ada hidden field, update itu.
+            //     });
+            // }
         });
     </script>
     @endpush

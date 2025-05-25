@@ -5,42 +5,26 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\MatakuliahController;
+// use App\Http\Controllers\Auth\LoginController; // Tidak digunakan di sini
+use App\Http\Controllers\MatakuliahController; // Ini JadwalKuliahController
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\RuangController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\TahunAjaranController;    // Controller Baru
+use App\Http\Controllers\ProdiController;           // Controller Baru
+use App\Http\Controllers\MasterMatakuliahController; // Controller Baru
 
 // Halaman Utama
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard untuk pengguna yang sudah terverifikasi
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Dashboard untuk pengguna yang sudah terverifikasi (umum, mungkin tidak digunakan jika ada admin.dashboard)
+// Route::get('/dashboard', function () {
+//     return view('admin.dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Route untuk ruang
-// Rute Ruang untuk Admin
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-    Route::post('/admin/calendar/upload', [DashboardController::class, 'uploadCalendar'])->name('admin.calendar.upload');
-
-    // Rute Ruang
-    Route::resource('admin/ruang', RuangController::class)->names([
-        'index' => 'admin.ruang.index',
-        'create' => 'admin.ruang.create',
-        'store' => 'admin.ruang.store',
-        'show' => 'admin.ruang.show',
-        'edit' => 'admin.ruang.edit',
-        'update' => 'admin.ruang.update',
-        'destroy' => 'admin.ruang.destroy'
-    ])->middleware(['auth', 'verified', 'role:admin']);
-});
 
 // Rute Profile untuk pengguna terautentikasi
 Route::middleware('auth')->group(function () {
@@ -49,40 +33,78 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// // Rute Kelas dan Users hanya untuk pengguna yang terverifikasi
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::get('/kelas', [KelasController::class, 'index'])->name('kelas');
-//     Route::get('admin/users', [UserController::class, 'index'])->name('users');
-// });
-
 // Rute Admin yang hanya bisa diakses oleh admin terverifikasi
-Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/laporan/unduh', [ReportController::class, 'download'])->name('admin.laporan.unduh');
+// Menggunakan prefix 'admin' untuk URI dan 'admin.' untuk nama route
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/calendar/upload', [DashboardController::class, 'uploadCalendar'])->name('calendar.upload');
+    Route::get('/laporan/unduh', [ReportController::class, 'download'])->name('laporan.unduh');
 
-    // // Rute Matakuliah untuk Admin
-    // Route::get('/admin/matakuliah', function () {
-    //     return view('admin.matakuliah.index');
-    // })->name('admin.matakuliah.index');
+    // Rute Ruang (Ini akan memiliki nama seperti admin.ruang.index)
+    Route::resource('ruang', RuangController::class);
 
-    // Rute Dosen (menggunakan resource untuk CRUD)
-    Route::prefix('admin')->group(function () {
-        Route::resource('dosen', DosenController::class);
+    // Rute Dosen (sesuai definisi Anda sebelumnya, ini menghasilkan nama seperti admin.dosen.index)
+    Route::resource('dosen', DosenController::class)->names([
+        'index' => 'dosen.index',
+        'create' => 'dosen.create',
+        'store' => 'dosen.store',
+        'show' => 'dosen.show',
+        'edit' => 'dosen.edit',
+        'update' => 'dosen.update',
+        'destroy' => 'dosen.destroy',
+    ]);
 
-        // Pindahkan rute users ke sini, dalam grup admin
-        Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
-        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('admin.users.destroy'); // Route delete user
+    // Rute Users
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
-        // Route untuk Kelas
-        Route::resource('kelas', KelasController::class); // Ini sudah mencakup route DELETE /kelas/{kelas}
-        Route::post('/kelas/{kelas}/activate', [KelasController::class, 'activate'])->name('kelas.activate');
-        Route::get('/kelas/{id}/detail', [KelasController::class, 'detail'])->name('kelas.detail');
+    // Route untuk Kelas
+    Route::resource('kelas', KelasController::class)->names([
+        'index' => 'kelas.index',
+        'create' => 'kelas.create',
+        'store' => 'kelas.store',
+        'show' => 'kelas.detail', // <--- PERUBAHAN DI SINI: 'show' sekarang dinamai 'detail'
+        'edit' => 'kelas.edit',
+        'update' => 'kelas.update',
+        'destroy' => 'kelas.destroy',
+    ]);
+    Route::post('/kelas/{kelas}/toggle-status', [KelasController::class, 'toggleStatus'])->name('kelas.toggleStatus');
 
-        Route::resource('matakuliah', MatakuliahController::class); // Resource route for Matakuliah
 
-        // Route untuk Mahasiswa
-        Route::resource('mahasiswa', MahasiswaController::class);
-    });
+    // Route untuk Jadwal Kuliah (menggunakan MatakuliahController)
+    Route::resource('matakuliah', MatakuliahController::class)->names([
+        'index' => 'matakuliah.index',
+        'create' => 'matakuliah.create',
+        'store' => 'matakuliah.store',
+        'show' => 'matakuliah.show',
+        'edit' => 'matakuliah.edit',
+        'update' => 'matakuliah.update',
+        'destroy' => 'matakuliah.destroy',
+    ]);
+
+    // Route untuk Mahasiswa
+    Route::resource('mahasiswa', MahasiswaController::class)->names([
+        'index' => 'mahasiswa.index',
+        'create' => 'mahasiswa.create',
+        'store' => 'mahasiswa.store',
+        'show' => 'mahasiswa.show',
+        'edit' => 'mahasiswa.edit',
+        'update' => 'mahasiswa.update',
+        'destroy' => 'mahasiswa.destroy',
+    ]);
+
+    // --- PENAMBAHAN ROUTE BARU ---
+    // Route untuk Tahun Ajaran
+    Route::resource('tahunajaran', TahunAjaranController::class);
+    Route::post('tahunajaran/{tahunajaran}/set-active', [TahunAjaranController::class, 'setActive'])->name('tahunajaran.setActive');
+
+    // Route untuk Prodi
+    Route::resource('prodi', ProdiController::class);
+
+    // Route untuk Master Mata Kuliah
+    Route::resource('mastermatakuliah', MasterMatakuliahController::class);
+    // --- AKHIR PENAMBAHAN ROUTE BARU ---
+
 });
 
 // Menyertakan rute autentikasi

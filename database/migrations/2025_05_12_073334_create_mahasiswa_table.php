@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_kelas');
             $table->string('nrp')->unique();
             $table->string('nama');
-            $table->string('prodi');
+            $table->string('prodi'); // Tetap string sesuai migration asli
             $table->timestamps();
 
             // Foreign key constraints

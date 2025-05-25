@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Dosen;
 use App\Models\Mahasiswa;
-use App\Models\Matakuliah;
+use App\Models\Matakuliah; // Ini sekarang merepresentasikan Jadwal Kuliah
 use App\Models\Kelas;
 use App\Models\Ruang;
+use App\Models\TahunAjaran;     // Model baru
+use App\Models\Prodi;           // Model baru
+use App\Models\MasterMatakuliah; // Model baru
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -23,9 +26,17 @@ class DashboardController extends Controller
         // Ambil jumlah data lainnya
         $total_dosen = Dosen::count();
         $total_mahasiswa = Mahasiswa::count();
-        $total_matakuliah = Matakuliah::count();
+        
+        // Data terkait mata kuliah dengan arsitektur baru
+        $total_master_matakuliah = MasterMatakuliah::count(); // Jumlah mata kuliah unik (master)
+        $total_jadwal_kuliah = Matakuliah::count(); // Jumlah jadwal kuliah yang telah dibuat
+
         $total_kelas = Kelas::count();
         $total_ruang = Ruang::count();
+
+        // Data untuk entitas baru
+        $total_tahun_ajaran = TahunAjaran::count();
+        $total_prodi = Prodi::count();
 
         // Kirim data ke view
         return view('admin.dashboard', compact(
@@ -35,9 +46,12 @@ class DashboardController extends Controller
             'total_students',
             'total_dosen',
             'total_mahasiswa',
-            'total_matakuliah',
+            'total_master_matakuliah', // Diperbarui
+            'total_jadwal_kuliah',    // Nama baru untuk count dari tabel matakuliah (jadwal)
             'total_kelas',
-            'total_ruang'
+            'total_ruang',
+            'total_tahun_ajaran',     // Baru
+            'total_prodi'             // Baru
         ));
     }
 }

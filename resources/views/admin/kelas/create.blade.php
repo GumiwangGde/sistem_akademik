@@ -1,206 +1,151 @@
-{{-- resources/views/admin/kelas/create.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <div class="max-w-7xl mx-auto"> {{-- Wrapper untuk alignment header card --}}
-            <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
-                <div class="px-4 py-4 sm:px-6 sm:py-5"> {{-- Menyesuaikan padding internal header card --}}
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="p-2 bg-blue-500 rounded-lg">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                            </div>
-                            <div>
-                                <h1 class="text-xl font-bold text-gray-900">{{ __('Tambah Kelas') }}</h1>
-                                <p class="text-sm text-gray-500">Tambahkan kelas baru ke dalam sistem</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Tambah Kelas Baru') }}
+            </h2>
+            <a href="{{ route('admin.kelas.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                {{ __('Kembali ke Daftar Kelas') }}
+            </a>
         </div>
     </x-slot>
 
-    <div class="py-8 sm:py-12"> {{-- Padding vertikal halaman --}}
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="space-y-6"> {{-- Memberi jarak antar elemen flash dan card utama --}}
-                {{-- Flash Message Success --}}
-                @if(session('success'))
-                    <div class="flex w-full overflow-hidden bg-green-50 rounded-lg shadow-sm border border-green-300">
-                        <div class="flex items-center justify-center w-12 bg-green-500">
-                            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM16.6667 28.3333L8.33337 20L10.6834 17.65L16.6667 23.6166L29.3167 10.9666L31.6667 13.3333L16.6667 28.3333Z"></path>
-                            </svg>
-                        </div>
-                        <div class="px-4 py-3">
-                            <span class="font-semibold text-green-600">Sukses!</span>
-                            <p class="text-sm text-green-500">{{ session('success') }}</p>
-                        </div>
-                    </div>
-                @endif
+    <div class="py-12">
+        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="p-6 sm:px-10 bg-white border-b border-gray-200">
 
-                {{-- Flash Message Error ($errors->any()) --}}
-                @if($errors->any())
-                    <div class="flex w-full overflow-hidden bg-red-50 rounded-lg shadow-sm border border-red-300">
-                        <div class="flex items-center justify-center w-12 bg-red-500">
-                            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM22 27.3333H18V23.3333H22V27.3333ZM22 19.9999H18V12.6666H22V19.9999Z"></path>
-                            </svg>
-                        </div>
-                        <div class="px-4 py-3">
-                            <span class="font-semibold text-red-600">Terjadi kesalahan:</span>
-                            <ul class="text-sm text-red-500 mt-1 list-disc list-inside">
+                    @if ($errors->any())
+                        <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+                            <strong class="font-bold">Oops! Ada beberapa masalah dengan input Anda:</strong>
+                            <ul class="mt-2 list-disc list-inside text-sm">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                    @if (session('error'))
+                        <div class="mb-4 px-4 py-3 leading-normal text-red-700 bg-red-100 rounded-lg" role="alert">
+                             <p class="font-semibold">Error!</p>
+                            <p>{{ session('error') }}</p>
+                        </div>
+                    @endif
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                    <div class="p-6 sm:p-8">
-                        <form action="{{ route('kelas.store') }}" method="POST" class="space-y-6">
-                            @csrf
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
-                                <div>
-                                    <label for="class_year" class="block text-sm font-medium text-gray-700 mb-1">Tahun Angkatan <span class="text-red-500">*</span></label>
-                                    <select name="class_year" id="class_year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                                        <option value="">-- Pilih Tahun Angkatan --</option>
-                                        @for ($i = 1; $i <= 4; $i++)
-                                            <option value="{{ $i }}" {{ old('class_year') == $i ? 'selected' : '' }}>{{ $i }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
 
-                                <div>
-                                    <label for="program" class="block text-sm font-medium text-gray-700 mb-1">Program <span class="text-red-500">*</span></label>
-                                    <select name="program" id="program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                                        <option value="">-- Pilih Program --</option>
-                                        <option value="D3" {{ old('program') == 'D3' ? 'selected' : '' }}>D3</option>
-                                        <option value="D4" {{ old('program') == 'D4' ? 'selected' : '' }}>D4</option>
-                                        <option value="D3 PJJ" {{ old('program') == 'D3 PJJ' ? 'selected' : '' }}>D3 PJJ</option>
-                                        <option value="D4 PJJ" {{ old('program') == 'D4 PJJ' ? 'selected' : '' }}>D4 PJJ</option>
-                                        <option value="S2" {{ old('program') == 'S2' ? 'selected' : '' }}>S2</option>
-                                        <option value="S3" {{ old('program') == 'S3' ? 'selected' : '' }}>S3</option>
-                                    </select>
-                                </div>
+                    <form method="POST" action="{{ route('admin.kelas.store') }}">
+                        @csrf
 
-                                <div>
-                                    <label for="prodi" class="block text-sm font-medium text-gray-700 mb-1">Program Studi <span class="text-red-500">*</span></label>
-                                    <select name="prodi" id="prodi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                                        <option value="">-- Pilih Program Studi --</option>
-                                        <option value="IT" {{ old('prodi') == 'IT' ? 'selected' : '' }}>IT</option>
-                                        <option value="ELIN" {{ old('prodi') == 'ELIN' ? 'selected' : '' }}>ELIN</option>
-                                        <option value="ELKA" {{ old('prodi') == 'ELKA' ? 'selected' : '' }}>ELKA</option>
-                                        {{-- Tambahkan opsi prodi lain jika ada --}}
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label for="class_type" class="block text-sm font-medium text-gray-700 mb-1">Tipe Kelas <span class="text-red-500">*</span></label>
-                                    <select name="class_type" id="class_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                                        <option value="">-- Pilih Tipe Kelas --</option>
-                                        @foreach (range('A', 'J') as $type)
-                                            <option value="{{ $type }}" {{ old('class_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status Kelas <span class="text-red-500">*</span></label>
-                                    <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                                        {{-- <option value="">-- Pilih Status --</option> --}}
-                                        <option value="active" {{ old('status', 'active') == 'active' ? 'selected' : '' }}>Active</option>
-                                        <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                    </select>
-                                </div>
-
-                                <div id="dosen_wali_div">
-                                    <label for="id_dosen_wali" class="block text-sm font-medium text-gray-700 mb-1">Dosen Wali <span id="dosen_wali_required_star" class="text-red-500 hidden">*</span></label>
-                                    <select name="id_dosen_wali" id="id_dosen_wali" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                        <option value="">-- Pilih Dosen Wali --</option>
-                                        @foreach($dosen as $dosenItem)
-                                            <option value="{{ $dosenItem->id_dosen }}" {{ old('id_dosen_wali') == $dosenItem->id_dosen ? 'selected' : '' }}>{{ $dosenItem->user->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                        <div class="space-y-6">
+                            {{-- Nama Kelas --}}
+                            <div>
+                                <label for="nama_kelas" class="block text-sm font-medium text-gray-700">{{ __('Nama Kelas') }} <span class="text-red-500">*</span></label>
+                                <input type="text" name="nama_kelas" id="nama_kelas" value="{{ old('nama_kelas') }}" required 
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('nama_kelas') border-red-500 @enderror" 
+                                       placeholder="Contoh: TI-2A, SI-3B">
+                                @error('nama_kelas')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
 
-                            <input type="hidden" name="nama_kelas" id="nama_kelas" value="{{ old('nama_kelas') }}">
-
-                            <div class="flex items-center justify-end pt-4 space-x-3">
-                                <a href="{{ route('kelas.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-300 focus:ring-offset-1 transition ease-in-out duration-150">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                    </svg>
-                                    Batal
-                                </a>
-                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition ease-in-out duration-150">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                                    </svg>
-                                    Simpan Kelas
-                                </button>
+                            {{-- Program Studi --}}
+                            <div>
+                                <label for="id_prodi" class="block text-sm font-medium text-gray-700">{{ __('Program Studi') }} <span class="text-red-500">*</span></label>
+                                <select name="id_prodi" id="id_prodi" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('id_prodi') border-red-500 @enderror">
+                                    <option value="">Pilih Program Studi</option>
+                                    @foreach ($prodiList as $prodi)
+                                        <option value="{{ $prodi->id_prodi }}" {{ old('id_prodi') == $prodi->id_prodi ? 'selected' : '' }}>
+                                            {{ $prodi->nama_prodi }} ({{ $prodi->jenjang }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('id_prodi')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
-                        </form>
-                    </div>
+
+                            {{-- Tahun Ajaran --}}
+                            <div>
+                                <label for="id_tahun_ajaran" class="block text-sm font-medium text-gray-700">{{ __('Tahun Ajaran') }} <span class="text-red-500">*</span></label>
+                                <select name="id_tahun_ajaran" id="id_tahun_ajaran" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('id_tahun_ajaran') border-red-500 @enderror">
+                                    <option value="">Pilih Tahun Ajaran</option>
+                                    @foreach ($tahunAjaranList as $ta)
+                                        <option value="{{ $ta->id }}" {{ old('id_tahun_ajaran') == $ta->id ? 'selected' : '' }}>
+                                            {{ $ta->nama_tahun_ajaran }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('id_tahun_ajaran')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Dosen Wali --}}
+                            <div>
+                                <label for="id_dosen_wali" class="block text-sm font-medium text-gray-700">{{ __('Dosen Wali') }} <span id="dosen_wali_required_indicator" class="text-red-500 hidden">*</span></label>
+                                <select name="id_dosen_wali" id="id_dosen_wali"
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('id_dosen_wali') border-red-500 @enderror">
+                                    <option value="">Pilih Dosen Wali (Opsional jika status tidak aktif)</option>
+                                    @foreach ($dosenWaliList as $dosen)
+                                        <option value="{{ $dosen->id_dosen }}" {{ old('id_dosen_wali') == $dosen->id_dosen ? 'selected' : '' }}>
+                                            {{ $dosen->user->name ?? $dosen->nidn }} ({{ $dosen->nidn }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('id_dosen_wali')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Status --}}
+                            <div>
+                                <label for="status" class="block text-sm font-medium text-gray-700">{{ __('Status Kelas') }} <span class="text-red-500">*</span></label>
+                                <select name="status" id="status" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('status') border-red-500 @enderror">
+                                    <option value="inactive" {{ old('status', 'inactive') == 'inactive' ? 'selected' : '' }}>Tidak Aktif</option>
+                                    <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Aktif</option>
+                                </select>
+                                @error('status')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                                <p class="mt-1 text-xs text-gray-500">Dosen wali wajib diisi jika status kelas 'Aktif'.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-end">
+                            <a href="{{ route('admin.kelas.index') }}" class="mr-3 inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                {{ __('Batal') }}
+                            </a>
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                <svg class="w-4 h-4 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                                {{ __('Simpan Kelas') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    @push('scripts') {{-- Menggunakan @push untuk script agar lebih rapi jika layout utama punya @stack('scripts') --}}
+    @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const classYearSelect = document.getElementById('class_year');
-            const programSelect = document.getElementById('program');
-            const prodiSelect = document.getElementById('prodi');
-            const classTypeSelect = document.getElementById('class_type');
-            const namaKelasInput = document.getElementById('nama_kelas');
-            
             const statusSelect = document.getElementById('status');
-            const dosenWaliDiv = document.getElementById('dosen_wali_div');
-            const dosenWaliSelect = document.getElementById('id_dosen_wali');
-            const dosenWaliRequiredStar = document.getElementById('dosen_wali_required_star');
+            const dosenWaliRequiredIndicator = document.getElementById('dosen_wali_required_indicator');
 
-            function updateClassName() {
-                const classYear = classYearSelect.value;
-                const program = programSelect.value;
-                const prodi = prodiSelect.value;
-                const classType = classTypeSelect.value;
-
-                if (classYear && program && prodi && classType) {
-                    namaKelasInput.value = `${classYear} ${program} ${prodi} ${classType}`;
-                } else {
-                    namaKelasInput.value = ''; // Kosongkan jika salah satu belum dipilih
-                }
-            }
-
-            function toggleDosenWali() {
+            function toggleDosenWaliRequired() {
                 if (statusSelect.value === 'active') {
-                    dosenWaliDiv.style.display = 'block';
-                    dosenWaliSelect.required = true;
-                    dosenWaliRequiredStar.style.display = 'inline';
+                    dosenWaliRequiredIndicator.classList.remove('hidden');
                 } else {
-                    dosenWaliDiv.style.display = 'none';
-                    dosenWaliSelect.required = false;
-                    dosenWaliSelect.value = ''; // Kosongkan pilihan dosen wali jika status inactive
-                    dosenWaliRequiredStar.style.display = 'none';
+                    dosenWaliRequiredIndicator.classList.add('hidden');
                 }
             }
-
-            if (classYearSelect) classYearSelect.addEventListener('change', updateClassName);
-            if (programSelect) programSelect.addEventListener('change', updateClassName);
-            if (prodiSelect) prodiSelect.addEventListener('change', updateClassName);
-            if (classTypeSelect) classTypeSelect.addEventListener('change', updateClassName);
-            if (statusSelect) statusSelect.addEventListener('change', toggleDosenWali);
-
-            // Initial calls
-            updateClassName();
-            toggleDosenWali();
+            if(statusSelect) {
+                toggleDosenWaliRequired(); // Initial check
+                statusSelect.addEventListener('change', toggleDosenWaliRequired);
+            }
         });
     </script>
     @endpush

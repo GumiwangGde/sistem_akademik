@@ -10,28 +10,13 @@ class FRS extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'frs';
-
-    /**
-     * The primary key associated with the table.
-     *
-     * @var string
-     */
     protected $primaryKey = 'id_frs';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'id_mahasiswa',
-        'id_mk',
+        'id_mk', // Ini merujuk ke tabel matakuliah (jadwal kuliah)
+        'id_tahun_ajaran', // Kolom baru
         'status',
     ];
 
@@ -44,11 +29,19 @@ class FRS extends Model
     }
 
     /**
-     * Get the matakuliah associated with the FRS.
+     * Get the matakuliah (jadwal kuliah) associated with the FRS.
      */
-    public function matakuliah()
+    public function jadwalKuliah() // Mengganti nama relasi agar lebih jelas
     {
         return $this->belongsTo(Matakuliah::class, 'id_mk');
+    }
+
+    /**
+     * Get the tahun ajaran associated with the FRS.
+     */
+    public function tahunAjaran()
+    {
+        return $this->belongsTo(TahunAjaran::class, 'id_tahun_ajaran');
     }
 
     /**
