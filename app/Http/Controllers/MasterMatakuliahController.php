@@ -113,17 +113,11 @@ class MasterMatakuliahController extends Controller
                 Rule::unique('master_matakuliah', 'kode_mk')->ignore($masterMatakuliah->id_master_mk, 'id_master_mk')
             ],
             'nama_mk' => 'required|string|max:150',
-            'sks_teori' => 'required|integer|min:0',
-            'sks_praktek' => 'required|integer|min:0',
-            'sks_lapangan' => 'required|integer|min:0',
+            'sks' => 'required|integer|min:0',
             'semester_default' => 'nullable|integer|min:1|max:14',
             'id_prodi' => 'required|exists:prodi,id_prodi',
             'deskripsi' => 'nullable|string',
         ]);
-
-        if (($validatedData['sks_teori'] + $validatedData['sks_praktek'] + $validatedData['sks_lapangan']) == 0) {
-            // Logika serupa dengan store jika SKS total 0 tidak diperbolehkan
-        }
 
         DB::beginTransaction();
         try {
