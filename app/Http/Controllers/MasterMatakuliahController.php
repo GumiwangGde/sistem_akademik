@@ -60,25 +60,17 @@ class MasterMatakuliahController extends Controller
                 Rule::unique('master_matakuliah', 'kode_mk')
             ],
             'nama_mk' => 'required|string|max:150',
-            'sks_teori' => 'required|integer|min:0',
-            'sks_praktek' => 'required|integer|min:0',
-            'sks_lapangan' => 'required|integer|min:0',
+            'sks' => 'required|integer|min:0',
             'semester_default' => 'nullable|integer|min:1|max:14', // Semester penawaran default
             'id_prodi' => 'required|exists:prodi,id_prodi',
             'deskripsi' => 'nullable|string',
         ]);
 
-        // Pastikan minimal ada satu jenis SKS yang lebih dari 0 jika SKS total adalah 0
-        if (($validatedData['sks_teori'] + $validatedData['sks_praktek'] + $validatedData['sks_lapangan']) == 0) {
-            // Anda bisa mengembalikan error atau membiarkannya jika SKS 0 diperbolehkan
-            // return back()->withErrors(['sks_total' => 'Minimal total SKS harus lebih dari 0.'])->withInput();
-        }
-
         DB::beginTransaction();
         try {
             MasterMatakuliah::create($validatedData);
             DB::commit();
-            return redirect()->route('admin.mastermatakuliah.index') // Sesuaikan nama route jika perlu
+            return redirect()->route('admin.mastermatakuliah.index')
                          ->with('success', 'Master Mata Kuliah berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
