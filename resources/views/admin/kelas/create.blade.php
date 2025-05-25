@@ -1,18 +1,20 @@
 {{-- resources/views/admin/kelas/create.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
-            <div class="px-6 py-5">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-2 bg-blue-500 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold text-gray-900">{{ __('Tambah Kelas') }}</h1>
-                            <p class="text-sm text-gray-500">Tambahkan kelas baru ke dalam sistem</p>
+        <div class="max-w-7xl mx-auto"> {{-- Wrapper untuk alignment header card --}}
+            <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
+                <div class="px-4 py-4 sm:px-6 sm:py-5"> {{-- Menyesuaikan padding internal header card --}}
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="p-2 bg-blue-500 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="text-xl font-bold text-gray-900">{{ __('Tambah Kelas') }}</h1>
+                                <p class="text-sm text-gray-500">Tambahkan kelas baru ke dalam sistem</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -20,179 +22,186 @@
         </div>
     </x-slot>
 
-    <div class="py-6">
+    <div class="py-8 sm:py-12"> {{-- Padding vertikal halaman --}}
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    @if(session('success'))
-                        <div class="mb-5 flex w-full overflow-hidden bg-white rounded-lg shadow-md">
-                            <div class="flex items-center justify-center w-12 bg-green-500">
-                                <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM16.6667 28.3333L8.33337 20L10.6834 17.65L16.6667 23.6166L29.3167 10.9666L31.6667 13.3333L16.6667 28.3333Z"></path>
-                                </svg>
-                            </div>
-                            <div class="px-4 py-3 -mx-3">
-                                <div class="mx-3">
-                                    <span class="font-semibold text-green-500">Sukses!</span>
-                                    <p class="text-sm text-gray-600">{{ session('success') }}</p>
-                                </div>
-                            </div>
+            <div class="space-y-6"> {{-- Memberi jarak antar elemen flash dan card utama --}}
+                {{-- Flash Message Success --}}
+                @if(session('success'))
+                    <div class="flex w-full overflow-hidden bg-green-50 rounded-lg shadow-sm border border-green-300">
+                        <div class="flex items-center justify-center w-12 bg-green-500">
+                            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM16.6667 28.3333L8.33337 20L10.6834 17.65L16.6667 23.6166L29.3167 10.9666L31.6667 13.3333L16.6667 28.3333Z"></path>
+                            </svg>
                         </div>
-                    @endif
+                        <div class="px-4 py-3">
+                            <span class="font-semibold text-green-600">Sukses!</span>
+                            <p class="text-sm text-green-500">{{ session('success') }}</p>
+                        </div>
+                    </div>
+                @endif
 
-                    @if($errors->any())
-                        <div class="mb-5 flex w-full overflow-hidden bg-white rounded-lg shadow-md">
-                            <div class="flex items-center justify-center w-12 bg-red-500">
-                                <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM22 27.3333H18V23.3333H22V27.3333ZM22 19.9999H18V12.6666H22V19.9999Z"></path>
-                                </svg>
-                            </div>
-                            <div class="px-4 py-3 -mx-3">
-                                <div class="mx-3">
-                                    <span class="font-semibold text-red-500">Terjadi kesalahan:</span>
-                                    <ul class="text-sm text-gray-600 mt-1 list-disc list-inside">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
+                {{-- Flash Message Error ($errors->any()) --}}
+                @if($errors->any())
+                    <div class="flex w-full overflow-hidden bg-red-50 rounded-lg shadow-sm border border-red-300">
+                        <div class="flex items-center justify-center w-12 bg-red-500">
+                            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 3.33331C10.8 3.33331 3.33337 10.8 3.33337 20C3.33337 29.2 10.8 36.6666 20 36.6666C29.2 36.6666 36.6667 29.2 36.6667 20C36.6667 10.8 29.2 3.33331 20 3.33331ZM22 27.3333H18V23.3333H22V27.3333ZM22 19.9999H18V12.6666H22V19.9999Z"></path>
+                            </svg>
+                        </div>
+                        <div class="px-4 py-3">
+                            <span class="font-semibold text-red-600">Terjadi kesalahan:</span>
+                            <ul class="text-sm text-red-500 mt-1 list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
+                    <div class="p-6 sm:p-8">
+                        <form action="{{ route('kelas.store') }}" method="POST" class="space-y-6">
+                            @csrf
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                                <div>
+                                    <label for="class_year" class="block text-sm font-medium text-gray-700 mb-1">Tahun Angkatan <span class="text-red-500">*</span></label>
+                                    <select name="class_year" id="class_year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                                        <option value="">-- Pilih Tahun Angkatan --</option>
+                                        @for ($i = 1; $i <= 4; $i++)
+                                            <option value="{{ $i }}" {{ old('class_year') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="program" class="block text-sm font-medium text-gray-700 mb-1">Program <span class="text-red-500">*</span></label>
+                                    <select name="program" id="program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                                        <option value="">-- Pilih Program --</option>
+                                        <option value="D3" {{ old('program') == 'D3' ? 'selected' : '' }}>D3</option>
+                                        <option value="D4" {{ old('program') == 'D4' ? 'selected' : '' }}>D4</option>
+                                        <option value="D3 PJJ" {{ old('program') == 'D3 PJJ' ? 'selected' : '' }}>D3 PJJ</option>
+                                        <option value="D4 PJJ" {{ old('program') == 'D4 PJJ' ? 'selected' : '' }}>D4 PJJ</option>
+                                        <option value="S2" {{ old('program') == 'S2' ? 'selected' : '' }}>S2</option>
+                                        <option value="S3" {{ old('program') == 'S3' ? 'selected' : '' }}>S3</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="prodi" class="block text-sm font-medium text-gray-700 mb-1">Program Studi <span class="text-red-500">*</span></label>
+                                    <select name="prodi" id="prodi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                                        <option value="">-- Pilih Program Studi --</option>
+                                        <option value="IT" {{ old('prodi') == 'IT' ? 'selected' : '' }}>IT</option>
+                                        <option value="ELIN" {{ old('prodi') == 'ELIN' ? 'selected' : '' }}>ELIN</option>
+                                        <option value="ELKA" {{ old('prodi') == 'ELKA' ? 'selected' : '' }}>ELKA</option>
+                                        {{-- Tambahkan opsi prodi lain jika ada --}}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="class_type" class="block text-sm font-medium text-gray-700 mb-1">Tipe Kelas <span class="text-red-500">*</span></label>
+                                    <select name="class_type" id="class_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                                        <option value="">-- Pilih Tipe Kelas --</option>
+                                        @foreach (range('A', 'J') as $type)
+                                            <option value="{{ $type }}" {{ old('class_type') == $type ? 'selected' : '' }}>{{ $type }}</option>
                                         @endforeach
-                                    </ul>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status Kelas <span class="text-red-500">*</span></label>
+                                    <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                                        {{-- <option value="">-- Pilih Status --</option> --}}
+                                        <option value="active" {{ old('status', 'active') == 'active' ? 'selected' : '' }}>Active</option>
+                                        <option value="inactive" {{ old('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                    </select>
+                                </div>
+
+                                <div id="dosen_wali_div">
+                                    <label for="id_dosen_wali" class="block text-sm font-medium text-gray-700 mb-1">Dosen Wali <span id="dosen_wali_required_star" class="text-red-500 hidden">*</span></label>
+                                    <select name="id_dosen_wali" id="id_dosen_wali" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                        <option value="">-- Pilih Dosen Wali --</option>
+                                        @foreach($dosen as $dosenItem)
+                                            <option value="{{ $dosenItem->id_dosen }}" {{ old('id_dosen_wali') == $dosenItem->id_dosen ? 'selected' : '' }}>{{ $dosenItem->user->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                        </div>
-                    @endif
 
-                    <form action="{{ route('kelas.store') }}" method="POST" class="space-y-6">
-                        @csrf
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Dropdown Class Year -->
-                            <div>
-                                <label for="class_year" class="block text-sm font-medium text-gray-700 mb-1">Tahun Angkatan</label>
-                                <select name="class_year" id="class_year" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                    <option value="1" selected>1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
+                            <input type="hidden" name="nama_kelas" id="nama_kelas" value="{{ old('nama_kelas') }}">
+
+                            <div class="flex items-center justify-end pt-4 space-x-3">
+                                <a href="{{ route('kelas.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:ring-2 focus:ring-gray-300 focus:ring-offset-1 transition ease-in-out duration-150">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg>
+                                    Batal
+                                </a>
+                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition ease-in-out duration-150">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                                    </svg>
+                                    Simpan Kelas
+                                </button>
                             </div>
-
-                            <!-- Dropdown Program (D3/D4) -->
-                            <div>
-                                <label for="program" class="block text-sm font-medium text-gray-700 mb-1">Program</label>
-                                <select name="program" id="program" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                    <option value="D3" selected>D3</option>
-                                    <option value="D4">D4</option>
-                                    <option value="D3 PJJ">D3 PJJ</option>
-                                    <option value="D4 PJJ">D4 PJJ</option>
-                                    <option value="S2">S2</option>
-                                    <option value="S3">S3</option>
-                                </select>
-                            </div>
-
-                            <!-- Dropdown Prodi (IT, ELIN, ELKA) -->
-                            <div>
-                                <label for="prodi" class="block text-sm font-medium text-gray-700 mb-1">Program Studi</label>
-                                <select name="prodi" id="prodi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                    <option value="IT" selected>IT</option>
-                                    <option value="ELIN">ELIN</option>
-                                    <option value="ELKA">ELKA</option>
-                                    <!-- Add other prodi options here -->
-                                </select>
-                            </div>
-
-                            <!-- Dropdown Class Type (A, B, C, etc.) -->
-                            <div>
-                                <label for="class_type" class="block text-sm font-medium text-gray-700 mb-1">Tipe Kelas</label>
-                                <select name="class_type" id="class_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                    <option value="A" selected>A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                    <option value="D">D</option>
-                                    <option value="E">E</option>
-                                    <option value="F">F</option>
-                                    <option value="G">G</option>
-                                    <option value="H">H</option>
-                                    <option value="I">I</option>
-                                    <option value="J">J</option>
-                                </select>
-                            </div>
-
-                            <!-- Status Kelas -->
-                            <div>
-                                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status Kelas</label>
-                                <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                    <option value="inactive" selected>Inactive</option>
-                                    <option value="active">Active</option>
-                                </select>
-                            </div>
-
-                            <!-- Dosen Wali -->
-                            <div id="dosen_wali_div">
-                                <label for="id_dosen_wali" class="block text-sm font-medium text-gray-700 mb-1">Dosen Wali</label>
-                                <select name="id_dosen_wali" id="id_dosen_wali" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                                    <option value="">-- Pilih Dosen Wali --</option>
-                                    @foreach($dosen as $dosenItem)
-                                        <option value="{{ $dosenItem->id_dosen }}">{{ $dosenItem->user->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Hidden Input for Nama Kelas -->
-                        <input type="hidden" name="nama_kelas" id="nama_kelas">
-
-                        <div class="flex items-center justify-between mt-8">
-                            <a href="{{ route('kelas.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-gray transition ease-in-out duration-150">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
-                                Kembali
-                            </a>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:border-blue-800 focus:shadow-outline-blue transition ease-in-out duration-150">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                                </svg>
-                                Simpan Kelas
-                            </button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    @push('scripts') {{-- Menggunakan @push untuk script agar lebih rapi jika layout utama punya @stack('scripts') --}}
     <script>
-        // Fungsi untuk memperbarui nama kelas berdasarkan pilihan dropdown
-        function updateClassName() {
-            var classYear = document.getElementById('class_year').value;
-            var program = document.getElementById('program').value;
-            var prodi = document.getElementById('prodi').value;
-            var classType = document.getElementById('class_type').value;
-            var className = classYear + ' ' + program + ' ' + prodi + ' ' + classType;
-            document.getElementById('nama_kelas').value = className; // Update hidden input
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const classYearSelect = document.getElementById('class_year');
+            const programSelect = document.getElementById('program');
+            const prodiSelect = document.getElementById('prodi');
+            const classTypeSelect = document.getElementById('class_type');
+            const namaKelasInput = document.getElementById('nama_kelas');
+            
+            const statusSelect = document.getElementById('status');
+            const dosenWaliDiv = document.getElementById('dosen_wali_div');
+            const dosenWaliSelect = document.getElementById('id_dosen_wali');
+            const dosenWaliRequiredStar = document.getElementById('dosen_wali_required_star');
 
-        // Fungsi untuk menyembunyikan atau menampilkan Dosen Wali tergantung pada status kelas
-        function toggleDosenWali() {
-            var status = document.getElementById('status').value;
-            var dosenWaliDiv = document.getElementById('dosen_wali_div');
-            if (status === 'inactive') {
-                dosenWaliDiv.style.display = 'none'; // Menyembunyikan Dosen Wali
-            } else {
-                dosenWaliDiv.style.display = 'block'; // Menampilkan Dosen Wali
+            function updateClassName() {
+                const classYear = classYearSelect.value;
+                const program = programSelect.value;
+                const prodi = prodiSelect.value;
+                const classType = classTypeSelect.value;
+
+                if (classYear && program && prodi && classType) {
+                    namaKelasInput.value = `${classYear} ${program} ${prodi} ${classType}`;
+                } else {
+                    namaKelasInput.value = ''; // Kosongkan jika salah satu belum dipilih
+                }
             }
-        }
 
-        // Menambahkan event listener pada dropdown yang terkait
-        document.getElementById('class_year').addEventListener('change', updateClassName);
-        document.getElementById('program').addEventListener('change', updateClassName);
-        document.getElementById('prodi').addEventListener('change', updateClassName);
-        document.getElementById('class_type').addEventListener('change', updateClassName);
-        document.getElementById('status').addEventListener('change', toggleDosenWali);
+            function toggleDosenWali() {
+                if (statusSelect.value === 'active') {
+                    dosenWaliDiv.style.display = 'block';
+                    dosenWaliSelect.required = true;
+                    dosenWaliRequiredStar.style.display = 'inline';
+                } else {
+                    dosenWaliDiv.style.display = 'none';
+                    dosenWaliSelect.required = false;
+                    dosenWaliSelect.value = ''; // Kosongkan pilihan dosen wali jika status inactive
+                    dosenWaliRequiredStar.style.display = 'none';
+                }
+            }
 
-        // Memanggil fungsi saat halaman pertama kali dimuat
-        window.addEventListener('load', function() {
-            updateClassName(); // Memperbarui nama kelas saat halaman dimuat
-            toggleDosenWali(); // Menyembunyikan/menampilkan Dosen Wali berdasarkan status kelas
+            if (classYearSelect) classYearSelect.addEventListener('change', updateClassName);
+            if (programSelect) programSelect.addEventListener('change', updateClassName);
+            if (prodiSelect) prodiSelect.addEventListener('change', updateClassName);
+            if (classTypeSelect) classTypeSelect.addEventListener('change', updateClassName);
+            if (statusSelect) statusSelect.addEventListener('change', toggleDosenWali);
+
+            // Initial calls
+            updateClassName();
+            toggleDosenWali();
         });
     </script>
+    @endpush
 </x-app-layout>
