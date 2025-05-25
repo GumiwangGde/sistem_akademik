@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Matakuliah; // Ini adalah model untuk Jadwal Kuliah
+use App\Models\Matakuliah; 
 use App\Models\MasterMatakuliah;
 use App\Models\Kelas;
 use App\Models\Dosen;
@@ -11,10 +11,10 @@ use App\Models\TahunAjaran;
 use App\Models\Prodi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log; // Bisa juga menggunakan logger() helper
+use Illuminate\Support\Facades\Log; 
 use Illuminate\Validation\Rule;
-use Illuminate\View\View; // Untuk return type hinting
-use Illuminate\Http\RedirectResponse; // Untuk return type hinting
+use Illuminate\View\View; 
+use Illuminate\Http\RedirectResponse; 
 
 class MatakuliahController extends Controller
 {
@@ -166,9 +166,6 @@ class MatakuliahController extends Controller
         ));
     }
 
-    /**
-     * Memperbarui jadwal kuliah di database.
-     */
     public function update(Request $request, $id_mk): RedirectResponse
     {
         $jadwalKuliah = Matakuliah::findOrFail($id_mk);
@@ -195,9 +192,6 @@ class MatakuliahController extends Controller
             'hari' => ['required', 'string', Rule::in(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'])],
         ]);
 
-        // Logika cek konflik jadwal (serupa dengan di store, kecualikan $id_mk saat ini)
-        // ...
-
         DB::beginTransaction();
         try {
             $jadwalKuliah->update($validatedData);
@@ -211,17 +205,9 @@ class MatakuliahController extends Controller
         }
     }
 
-    /**
-     * Menghapus jadwal kuliah dari database.
-     */
     public function destroy($id_mk): RedirectResponse
     {
         $jadwalKuliah = Matakuliah::findOrFail($id_mk);
-
-        // Opsional: Periksa keterkaitan data lain (misal FRS) sebelum menghapus
-        // if ($jadwalKuliah->frs()->exists()) {
-        //    return redirect()->route('admin.matakuliah.index')->with('error', 'Gagal menghapus. Jadwal masih terdaftar di FRS mahasiswa.');
-        // }
 
         DB::beginTransaction();
         try {
@@ -238,5 +224,11 @@ class MatakuliahController extends Controller
             }
             return redirect()->route('admin.matakuliah.index')->with('error', $errorMessage);
         }
+    }
+
+    public function show($id)
+    {
+        $jadwalKuliah = Matakuliah::with(['dosen', 'kelas', 'ruang', 'masterMatakuliah', 'tahunAjaran'])->findOrFail($id);
+        return view('admin.matakuliah.show', compact('jadwalKuliah'));
     }
 }
