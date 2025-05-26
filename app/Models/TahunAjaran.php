@@ -9,8 +9,8 @@ class TahunAjaran extends Model
 {
     use HasFactory;
 
-    protected $table = 'tahun_ajaran'; // Nama tabel di database
-    protected $primaryKey = 'id'; // Primary key tabel
+    protected $table = 'tahun_ajaran'; 
+    protected $primaryKey = 'id'; 
 
     protected $fillable = [
         'kode_tahun_ajaran',
@@ -25,11 +25,6 @@ class TahunAjaran extends Model
         'tanggal_selesai_frs',
     ];
 
-    /**
-     * Atribut yang harus di-cast ke tipe native.
-     *
-     * @var array
-     */
     protected $casts = [
         'tanggal_mulai_perkuliahan' => 'date',
         'tanggal_selesai_perkuliahan' => 'date',
@@ -37,19 +32,16 @@ class TahunAjaran extends Model
         'tanggal_selesai_frs' => 'date',
     ];
 
-    // Relasi: Satu TahunAjaran bisa memiliki banyak Kelas
     public function kelas()
     {
         return $this->hasMany(Kelas::class, 'id_tahun_ajaran');
     }
 
-    // Relasi: Satu TahunAjaran bisa memiliki banyak Matakuliah (Jadwal Kuliah)
-    public function jadwalKuliah() // Menggunakan nama yang lebih deskriptif
+    public function jadwalKuliah() 
     {
         return $this->hasMany(Matakuliah::class, 'id_tahun_ajaran');
     }
 
-    // Relasi: Satu TahunAjaran bisa memiliki banyak FRS
     public function frs()
     {
         return $this->hasMany(FRS::class, 'id_tahun_ajaran');

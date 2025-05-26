@@ -9,8 +9,8 @@ class Prodi extends Model
 {
     use HasFactory;
 
-    protected $table = 'prodi'; // Nama tabel di database
-    protected $primaryKey = 'id_prodi'; // Primary key tabel
+    protected $table = 'prodi'; 
+    protected $primaryKey = 'id_prodi'; 
 
     protected $fillable = [
         'kode_prodi',
@@ -18,19 +18,16 @@ class Prodi extends Model
         'jenjang',
     ];
 
-    // Relasi: Satu Prodi bisa memiliki banyak Mahasiswa
     public function mahasiswa()
     {
         return $this->hasMany(Mahasiswa::class, 'id_prodi');
     }
 
-    // Relasi: Satu Prodi bisa memiliki banyak Kelas
-    public function kelas()
+    public function kelas() 
     {
         return $this->hasMany(Kelas::class, 'id_prodi');
     }
 
-    // Relasi: Satu Prodi bisa memiliki banyak MasterMatakuliah
     public function masterMatakuliah()
     {
         return $this->hasMany(MasterMatakuliah::class, 'id_prodi');

@@ -58,7 +58,7 @@
                     @endif
 
                     <div class="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none text-gray-700">
-                        {!! $berita->isi !!} {{-- Pastikan isi sudah disanitasi --}}
+                        {!! $berita->isi !!} 
                     </div>
 
                     <div class="mt-6 pt-4 border-t border-gray-200 text-xs text-gray-500">

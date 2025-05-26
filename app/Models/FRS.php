@@ -1,5 +1,4 @@
 <?php
-// app/Models/FRS.php
 
 namespace App\Models;
 
@@ -15,38 +14,26 @@ class FRS extends Model
 
     protected $fillable = [
         'id_mahasiswa',
-        'id_mk', // Ini merujuk ke tabel matakuliah (jadwal kuliah)
-        'id_tahun_ajaran', // Kolom baru
+        'id_mk', 
+        'id_tahun_ajaran', 
         'status',
     ];
 
-    /**
-     * Get the mahasiswa that owns the FRS.
-     */
     public function mahasiswa()
     {
         return $this->belongsTo(Mahasiswa::class, 'id_mahasiswa');
     }
 
-    /**
-     * Get the matakuliah (jadwal kuliah) associated with the FRS.
-     */
-    public function jadwalKuliah() // Mengganti nama relasi agar lebih jelas
+    public function jadwalKuliah() 
     {
         return $this->belongsTo(Matakuliah::class, 'id_mk');
     }
 
-    /**
-     * Get the tahun ajaran associated with the FRS.
-     */
     public function tahunAjaran()
     {
         return $this->belongsTo(TahunAjaran::class, 'id_tahun_ajaran');
     }
 
-    /**
-     * Get the nilai record associated with the FRS.
-     */
     public function nilai()
     {
         return $this->hasOne(Nilai::class, 'id_frs');

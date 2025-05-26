@@ -15,8 +15,8 @@ class Kelas extends Model
         'nama_kelas',
         'status',
         'id_dosen_wali',
-        'id_tahun_ajaran', // Kolom baru
-        'id_prodi',        // Kolom baru
+        'id_tahun_ajaran', 
+        'id_prodi',        
     ];
 
     public function dosenWali()
@@ -34,13 +34,11 @@ class Kelas extends Model
         return $this->belongsTo(Prodi::class, 'id_prodi');
     }
 
-    // Relasi dengan mahasiswa
     public function mahasiswa()
     {
         return $this->hasMany(Mahasiswa::class, 'id_kelas', 'id_kelas');
     }
 
-    // Relasi dengan jadwal kuliah (matakuliah) yang diadakan di kelas ini
     public function jadwalKuliah()
     {
         return $this->hasMany(Matakuliah::class, 'kelas_id', 'id_kelas');

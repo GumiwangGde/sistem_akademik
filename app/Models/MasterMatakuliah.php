@@ -29,13 +29,11 @@ class MasterMatakuliah extends Model
     }
 
 
-    // Relasi: Satu MasterMatakuliah dimiliki oleh satu Prodi
     public function prodi()
     {
         return $this->belongsTo(Prodi::class, 'id_prodi');
     }
 
-    // Relasi: Satu MasterMatakuliah bisa ada di banyak JadwalKuliah (Matakuliah)
     public function jadwalKuliah() 
     {
         return $this->hasMany(Matakuliah::class, 'id_master_mk');

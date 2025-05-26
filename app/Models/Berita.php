@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str; // Untuk membuat slug
+use Illuminate\Support\Str; 
 
 class Berita extends Model
 {
@@ -23,27 +23,15 @@ class Berita extends Model
         'published_at',
     ];
 
-    /**
-     * Atribut yang harus di-cast ke tipe native.
-     *
-     * @var array
-     */
     protected $casts = [
         'published_at' => 'datetime',
     ];
 
-    /**
-     * Relasi ke User (pembuat berita).
-     */
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * Boot a new Eloquent model instance.
-     * Otomatis membuat slug saat judul diisi atau diubah.
-     */
     protected static function boot()
     {
         parent::boot();
@@ -77,9 +65,6 @@ class Berita extends Model
         });
     }
 
-    /**
-     * Scope untuk query berita yang sudah terbit.
-     */
     public function scopeTerbit($query)
     {
         return $query->where('status', 'terbit')
@@ -89,17 +74,11 @@ class Berita extends Model
                      });
     }
 
-    /**
-     * Scope untuk query berita yang ditargetkan untuk dosen.
-     */
     public function scopeUntukDosen($query)
     {
         return $query->whereIn('target_role', ['dosen', 'semua']);
     }
 
-    /**
-     * Scope untuk query berita yang ditargetkan untuk mahasiswa.
-     */
     public function scopeUntukMahasiswa($query)
     {
         return $query->whereIn('target_role', ['mahasiswa', 'semua']);

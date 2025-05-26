@@ -12,9 +12,6 @@ use Illuminate\Http\RedirectResponse;
 
 class TahunAjaranController extends Controller
 {
-    /**
-     * Menampilkan daftar semua tahun ajaran.
-     */
     public function index(Request $request): View
     {
         $query = TahunAjaran::query();
@@ -38,17 +35,11 @@ class TahunAjaranController extends Controller
         return view('admin.tahunajaran.index', compact('tahunAjaran'));
     }
 
-    /**
-     * Menampilkan form untuk membuat tahun ajaran baru.
-     */
     public function create(): View
     {
         return view('admin.tahunajaran.create');
     }
 
-    /**
-     * Menyimpan tahun ajaran baru ke database.
-     */
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
@@ -69,14 +60,13 @@ class TahunAjaranController extends Controller
 
         DB::beginTransaction();
         try {
-            // Jika status baru adalah 'aktif', pastikan tidak ada tahun ajaran lain yang aktif
             if ($validatedData['status'] === 'aktif') {
                 TahunAjaran::where('status', 'aktif')->update(['status' => 'tidak aktif']);
             }
 
             TahunAjaran::create($validatedData);
             DB::commit();
-            return redirect()->route('admin.tahunajaran.index') // Sesuaikan nama route
+            return redirect()->route('admin.tahunajaran.index') 
                          ->with('success', 'Tahun Ajaran berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -85,29 +75,18 @@ class TahunAjaranController extends Controller
         }
     }
 
-    /**
-     * Menampilkan detail spesifik tahun ajaran (opsional).
-     */
     public function show($id_tahun_ajaran): View
     {
         $tahunAjaran = TahunAjaran::findOrFail($id_tahun_ajaran);
-        // Anda bisa memuat data terkait jika perlu, misal jumlah kelas atau jadwal di tahun ajaran ini
-        // $jumlahKelas = $tahunAjaran->kelas()->count();
         return view('admin.tahunajaran.show', compact('tahunAjaran'));
     }
 
-    /**
-     * Menampilkan form untuk mengedit data tahun ajaran.
-     */
     public function edit($id_tahun_ajaran): View
     {
         $tahunAjaran = TahunAjaran::findOrFail($id_tahun_ajaran);
         return view('admin.tahunajaran.edit', compact('tahunAjaran'));
     }
 
-    /**
-     * Memperbarui data tahun ajaran di database.
-     */
     public function update(Request $request, $id_tahun_ajaran): RedirectResponse
     {
         $tahunAjaran = TahunAjaran::findOrFail($id_tahun_ajaran);
@@ -130,8 +109,6 @@ class TahunAjaranController extends Controller
 
         DB::beginTransaction();
         try {
-            // Jika status baru adalah 'aktif', pastikan tidak ada tahun ajaran lain yang aktif
-            // kecuali tahun ajaran yang sedang diedit ini sendiri.
             if ($validatedData['status'] === 'aktif') {
                 TahunAjaran::where('status', 'aktif')->where('id', '!=', $tahunAjaran->id)->update(['status' => 'tidak aktif']);
             }
@@ -147,19 +124,13 @@ class TahunAjaranController extends Controller
         }
     }
 
-    /**
-     * Menghapus data tahun ajaran dari database.
-     */
     public function destroy($id_tahun_ajaran): RedirectResponse
     {
         $tahunAjaran = TahunAjaran::findOrFail($id_tahun_ajaran);
 
-        // PENTING: Cek apakah tahun ajaran masih digunakan oleh data lain (Kelas, Jadwal Kuliah, FRS)
-        // Ini adalah contoh sederhana, Anda mungkin perlu pengecekan yang lebih komprehensif.
         if ($tahunAjaran->kelas()->exists() || $tahunAjaran->jadwalKuliah()->exists() || $tahunAjaran->frs()->exists()) {
              return redirect()->route('admin.tahunajaran.index')->with('error', 'Tahun Ajaran tidak dapat dihapus karena masih digunakan oleh data Kelas, Jadwal Kuliah, atau FRS.');
         }
-        // Tidak boleh menghapus tahun ajaran yang statusnya 'aktif'
         if ($tahunAjaran->status === 'aktif') {
             return redirect()->route('admin.tahunajaran.index')->with('error', 'Tahun Ajaran yang aktif tidak dapat dihapus.');
         }
@@ -182,19 +153,13 @@ class TahunAjaranController extends Controller
         }
     }
 
-    /**
-     * Method untuk mengaktifkan tahun ajaran tertentu.
-     */
     public function setActive(Request $request, $id_tahun_ajaran): RedirectResponse
     {
         $tahunAjaranToActivate = TahunAjaran::findOrFail($id_tahun_ajaran);
 
         DB::beginTransaction();
         try {
-            // Nonaktifkan semua tahun ajaran lain yang mungkin aktif
             TahunAjaran::where('status', 'aktif')->where('id', '!=', $tahunAjaranToActivate->id)->update(['status' => 'tidak aktif']);
-
-            // Aktifkan tahun ajaran yang dipilih
             $tahunAjaranToActivate->status = 'aktif';
             $tahunAjaranToActivate->save();
 

@@ -30,7 +30,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // Relasi ke tabel dosen
     public function dosen()
     {
         return $this->hasOne(Dosen::class);

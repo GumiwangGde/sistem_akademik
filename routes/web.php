@@ -21,12 +21,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Dashboard untuk pengguna yang sudah terverifikasi (umum, mungkin tidak digunakan jika ada admin.dashboard)
-// Route::get('/dashboard', function () {
-//     return view('admin.dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-
 // Rute Profile untuk pengguna terautentikasi
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,7 +29,6 @@ Route::middleware('auth')->group(function () {
 });
 
 // Rute Admin yang hanya bisa diakses oleh admin terverifikasi
-// Menggunakan prefix 'admin' untuk URI dan 'admin.' untuk nama route
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/calendar/upload', [DashboardController::class, 'uploadCalendar'])->name('calendar.upload');
@@ -64,7 +57,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
         'index' => 'kelas.index',
         'create' => 'kelas.create',
         'store' => 'kelas.store',
-        'show' => 'kelas.detail', // <--- PERUBAHAN DI SINI: 'show' sekarang dinamai 'detail'
+        'show' => 'kelas.detail',
         'edit' => 'kelas.edit',
         'update' => 'kelas.update',
         'destroy' => 'kelas.destroy',
@@ -94,7 +87,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
         'destroy' => 'mahasiswa.destroy',
     ]);
 
-    // --- PENAMBAHAN ROUTE BARU ---
     // Route untuk Tahun Ajaran
     Route::resource('tahunajaran', TahunAjaranController::class);
     Route::post('tahunajaran/{tahunajaran}/set-active', [TahunAjaranController::class, 'setActive'])->name('tahunajaran.setActive');
@@ -104,9 +96,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
 
     // Route untuk Master Mata Kuliah
     Route::resource('mastermatakuliah', MasterMatakuliahController::class);
-    // --- AKHIR PENAMBAHAN ROUTE BARU ---
-     Route::resource('berita', BeritaController::class)->parameters([
-        '' => 'berita' // Ini akan memastikan parameter adalah {berita} bukan {beritum}
+
+    Route::resource('berita', BeritaController::class)->parameters([
+        'berita' => 'berita' 
     ]);
 
 });
