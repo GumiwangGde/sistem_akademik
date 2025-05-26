@@ -105,7 +105,9 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     // Route untuk Master Mata Kuliah
     Route::resource('mastermatakuliah', MasterMatakuliahController::class);
     // --- AKHIR PENAMBAHAN ROUTE BARU ---
-    Route::resource('berita', BeritaController::class);
+     Route::resource('berita', BeritaController::class)->parameters([
+        '' => 'berita' // Ini akan memastikan parameter adalah {berita} bukan {beritum}
+    ]);
 
 });
 
