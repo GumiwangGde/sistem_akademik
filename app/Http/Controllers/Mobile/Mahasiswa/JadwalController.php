@@ -10,6 +10,7 @@ use App\Models\TahunAjaran; // Pastikan model ini di-import
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log; // Untuk logging
 use Carbon\Carbon;
+use Illuminate\Support\Collection; // Import Collection untuk type hinting
 
 class JadwalController extends Controller
 {
@@ -53,8 +54,8 @@ class JadwalController extends Controller
         }
         
         $jadwalByHari = FRS::with([
-            'jadwalKuliah' => function ($query) { // KOREKSI: Menggunakan relasi 'jadwalKuliah'
-                $query->with([
+            'jadwalKuliah' => function ($query) { 
+                $query->with([ 
                     'masterMatakuliah.prodi', 
                     'dosen.user',             
                     'ruang',                  
@@ -62,32 +63,30 @@ class JadwalController extends Controller
                     'tahunAjaran'             
                 ]);
             },
-            // 'tahunAjaran' // Relasi dari FRS ke TahunAjaran (sudah difilter di query utama)
         ])
         ->where('id_mahasiswa', $mahasiswa->id_mahasiswa)
-        ->where('id_tahun_ajaran', $activeTahunAjaran->id) // Filter FRS berdasarkan tahun ajaran aktif
+        ->where('id_tahun_ajaran', $activeTahunAjaran->id) 
         ->where('status', 'disetujui')
         ->get()
         ->map(function ($frs) {
-            // KOREKSI: Menggunakan relasi 'jadwalKuliah'
             if ($frs->jadwalKuliah) { 
-                $jadwal = $frs->jadwalKuliah; // Ini adalah objek Matakuliah (JadwalKuliah)
-                $masterMk = $jadwal->masterMatakuliah;
+                $jadwal = $frs->jadwalKuliah; 
+                $masterMk = $jadwal->masterMatakuliah; 
             
                 $sks = 'N/A';
                 if ($masterMk && isset($masterMk->sks_teori)) {
                     $sks = ($masterMk->sks_teori ?? 0) + ($masterMk->sks_praktek ?? 0) + ($masterMk->sks_lapangan ?? 0);
-                } elseif (isset($jadwal->sks)) {
+                } elseif (isset($jadwal->sks)) { 
                     $sks = $jadwal->sks;
                 }
 
                 return [
-                    'id_mk_jadwal' => $jadwal->id_mk, // Menggunakan id_mk_jadwal agar konsisten dengan FRSController
+                    'id_mk_jadwal' => $jadwal->id_mk, 
                     'kode_mk' => $masterMk->kode_mk ?? $jadwal->kode_mk ?? 'N/A',
                     'nama_mk' => $masterMk->nama_mk ?? $jadwal->nama_mk ?? 'N/A',
                     'sks' => (int) $sks,
-                    'semester' => $jadwal->semester ?? 'N/A', // Semester dari tabel jadwal (matakuliah)
-                    'hari' => $jadwal->hari,
+                    'semester' => $jadwal->semester ?? 'N/A', 
+                    'hari' => $jadwal->hari, 
                     'jam_mulai' => $jadwal->jam_mulai ? Carbon::parse($jadwal->jam_mulai)->format('H:i') : null,
                     'jam_selesai' => $jadwal->jam_selesai ? Carbon::parse($jadwal->jam_selesai)->format('H:i') : null,
                     'dosen_pengampu' => $jadwal->dosen && $jadwal->dosen->user 
@@ -103,10 +102,14 @@ class JadwalController extends Controller
         ->filter() 
         ->sortBy(function ($item) { 
             $hariOrder = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5, 'Sabtu' => 6, 'Minggu' => 7, null => 8];
+            // Pastikan $item tidak null sebelum mengakses 'hari' atau 'jam_mulai'
+            if (is_null($item) || !isset($item['hari'])) {
+                return 8; // Urutkan item null atau tanpa hari ke paling akhir
+            }
             return ($hariOrder[$item['hari']] ?? 8) . ($item['jam_mulai'] ?? '99:99');
         })
         ->groupBy('hari')
-        ->map(function ($itemsPerHari) {
+        ->map(function (Collection $itemsPerHari) { // KOREKSI: Menambahkan type hint Illuminate\Support\Collection
             return $itemsPerHari->sortBy('jam_mulai')->values();
         });
             
