@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\FRS;
 use App\Models\Mahasiswa;
-use App\Models\Matakuliah; // Ini adalah model JadwalKuliah Anda
+use App\Models\Matakuliah;
 use App\Models\Nilai;
 use App\Models\TahunAjaran;
 use App\Models\Kelas;
@@ -17,62 +17,46 @@ use Carbon\Carbon;
 
 class FrsController extends Controller
 {
-    /**
-     * Helper untuk mendapatkan Tahun Ajaran yang aktif.
-     */
     protected function getActiveTahunAjaran()
     {
         $activeTA = TahunAjaran::where('status', 'aktif')->first();
         if (!$activeTA) {
-            Log::warning('FrsController::getActiveTahunAjaran - Tidak ada Tahun Ajaran aktif ditemukan.');
+            Log::warning('FrsController (Mahasiswa)::getActiveTahunAjaran - Tidak ada Tahun Ajaran aktif ditemukan.');
         }
         return $activeTA;
     }
 
-    /**
-     * Memeriksa apakah periode FRS saat ini terbuka untuk Tahun Ajaran yang diberikan.
-     */
     protected function isFrsPeriodOpen(TahunAjaran $tahunAjaran = null)
     {
         if (!$tahunAjaran) {
-            Log::warning('isFrsPeriodOpen: $tahunAjaran adalah null.');
+            Log::warning('isFrsPeriodOpen (Mahasiswa): $tahunAjaran adalah null.');
             return false;
         }
 
         if (empty($tahunAjaran->tanggal_mulai_frs) || empty($tahunAjaran->tanggal_selesai_frs)) {
-            Log::warning('isFrsPeriodOpen: Tanggal FRS (tanggal_mulai_frs atau tanggal_selesai_frs) pada TahunAjaran KOSONG atau null.', [
+            Log::warning('isFrsPeriodOpen (Mahasiswa): Tanggal FRS (mulai atau selesai) pada TahunAjaran KOSONG.', [
                 'id_tahun_ajaran' => $tahunAjaran->id,
-                'nama_tahun_ajaran' => $tahunAjaran->nama_tahun_ajaran,
                 'db_tanggal_mulai_frs_value' => $tahunAjaran->tanggal_mulai_frs,
                 'db_tanggal_selesai_frs_value' => $tahunAjaran->tanggal_selesai_frs,
             ]);
             return false;
         }
 
-        $now = Carbon::now(); // WIB jika app.timezone = Asia/Jakarta
+        $now = Carbon::now();
         
-        $mulaiFrsCarbon = null;
-        $selesaiFrsCarbon = null;
-
         try {
-            if ($tahunAjaran->tanggal_mulai_frs instanceof Carbon) {
-                $mulaiFrsCarbon = $tahunAjaran->tanggal_mulai_frs->copy()->startOfDay();
-            } else {
-                $mulaiFrsCarbon = Carbon::parse($tahunAjaran->tanggal_mulai_frs)->startOfDay();
-            }
+            $mulaiFrsCarbon = ($tahunAjaran->tanggal_mulai_frs instanceof Carbon)
+                ? $tahunAjaran->tanggal_mulai_frs->copy()->startOfDay()
+                : Carbon::parse($tahunAjaran->tanggal_mulai_frs)->startOfDay();
 
-            if ($tahunAjaran->tanggal_selesai_frs instanceof Carbon) {
-                $selesaiFrsCarbon = $tahunAjaran->tanggal_selesai_frs->copy()->endOfDay();
-            } else {
-                $selesaiFrsCarbon = Carbon::parse($tahunAjaran->tanggal_selesai_frs)->endOfDay();
-            }
+            $selesaiFrsCarbon = ($tahunAjaran->tanggal_selesai_frs instanceof Carbon)
+                ? $tahunAjaran->tanggal_selesai_frs->copy()->endOfDay()
+                : Carbon::parse($tahunAjaran->tanggal_selesai_frs)->endOfDay();
             
-            $isBetween = $now->between($mulaiFrsCarbon, $selesaiFrsCarbon);
-            
-            return $isBetween;
+            return $now->between($mulaiFrsCarbon, $selesaiFrsCarbon);
 
         } catch (\Exception $e) {
-            Log::error('EXCEPTION saat parsing tanggal FRS di isFrsPeriodOpen: ' . $e->getMessage(), [
+            Log::error('EXCEPTION saat parsing tanggal FRS di isFrsPeriodOpen (Mahasiswa): ' . $e->getMessage(), [
                 'id_tahun_ajaran' => $tahunAjaran->id,
                 'input_tanggal_mulai_frs' => $tahunAjaran->tanggal_mulai_frs,
                 'input_tanggal_selesai_frs' => $tahunAjaran->tanggal_selesai_frs,
@@ -90,12 +74,12 @@ class FrsController extends Controller
             return response()->json(['message' => 'Data mahasiswa tidak ditemukan'], 404);
         }
         if (!$mahasiswa->kelas) {
-            return response()->json(['message' => 'Mahasiswa tidak terdaftar di kelas manapun'], 404);
+            return response()->json(['message' => 'Mahasiswa tidak terdaftar di kelas manapun yang valid untuk mengambil FRS'], 404);
         }
 
         $activeTahunAjaran = $this->getActiveTahunAjaran();
         if (!$activeTahunAjaran) {
-            return response()->json(['message' => 'Tidak ada tahun ajaran aktif'], 404);
+            return response()->json(['message' => 'Tidak ada tahun ajaran aktif yang ditemukan'], 404);
         }
 
         if (!$this->isFrsPeriodOpen($activeTahunAjaran)) {
@@ -103,7 +87,7 @@ class FrsController extends Controller
                 'matakuliah' => [],
                 'message' => 'Periode pengisian FRS untuk tahun ajaran (' . $activeTahunAjaran->nama_tahun_ajaran . ') ini sedang tidak aktif/dibuka.',
                 'debug_info_controller' => [
-                    'current_time_wib' => Carbon::now()->toDateTimeString(),
+                    'current_time_server' => Carbon::now()->toDateTimeString(),
                     'ta_mulai_frs_val' => $activeTahunAjaran->tanggal_mulai_frs instanceof Carbon ? $activeTahunAjaran->tanggal_mulai_frs->toDateString() : $activeTahunAjaran->tanggal_mulai_frs,
                     'ta_selesai_frs_val' => $activeTahunAjaran->tanggal_selesai_frs instanceof Carbon ? $activeTahunAjaran->tanggal_selesai_frs->toDateString() : $activeTahunAjaran->tanggal_selesai_frs,
                 ]
@@ -112,45 +96,39 @@ class FrsController extends Controller
 
         $existingFrsMkIds = FRS::where('id_mahasiswa', $mahasiswa->id_mahasiswa)
             ->where('id_tahun_ajaran', $activeTahunAjaran->id)
-            ->pluck('id_mk')
+            ->pluck('id_mk') 
             ->toArray();
 
-        $jadwalKuliahQuery = Matakuliah::with([
+        $availableMatakuliah = Matakuliah::with([
             'masterMatakuliah.prodi',
             'dosen.user',
             'ruang',
         ])
         ->where('id_tahun_ajaran', $activeTahunAjaran->id)
-        ->where('kelas_id', $mahasiswa->id_kelas);
+        ->where('kelas_id', $mahasiswa->id_kelas) 
+        ->get()
+        ->filter(function ($jadwal) use ($existingFrsMkIds) {
+            return !in_array($jadwal->id_mk, $existingFrsMkIds);
+        })
+        ->map(function ($jadwal) {
+            $masterMk = $jadwal->masterMatakuliah;
+            $sks = $masterMk?->sks_total ?? $masterMk?->sks ?? 0;
 
-        $availableMatakuliah = $jadwalKuliahQuery->get()
-            ->filter(function ($jadwal) use ($existingFrsMkIds) {
-                return !in_array($jadwal->id_mk, $existingFrsMkIds);
-            })
-            ->map(function ($jadwal) {
-                $masterMk = $jadwal->masterMatakuliah;
-                $sks = 'N/A';
-                if ($masterMk) {
-                    $sks = ($masterMk->sks_teori ?? 0) + ($masterMk->sks_praktek ?? 0) + ($masterMk->sks_lapangan ?? 0);
-                } elseif (isset($jadwal->sks)) { 
-                    $sks = $jadwal->sks;
-                }
-
-                return [
-                    'id_mk_jadwal' => $jadwal->id_mk,
-                    'kode_mk' => $masterMk->kode_mk ?? $jadwal->kode_mk ?? 'N/A',
-                    'nama_mk' => $masterMk->nama_mk ?? $jadwal->nama_mk ?? 'N/A',
-                    'sks' => $sks,
-                    'semester_default' => $masterMk->semester_default ?? 'N/A',
-                    'semester_pelaksanaan' => $jadwal->semester ?? 'N/A',
-                    'dosen_pengampu' => $jadwal->dosen && $jadwal->dosen->user ? $jadwal->dosen->user->name : 'N/A',
-                    'prodi_mk' => $masterMk && $masterMk->prodi ? $masterMk->prodi->nama_prodi : 'N/A',
-                    'ruang' => $jadwal->ruang ? $jadwal->ruang->nama_ruang : 'N/A',
-                    'hari' => $jadwal->hari,
-                    'jam_mulai' => $jadwal->jam_mulai ? Carbon::parse($jadwal->jam_mulai)->format('H:i') : 'N/A',
-                    'jam_selesai' => $jadwal->jam_selesai ? Carbon::parse($jadwal->jam_selesai)->format('H:i') : 'N/A',
-                ];
-            });
+            return [
+                'id_mk_jadwal' => $jadwal->id_mk,
+                'kode_mk' => $masterMk?->kode_mk ?? 'N/A',
+                'nama_mk' => $masterMk?->nama_mk ?? 'N/A',
+                'sks' => (int) $sks,
+                'semester_default' => $masterMk?->semester_default ?? 'N/A',
+                'semester_pelaksanaan' => $jadwal->semester ?? 'N/A',
+                'dosen_pengampu' => $jadwal->dosen?->user?->name ?? $jadwal->dosen?->nama ?? 'N/A',
+                'prodi_mk' => $masterMk?->prodi?->nama_prodi ?? 'N/A',
+                'ruang' => $jadwal->ruang?->nama_ruang ?? 'N/A',
+                'hari' => $jadwal->hari,
+                'jam_mulai' => $jadwal->jam_mulai ? Carbon::parse($jadwal->jam_mulai)->format('H:i') : null,
+                'jam_selesai' => $jadwal->jam_selesai ? Carbon::parse($jadwal->jam_selesai)->format('H:i') : null,
+            ];
+        });
 
         return response()->json([
             'matakuliah' => $availableMatakuliah->values(),
@@ -178,7 +156,6 @@ class FrsController extends Controller
                     'masterMatakuliah.prodi',
                     'dosen.user',
                     'ruang',
-                    'kelas'
                 ]);
             },
             'tahunAjaran',
@@ -190,33 +167,26 @@ class FrsController extends Controller
         ->get()
         ->map(function ($frs) {
             $matakuliahJadwal = $frs->jadwalKuliah;
-            $masterMk = $matakuliahJadwal ? $matakuliahJadwal->masterMatakuliah : null;
-            $sks = 'N/A';
-            if ($masterMk) {
-                $sks = ($masterMk->sks_teori ?? 0) + ($masterMk->sks_praktek ?? 0) + ($masterMk->sks_lapangan ?? 0);
-            } elseif ($matakuliahJadwal && isset($matakuliahJadwal->sks)) {
-                $sks = $matakuliahJadwal->sks;
-            }
+            $masterMk = $matakuliahJadwal?->masterMatakuliah;
+            $sks = $masterMk?->sks_total ?? $masterMk?->sks ?? 0;
 
             return [
                 'id_frs' => $frs->id_frs,
                 'status_frs' => $frs->status,
-                'catatan_wali' => $frs->catatan_wali ?? null,
-                'id_mk_jadwal' => $matakuliahJadwal->id_mk ?? null,
-                'kode_mk' => $masterMk->kode_mk ?? $matakuliahJadwal->kode_mk ?? 'N/A',
-                'nama_mk' => $masterMk->nama_mk ?? $matakuliahJadwal->nama_mk ?? 'N/A',
-                'sks' => $sks,
-                'semester_pelaksanaan' => $matakuliahJadwal->semester ?? 'N/A',
-                'dosen_pengampu' => $matakuliahJadwal && $matakuliahJadwal->dosen && $matakuliahJadwal->dosen->user
-                                    ? $matakuliahJadwal->dosen->user->name
-                                    : 'N/A',
-                'ruang' => $matakuliahJadwal && $matakuliahJadwal->ruang ? $matakuliahJadwal->ruang->nama_ruang : 'N/A',
-                'hari' => $matakuliahJadwal->hari ?? 'N/A',
-                'jam_mulai' => $matakuliahJadwal && $matakuliahJadwal->jam_mulai ? Carbon::parse($matakuliahJadwal->jam_mulai)->format('H:i') : 'N/A',
-                'jam_selesai' => $matakuliahJadwal && $matakuliahJadwal->jam_selesai ? Carbon::parse($matakuliahJadwal->jam_selesai)->format('H:i') : 'N/A',
-                'tahun_ajaran_frs' => $frs->tahunAjaran->nama_tahun_ajaran ?? 'N/A',
-                'nilai_akhir' => $frs->nilai->nilai_huruf ?? null,
-                'status_penilaian' => $frs->nilai->status_penilaian ?? 'belum_dinilai',
+                'catatan_wali' => $frs->catatan_wali,
+                'id_mk_jadwal' => $matakuliahJadwal?->id_mk,
+                'kode_mk' => $masterMk?->kode_mk ?? 'N/A',
+                'nama_mk' => $masterMk?->nama_mk ?? 'N/A',
+                'sks' => (int) $sks,
+                'semester_pelaksanaan' => $matakuliahJadwal?->semester ?? 'N/A',
+                'dosen_pengampu' => $matakuliahJadwal?->dosen?->user?->name ?? $matakuliahJadwal?->dosen?->nama ?? 'N/A',
+                'ruang' => $matakuliahJadwal?->ruang?->nama_ruang ?? 'N/A',
+                'hari' => $matakuliahJadwal?->hari ?? 'N/A',
+                'jam_mulai' => $matakuliahJadwal?->jam_mulai ? Carbon::parse($matakuliahJadwal->jam_mulai)->format('H:i') : null,
+                'jam_selesai' => $matakuliahJadwal?->jam_selesai ? Carbon::parse($matakuliahJadwal->jam_selesai)->format('H:i') : null,
+                'tahun_ajaran_frs' => $frs->tahunAjaran?->nama_tahun_ajaran ?? 'N/A',
+                'nilai_akhir' => $frs->nilai?->nilai_huruf,
+                'status_penilaian' => $frs->nilai?->status_penilaian ?? 'belum_dinilai',
             ];
         });
 
@@ -226,14 +196,10 @@ class FrsController extends Controller
         ]);
     }
 
-    /**
-     * Membuat entri FRS baru.
-     * Validasi memastikan 'id_mk_jadwal' dikirim dari client.
-     */
     public function createFRS(Request $request)
     {
         $validatedData = $request->validate([
-            'id_mk_jadwal' => 'required|exists:matakuliah,id_mk' // Validasi input dari client
+            'id_mk_jadwal' => 'required|exists:matakuliah,id_mk' 
         ]);
 
         $user = Auth::user();
@@ -243,7 +209,7 @@ class FrsController extends Controller
             return response()->json(['message' => 'Data mahasiswa tidak ditemukan'], 404);
         }
          if (!$mahasiswa->kelas) {
-            return response()->json(['message' => 'Mahasiswa tidak terdaftar di kelas manapun'], 404);
+            return response()->json(['message' => 'Mahasiswa tidak terdaftar di kelas manapun yang valid untuk mengambil FRS'], 404);
         }
 
         $activeTahunAjaran = $this->getActiveTahunAjaran();
@@ -255,11 +221,11 @@ class FrsController extends Controller
             return response()->json(['message' => 'Periode pengisian FRS sedang tidak aktif/dibuka.'], 403);
         }
 
-        $idMkRequest = $validatedData['id_mk_jadwal']; // Menggunakan nilai yang sudah divalidasi
+        $idMkRequest = $validatedData['id_mk_jadwal'];
         
         $matakuliahJadwal = Matakuliah::where('id_mk', $idMkRequest)
             ->where('id_tahun_ajaran', $activeTahunAjaran->id)
-            ->where('kelas_id', $mahasiswa->id_kelas)
+            ->where('kelas_id', $mahasiswa->id_kelas) 
             ->first();
 
         if (!$matakuliahJadwal) {
@@ -269,23 +235,23 @@ class FrsController extends Controller
         }
 
         $existingFrs = FRS::where('id_mahasiswa', $mahasiswa->id_mahasiswa)
-            ->where('id_mk', $idMkRequest) // id_mk di tabel FRS merujuk ke id_mk di tabel matakuliah (jadwal)
+            ->where('id_mk', $idMkRequest) 
             ->where('id_tahun_ajaran', $activeTahunAjaran->id)
             ->first();
 
         if ($existingFrs) {
             return response()->json([
                 'message' => 'Mata kuliah ini sudah ada dalam FRS Anda untuk tahun ajaran ini.'
-            ], 422);
+            ], 422); 
         }
 
         DB::beginTransaction();
         try {
             $frs = new FRS();
             $frs->id_mahasiswa = $mahasiswa->id_mahasiswa;
-            $frs->id_mk = $idMkRequest; // Menyimpan id_mk dari jadwal kuliah yang dipilih
+            $frs->id_mk = $idMkRequest; 
             $frs->id_tahun_ajaran = $activeTahunAjaran->id;
-            $frs->status = 'pending'; // Status awal FRS
+            $frs->status = 'pending';
             $frs->save();
 
             Nilai::create([
@@ -295,52 +261,41 @@ class FrsController extends Controller
 
             DB::commit();
 
-            // Memuat relasi untuk respons
             $frs->load([
                 'jadwalKuliah' => function ($query) {
-                    $query->with(['masterMatakuliah.prodi', 'dosen.user', 'ruang', 'kelas']);
+                    $query->with(['masterMatakuliah.prodi', 'dosen.user', 'ruang']);
                 },
                 'tahunAjaran'
             ]);
+
             $matakuliahJadwalRes = $frs->jadwalKuliah;
-            $masterMkRes = $matakuliahJadwalRes ? $matakuliahJadwalRes->masterMatakuliah : null;
-            $sksRes = 'N/A';
-            if ($masterMkRes) {
-                $sksRes = ($masterMkRes->sks_teori ?? 0) + ($masterMkRes->sks_praktek ?? 0) + ($masterMkRes->sks_lapangan ?? 0);
-            } elseif ($matakuliahJadwalRes && isset($matakuliahJadwalRes->sks)) {
-                $sksRes = $matakuliahJadwalRes->sks;
-            }
+            $masterMkRes = $matakuliahJadwalRes?->masterMatakuliah;
+            $sksRes = $masterMkRes?->sks_total ?? $masterMkRes?->sks ?? 0;
 
             return response()->json([
-                'frs_item' => [
+                'frs_item' => [ 
                     'id_frs' => $frs->id_frs,
                     'status_frs' => $frs->status,
-                    'id_mk_jadwal' => $matakuliahJadwalRes->id_mk ?? null,
-                    'kode_mk' => $masterMkRes->kode_mk ?? $matakuliahJadwalRes->kode_mk ?? 'N/A',
-                    'nama_mk' => $masterMkRes->nama_mk ?? $matakuliahJadwalRes->nama_mk ?? 'N/A',
-                    'sks' => $sksRes,
-                    'semester_pelaksanaan' => $matakuliahJadwalRes->semester ?? 'N/A',
-                    'dosen_pengampu' => $matakuliahJadwalRes && $matakuliahJadwalRes->dosen && $matakuliahJadwalRes->dosen->user
-                                        ? $matakuliahJadwalRes->dosen->user->name
-                                        : 'N/A',
-                    'tahun_ajaran_frs' => $frs->tahunAjaran->nama_tahun_ajaran ?? 'N/A',
+                    'id_mk_jadwal' => $matakuliahJadwalRes?->id_mk,
+                    'kode_mk' => $masterMkRes?->kode_mk ?? 'N/A',
+                    'nama_mk' => $masterMkRes?->nama_mk ?? 'N/A',
+                    'sks' => (int) $sksRes,
+                    'semester_pelaksanaan' => $matakuliahJadwalRes?->semester ?? 'N/A',
+                    'dosen_pengampu' => $matakuliahJadwalRes?->dosen?->user?->name ?? $matakuliahJadwalRes?->dosen?->nama ?? 'N/A',
+                    'tahun_ajaran_frs' => $frs->tahunAjaran?->nama_tahun_ajaran ?? 'N/A',
                 ],
                 'message' => 'FRS berhasil ditambahkan dan menunggu persetujuan.'
             ], 201);
 
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Gagal membuat FRS: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('Gagal membuat FRS (Mahasiswa): ' . $e->getMessage(), ['exception' => $e]);
             return response()->json([
                 'message' => 'Gagal membuat FRS. Terjadi kesalahan internal.',
             ], 500);
         }
     }
 
-    /**
-     * Menghapus entri FRS.
-     * Hanya FRS dengan status 'pending' yang dapat dihapus.
-     */
     public function deleteFRS(Request $request, $id_frs_param)
     {
         $user = Auth::user();
@@ -367,23 +322,20 @@ class FrsController extends Controller
                 ->first();
 
             if (!$frs) {
-                DB::rollBack(); // Rollback jika FRS tidak ditemukan sebelum melanjutkan
+                DB::rollBack();
                 return response()->json([
                     'message' => 'Data FRS tidak ditemukan atau Anda tidak berhak menghapusnya.'
                 ], 404);
             }
 
-            // Validasi status FRS harus 'pending' untuk bisa dihapus
             if ($frs->status !== 'pending') {
-                DB::rollBack(); // Rollback jika status tidak sesuai
+                DB::rollBack();
                 return response()->json([
                     'message' => 'Hanya FRS dengan status "pending" yang dapat dihapus.'
-                ], 422); // 422 Unprocessable Entity
+                ], 422);
             }
 
-            // Hapus record nilai terkait terlebih dahulu
             Nilai::where('id_frs', $frs->id_frs)->delete();
-            // Kemudian hapus FRS
             $frs->delete();
 
             DB::commit();
@@ -392,42 +344,10 @@ class FrsController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Gagal menghapus FRS: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('Gagal menghapus FRS (Mahasiswa): ' . $e->getMessage(), ['exception' => $e]);
             return response()->json([
                 'message' => 'Gagal menghapus FRS. Terjadi kesalahan internal.',
             ], 500);
         }
     }
-
-    /**
-     * Endpoint debug untuk memeriksa periode FRS secara manual (opsional).
-     */
-    public function debugFrsPeriod()
-    {
-        $activeTahunAjaran = $this->getActiveTahunAjaran();
-        
-        if (!$activeTahunAjaran) {
-            return response()->json([
-                'debug_message' => 'Tidak ada Tahun Ajaran aktif yang ditemukan oleh getActiveTahunAjaran()',
-                'is_period_open_result' => false
-            ]);
-        }
-
-        $isOpen = $this->isFrsPeriodOpen($activeTahunAjaran);
-        
-        return response()->json([
-            'tahun_ajaran_aktif_info' => [
-                'id' => $activeTahunAjaran->id,
-                'nama' => $activeTahunAjaran->nama_tahun_ajaran,
-                'status' => $activeTahunAjaran->status,
-                'tanggal_mulai_frs_db' => $activeTahunAjaran->tanggal_mulai_frs instanceof Carbon ? $activeTahunAjaran->tanggal_mulai_frs->toDateString() : $activeTahunAjaran->tanggal_mulai_frs,
-                'tanggal_selesai_frs_db' => $activeTahunAjaran->tanggal_selesai_frs instanceof Carbon ? $activeTahunAjaran->tanggal_selesai_frs->toDateString() : $activeTahunAjaran->tanggal_selesai_frs,
-            ],
-            'waktu_server_sekarang_wib' => Carbon::now()->toDateTimeString(),
-            'status_periode_frs_terbuka' => $isOpen,
-            'info_tambahan' => 'Silakan periksa file log (storage/logs/laravel.log) untuk detail "PENGECEKAN PERIODE FRS DETAIL (WIB) FINAL" jika status periode terbuka masih salah.'
-        ]);
-    }
-
 }
-    
