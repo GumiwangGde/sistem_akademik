@@ -16,12 +16,11 @@ use App\Http\Controllers\Mobile\Mahasiswa\ProfileController as MahasiswaProfileC
 use App\Http\Controllers\Mobile\Mahasiswa\FrsController as MahasiswaFrsController;
 use App\Http\Controllers\Mobile\Mahasiswa\JadwalController as MahasiswaJadwalController;
 use App\Http\Controllers\Mobile\Mahasiswa\NilaiController as MahasiswaNilaiController;
-// Hapus MahasiswaController lama jika semua sudah dipindah:
-// use App\Http\Controllers\Mobile\MahasiswaController;
-
+use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaDashboardController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Contracts\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,16 +47,18 @@ Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa'
     Route::get('/profile', [MahasiswaProfileController::class, 'profile']);
     
     // FRS Management
-    Route::get('/matakuliah/available', [MahasiswaFrsController::class, 'getAvailableMatakuliah']); // Path diubah agar lebih deskriptif
+    Route::get('/matakuliah/available', [MahasiswaFrsController::class, 'getAvailableMatakuliah']);
     Route::get('/frs', [MahasiswaFrsController::class, 'getFRS']);
     Route::post('/frs', [MahasiswaFrsController::class, 'createFRS']);
-    Route::delete('/frs/{id_frs}', [MahasiswaFrsController::class, 'deleteFRS']); // Menggunakan {id_frs} agar konsisten
+    Route::delete('/frs/{id_frs}', [MahasiswaFrsController::class, 'deleteFRS']);
     
     // Jadwal
     Route::get('/jadwal', [MahasiswaJadwalController::class, 'getJadwal']);
     
     // Nilai
     Route::get('/nilai', [MahasiswaNilaiController::class, 'getNilai']);
+
+    Route::get('/dashboard/jadwal-hari-ini', [MahasiswaDashboardController::class, 'getJadwalHariIni']);
 });
 
 // Mobile Dosen Routes
