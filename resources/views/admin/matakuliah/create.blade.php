@@ -75,39 +75,6 @@
                                 @enderror
                             </div>
                             
-                            {{-- Kode MK (Jadwal) --}}
-                            <div>
-                                <label for="kode_mk" class="block text-sm font-medium text-gray-700">{{ __('Kode MK') }} <span class="text-red-500">*</span></label>
-                                <input type="text" name="kode_mk" id="kode_mk" value="{{ old('kode_mk') }}" required readonly
-                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm cursor-not-allowed @error('kode_mk') border-red-500 @enderror"
-                                    placeholder="Akan terisi otomatis">
-                                @error('kode_mk')
-                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- Nama MK (Jadwal) --}}
-                            <div>
-                                <label for="nama_mk" class="block text-sm font-medium text-gray-700">{{ __('Nama Mata Kuliah') }} <span class="text-red-500">*</span></label>
-                                <input type="text" name="nama_mk" id="nama_mk" value="{{ old('nama_mk') }}" required readonly
-                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm cursor-not-allowed @error('nama_mk') border-red-500 @enderror"
-                                    placeholder="Akan terisi otomatis">
-                                @error('nama_mk')
-                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- SKS --}}
-                            <div>
-                                <label for="sks" class="block text-sm font-medium text-gray-700">{{ __('SKS') }} <span class="text-red-500">*</span></label>
-                                <input type="number" name="sks" id="sks" value="{{ old('sks') }}" required readonly min="0" max="6"
-                                    class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm cursor-not-allowed @error('sks') border-red-500 @enderror"
-                                    placeholder="Akan terisi otomatis">
-                                @error('sks')
-                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
                             {{-- Semester Pelaksanaan --}}
                             <div>
                                 <label for="semester" class="block text-sm font-medium text-gray-700">{{ __('Semester Pelaksanaan') }} <span class="text-red-500">*</span></label>
