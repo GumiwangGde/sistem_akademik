@@ -23,6 +23,7 @@ use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaBeritaController; // PENAMBAH
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Contracts\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,12 +60,9 @@ Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa'
     Route::get('/dashboard/jadwal-hari-ini', [MahasiswaDashboardController::class, 'getJadwalHariIni'])->name('dashboard.jadwalHariIni');
     
     // Nilai
-    Route::get('/nilai', [MahasiswaNilaiController::class, 'getNilai'])->name('nilai.index');
+    Route::get('/nilai', [MahasiswaNilaiController::class, 'getNilai']);
 
-    // --- PENAMBAHAN ROUTE BERITA UNTUK MAHASISWA ---
-    Route::get('/berita', [MahasiswaBeritaController::class, 'index'])->name('berita.index');
-    Route::get('/berita/{slug}', [MahasiswaBeritaController::class, 'show'])->name('berita.show');
-    // --- AKHIR PENAMBAHAN ROUTE BERITA MAHASISWA ---
+    Route::get('/dashboard/jadwal-hari-ini', [MahasiswaDashboardController::class, 'getJadwalHariIni']);
 });
 
 // Mobile Dosen Routes
