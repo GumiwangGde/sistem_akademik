@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome to </title>
-    @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
+    {{-- @vite('resources/css/app.css')
+    @vite('resources/js/app.js') --}}
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class=" font-poppins h-full scroll-smooth">
     <!-- Header -->
