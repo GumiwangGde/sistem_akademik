@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Mobile\Dosen;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Dosen;
-use App\Models\FRS;
+use App\Models\FRS; // Pastikan FRS di-import dengan benar
 use App\Models\Mahasiswa;
 use App\Models\Kelas;
 use App\Models\TahunAjaran;
-use App\Models\User;
+// use App\Models\User; // Tidak digunakan secara langsung di method ini
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
@@ -18,7 +18,6 @@ class FrsController extends Controller
     protected function getActiveTahunAjaranId()
     {
         $activeTahunAjaran = TahunAjaran::where('status', 'aktif')->first();
-        
         return $activeTahunAjaran ? $activeTahunAjaran->id : null;
     }
 
@@ -41,9 +40,9 @@ class FrsController extends Controller
         }
 
         $kelasWaliIds = Kelas::where('id_dosen_wali', $dosen->id_dosen) 
-                               ->where('id_tahun_ajaran', $activeTahunAjaranId) 
-                               ->pluck('id_kelas')
-                               ->toArray();
+                                ->where('id_tahun_ajaran', $activeTahunAjaranId) 
+                                ->pluck('id_kelas')
+                                ->toArray();
 
         if (empty($kelasWaliIds)) {
             return response()->json([
@@ -53,8 +52,8 @@ class FrsController extends Controller
         }
 
         $mahasiswaIds = Mahasiswa::whereIn('id_kelas', $kelasWaliIds)
-                                 ->pluck('id_mahasiswa')
-                                 ->toArray();
+                                    ->pluck('id_mahasiswa')
+                                    ->toArray();
 
         if (empty($mahasiswaIds)) {
             return response()->json([
@@ -91,10 +90,11 @@ class FrsController extends Controller
 
     public function approveFRS(Request $request)
     {
+        Log::info('approveFRS - Data Request yang Diterima:', $request->all());
+
         $validatedData = $request->validate([
             'id_frs' => 'required|exists:frs,id_frs',
-            'status' => ['required', Rule::in(['disetujui', 'ditolak'])],
-            'catatan_wali' => 'nullable|string|max:255'
+            'status' => ['required', Rule::in(['disetujui', 'ditolak', 'pending'])], 
         ]);
 
         $user = $request->user();
@@ -114,13 +114,13 @@ class FrsController extends Controller
         }
 
         $frs = FRS::with('mahasiswa.kelas')
-                  ->find($validatedData['id_frs']);
+                    ->find($validatedData['id_frs']);
 
         if (!$frs) {
             return response()->json(['message' => 'FRS tidak ditemukan'], 404);
         }
 
-        if ($frs->id_tahun_ajaran != $activeTahunAjaranId) { // FK ini harus merujuk ke 'id' dari tahun_ajaran
+        if ($frs->id_tahun_ajaran != $activeTahunAjaranId) {
             return response()->json(['message' => 'FRS ini bukan untuk tahun ajaran aktif'], 403);
         }
 
@@ -129,16 +129,13 @@ class FrsController extends Controller
             return response()->json(['message' => 'Mahasiswa atau data kelas mahasiswa terkait FRS tidak ditemukan'], 404);
         }
 
-        if ($mahasiswa->kelas->id_dosen_wali != $dosen->id_dosen || $mahasiswa->kelas->id_tahun_ajaran != $activeTahunAjaranId) { // FK id_tahun_ajaran di kelas juga harus merujuk ke 'id' dari tahun_ajaran
+        if ($mahasiswa->kelas->id_dosen_wali != $dosen->id_dosen || $mahasiswa->kelas->id_tahun_ajaran != $activeTahunAjaranId) {
             return response()->json([
                 'message' => 'Anda tidak memiliki wewenang untuk FRS mahasiswa ini atau mahasiswa bukan bagian dari perwalian Anda di tahun ajaran aktif.'
             ], 403);
         }
 
         $frs->status = $validatedData['status'];
-        if (isset($validatedData['catatan_wali'])) {
-            $frs->catatan_wali = $validatedData['catatan_wali'];
-        }
         $frs->save();
 
         $frs->load([
@@ -156,9 +153,15 @@ class FrsController extends Controller
             'tahunAjaran' 
         ]);
 
+        $statusTerformat = strtoupper($validatedData['status']);
+        $message = "Status FRS berhasil diubah menjadi $statusTerformat.";
+        if ($validatedData['status'] == 'pending') {
+            $message = "Status FRS berhasil dikembalikan ke PENDING.";
+        }
+
         return response()->json([
             'frs' => $frs,
-            'message' => "FRS berhasil " . ($validatedData['status'] == 'disetujui' ? 'disetujui' : 'ditolak')
+            'message' => $message
         ]);
     }
 
@@ -181,13 +184,13 @@ class FrsController extends Controller
         }
 
         $mahasiswa = Mahasiswa::with(['user', 'prodi', 'kelas'])
-                              ->find($id_mahasiswa_param);
+                                    ->find($id_mahasiswa_param);
 
         if (!$mahasiswa) {
             return response()->json(['message' => 'Data mahasiswa tidak ditemukan'], 404);
         }
 
-        if (!$mahasiswa->kelas || $mahasiswa->kelas->id_dosen_wali != $dosen->id_dosen || $mahasiswa->kelas->id_tahun_ajaran != $activeTahunAjaranId) { // FK id_tahun_ajaran di kelas juga harus merujuk ke 'id' dari tahun_ajaran
+        if (!$mahasiswa->kelas || $mahasiswa->kelas->id_dosen_wali != $dosen->id_dosen || $mahasiswa->kelas->id_tahun_ajaran != $activeTahunAjaranId) {
             return response()->json([
                 'message' => 'Anda tidak memiliki wewenang untuk melihat FRS mahasiswa ini atau mahasiswa bukan bagian dari perwalian Anda di tahun ajaran aktif.'
             ], 403);
@@ -212,89 +215,59 @@ class FrsController extends Controller
         ->orderBy('created_at', 'desc')
         ->get();
 
+        $namaMahasiswaUntukPesan = $mahasiswa->user->name ?? $mahasiswa->nama ?? 'Mahasiswa';
+
+
         return response()->json([
             'frs_mahasiswa' => $allFrsMahasiswa,
             'mahasiswa_detail' => $mahasiswa,
-            'message' => 'Semua data FRS untuk mahasiswa ' . $mahasiswa->nama . ' pada tahun ajaran aktif berhasil diambil'
+            'message' => 'Semua data FRS untuk mahasiswa ' . $namaMahasiswaUntukPesan . ' pada tahun ajaran aktif berhasil diambil'
         ]);
     }
 
     public function editFrsByDosenWali(Request $request, FRS $frs)
     {
+        Log::info('editFrsByDosenWali RAW REQUEST:', $request->all());
         $validatedData = $request->validate([
-            // ID jadwal kuliah BARU yang akan menggantikan yang lama di FRS ini
-            'id_mk_jadwal_baru' => 'required|exists:matakuliah,id_mk', // 'matakuliah' adalah nama tabel jadwal kuliah Anda
-            'catatan_wali_edit' => 'nullable|string|max:255'
+            'id_mk_jadwal_baru' => 'required|exists:matakuliah,id_mk', 
         ]);
 
         $user = $request->user();
         $dosen = Dosen::where('user_id', $user->id)->first();
 
-        if (!$dosen) {
-            return response()->json(['message' => 'Data dosen tidak ditemukan'], 404);
-        }
-
-        if (!$dosen->is_dosen_wali) {
-            return response()->json(['message' => 'Hanya dosen wali yang dapat mengedit FRS'], 403);
+        if (!$dosen || !$dosen->is_dosen_wali) {
+            return response()->json(['message' => 'Akses ditolak atau data dosen tidak ditemukan.'], 403);
         }
 
         $activeTahunAjaranId = $this->getActiveTahunAjaranId();
         if (!$activeTahunAjaranId) {
-            return response()->json(['message' => 'Tidak ada tahun ajaran aktif yang ditemukan'], 404);
+            return response()->json(['message' => 'Tidak ada tahun ajaran aktif.'], 404);
         }
 
-        // Muat relasi mahasiswa dan kelasnya untuk verifikasi
         $frs->load('mahasiswa.kelas');
 
-        if ($frs->id_tahun_ajaran != $activeTahunAjaranId) {
-            return response()->json(['message' => 'FRS ini bukan untuk tahun ajaran aktif'], 403);
+        if ($frs->id_tahun_ajaran != $activeTahunAjaranId || 
+            !$frs->mahasiswa || 
+            !$frs->mahasiswa->kelas ||
+            $frs->mahasiswa->kelas->id_dosen_wali != $dosen->id_dosen ||
+            $frs->mahasiswa->kelas->id_tahun_ajaran != $activeTahunAjaranId) {
+            return response()->json(['message' => 'Tidak berwenang untuk FRS ini atau FRS tidak valid.'], 403);
         }
 
-        $mahasiswa = $frs->mahasiswa;
-        if (!$mahasiswa || !$mahasiswa->kelas) {
-            return response()->json(['message' => 'Mahasiswa atau data kelas mahasiswa terkait FRS tidak ditemukan'], 404);
-        }
-
-        if ($mahasiswa->kelas->id_dosen_wali != $dosen->id_dosen || $mahasiswa->kelas->id_tahun_ajaran != $activeTahunAjaranId) {
-            return response()->json([
-                'message' => 'Anda tidak memiliki wewenang untuk FRS mahasiswa ini atau mahasiswa bukan bagian dari perwalian Anda di tahun ajaran aktif.'
-            ], 403);
-        }
-
-        // Logika tambahan: Dosen Wali idealnya hanya bisa mengedit FRS yang pending atau ditolak
         if (!in_array($frs->status, ['pending', 'ditolak'])) {
-            return response()->json(['message' => 'Hanya FRS dengan status pending atau ditolak yang dapat diedit oleh Dosen Wali.'], 403);
+            return response()->json(['message' => 'Hanya FRS dengan status pending atau ditolak yang dapat diedit mata kuliahnya.'], 403);
         }
 
-        // Update FRS
-        $frs->id_jadwal_kuliah = $validatedData['id_mk_jadwal_baru']; // Sesuaikan 'id_jadwal_kuliah' dengan nama kolom FK di tabel FRS Anda
-        
-        // Setelah diedit oleh dosen wali, status bisa direset ke 'pending' lagi
-        // atau tetap, tergantung alur bisnis Anda. Misal kita reset ke pending.
+        $frs->id_jadwal_kuliah = $validatedData['id_mk_jadwal_baru']; 
         $frs->status = 'pending'; 
-        $frs->catatan_wali = $validatedData['catatan_wali_edit'] ?? "Mata kuliah diubah oleh Dosen Wali.";
-        
+        $frs->catatan_wali = "Mata kuliah diubah oleh Dosen Wali."; 
+
+
         $frs->save();
-
-        // Muat kembali semua relasi untuk respons
-        $frs->load([
-            'mahasiswa' => function ($query) {
-                $query->with(['user', 'prodi', 'kelas']);
-            },
-            'jadwalKuliah' => function ($query) {
-                $query->with([
-                    'masterMatakuliah.prodi',
-                    'dosen.user',
-                    'kelas',
-                    'tahunAjaran'
-                ]);
-            },
-            'tahunAjaran'
-        ]);
-
+        $frs->load([]);
         return response()->json([
             'frs' => $frs,
-            'message' => 'FRS berhasil diedit oleh Dosen Wali dan menunggu persetujuan kembali.'
+            'message' => 'FRS berhasil diedit dan status kembali ke pending.'
         ]);
     }
 }
