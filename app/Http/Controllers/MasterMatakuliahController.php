@@ -13,19 +13,13 @@ use Illuminate\Http\RedirectResponse;
 
 class MasterMatakuliahController extends Controller
 {
-    /**
-     * Menampilkan daftar semua master mata kuliah.
-     */
     public function index(Request $request): View
     {
-        $query = MasterMatakuliah::with('prodi'); // Eager load relasi prodi
+        $query = MasterMatakuliah::with('prodi'); 
 
-        // Filter berdasarkan Program Studi
         if ($request->filled('id_prodi')) {
             $query->where('id_prodi', $request->id_prodi);
         }
-
-        // Pencarian berdasarkan kode MK atau nama MK
         if ($request->filled('search')) {
             $searchTerm = '%' . $request->search . '%';
             $query->where(function ($q) use ($searchTerm) {
@@ -35,23 +29,17 @@ class MasterMatakuliahController extends Controller
         }
 
         $masterMatakuliah = $query->orderBy('nama_mk', 'asc')->paginate(10)->withQueryString();
-        $prodiList = Prodi::orderBy('nama_prodi')->get(); // Untuk dropdown filter
+        $prodiList = Prodi::orderBy('nama_prodi')->get(); 
 
         return view('admin.mastermatakuliah.index', compact('masterMatakuliah', 'prodiList'));
     }
 
-    /**
-     * Menampilkan form untuk membuat master mata kuliah baru.
-     */
     public function create(): View
     {
         $prodiList = Prodi::orderBy('nama_prodi')->get();
         return view('admin.mastermatakuliah.create', compact('prodiList'));
     }
 
-    /**
-     * Menyimpan master mata kuliah baru ke database.
-     */
     public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
@@ -79,20 +67,13 @@ class MasterMatakuliahController extends Controller
         }
     }
 
-    /**
-     * Menampilkan detail spesifik master mata kuliah (opsional).
-     */
     public function show($id_master_mk): View
     {
-        $masterMatakuliah = MasterMatakuliah::with(['prodi', 'jadwalKuliah.tahunAjaran']) // jadwalKuliah adalah relasi hasMany ke Matakuliah (Jadwal)
+        $masterMatakuliah = MasterMatakuliah::with(['prodi', 'jadwalKuliah.tahunAjaran']) 
                                           ->findOrFail($id_master_mk);
-        // Anda bisa menghitung berapa kali MK ini dijadwalkan, dll.
         return view('admin.mastermatakuliah.show', compact('masterMatakuliah'));
     }
 
-    /**
-     * Menampilkan form untuk mengedit data master mata kuliah.
-     */
     public function edit($id_master_mk): View
     {
         $masterMatakuliah = MasterMatakuliah::findOrFail($id_master_mk);
@@ -100,9 +81,6 @@ class MasterMatakuliahController extends Controller
         return view('admin.mastermatakuliah.edit', compact('masterMatakuliah', 'prodiList'));
     }
 
-    /**
-     * Memperbarui data master mata kuliah di database.
-     */
     public function update(Request $request, $id_master_mk): RedirectResponse
     {
         $masterMatakuliah = MasterMatakuliah::findOrFail($id_master_mk);
@@ -132,20 +110,13 @@ class MasterMatakuliahController extends Controller
         }
     }
 
-    /**
-     * Menghapus data master mata kuliah dari database.
-     */
     public function destroy($id_master_mk): RedirectResponse
     {
         $masterMatakuliah = MasterMatakuliah::findOrFail($id_master_mk);
 
-        // PENTING: Cek apakah master mata kuliah masih digunakan dalam Jadwal Kuliah (tabel matakuliah)
-        // Asumsi ada relasi `jadwalKuliah()` di model `MasterMatakuliah`
         if ($masterMatakuliah->jadwalKuliah()->exists()) {
              return redirect()->route('admin.mastermatakuliah.index')->with('error', 'Master Mata Kuliah tidak dapat dihapus karena sudah pernah atau sedang dijadwalkan.');
         }
-        // Pertimbangkan status "tidak aktif" daripada menghapus fisik jika sudah ada history
-        // penggunaannya, meskipun belum dijadwalkan (misal, jika ada rencana kurikulum).
 
         DB::beginTransaction();
         try {

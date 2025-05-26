@@ -72,10 +72,7 @@
                                         Nama Mata Kuliah
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        SKS (T/P/L)
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Total SKS
+                                        SKS
                                     </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Prodi
@@ -101,10 +98,7 @@
                                             {{ $mk->nama_mk }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $mk->sks_teori ?? 0 }}/{{ $mk->sks_praktek ?? 0 }}/{{ $mk->sks_lapangan ?? 0 }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $mk->sks_total }} {{-- Menggunakan accessor sks_total dari model --}}
+                                            {{ $mk->sks }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $mk->prodi->nama_prodi ?? '-' }}

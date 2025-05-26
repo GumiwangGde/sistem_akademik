@@ -44,18 +44,9 @@
                                     <dt class="text-sm font-medium text-gray-500">Semester Default Penawaran</dt>
                                     <dd class="mt-1 text-sm text-gray-900">{{ $masterMatakuliah->semester_default ?? '-' }}</dd>
                                 </div>
-
                                 <div class="sm:col-span-1">
-                                    <dt class="text-sm font-medium text-gray-500">SKS Teori</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $masterMatakuliah->sks_teori }}</dd>
-                                </div>
-                                <div class="sm:col-span-1">
-                                    <dt class="text-sm font-medium text-gray-500">SKS Praktek</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $masterMatakuliah->sks_praktek }}</dd>
-                                </div>
-                                <div class="sm:col-span-1">
-                                    <dt class="text-sm font-medium text-gray-500">SKS Lapangan</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $masterMatakuliah->sks_lapangan }}</dd>
+                                    <dt class="text-sm font-medium text-gray-500">SKS</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ $masterMatakuliah->sks }}</dd>
                                 </div>
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm font-medium text-gray-500">Total SKS</dt>

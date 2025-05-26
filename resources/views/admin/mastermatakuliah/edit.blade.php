@@ -52,32 +52,11 @@
                                 @enderror
                             </div>
 
-                            {{-- SKS Teori --}}
                             <div>
-                                <label for="sks_teori" class="block text-sm font-medium text-gray-700">{{ __('SKS Teori') }} <span class="text-red-500">*</span></label>
-                                <input type="number" name="sks_teori" id="sks_teori" value="{{ old('sks_teori', $masterMatakuliah->sks_teori) }}" required min="0"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('sks_teori') border-red-500 @enderror">
-                                @error('sks_teori')
-                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- SKS Praktek --}}
-                            <div>
-                                <label for="sks_praktek" class="block text-sm font-medium text-gray-700">{{ __('SKS Praktek') }} <span class="text-red-500">*</span></label>
-                                <input type="number" name="sks_praktek" id="sks_praktek" value="{{ old('sks_praktek', $masterMatakuliah->sks_praktek) }}" required min="0"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('sks_praktek') border-red-500 @enderror">
-                                @error('sks_praktek')
-                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            {{-- SKS Lapangan --}}
-                            <div>
-                                <label for="sks_lapangan" class="block text-sm font-medium text-gray-700">{{ __('SKS Lapangan') }} <span class="text-red-500">*</span></label>
-                                <input type="number" name="sks_lapangan" id="sks_lapangan" value="{{ old('sks_lapangan', $masterMatakuliah->sks_lapangan) }}" required min="0"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('sks_lapangan') border-red-500 @enderror">
-                                @error('sks_lapangan')
+                                <label for="sks" class="block text-sm font-medium text-gray-700">{{ __('SKS') }} <span class="text-red-500">*</span></label>
+                                <input type="number" name="sks" id="sks" value="{{ old('sks', $masterMatakuliah->sks) }}" required min="0"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('sks') border-red-500 @enderror">
+                                @error('sks')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>

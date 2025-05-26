@@ -9,8 +9,8 @@ class MasterMatakuliah extends Model
 {
     use HasFactory;
 
-    protected $table = 'master_matakuliah'; // Nama tabel di database
-    protected $primaryKey = 'id_master_mk'; // Primary key tabel
+    protected $table = 'master_matakuliah'; 
+    protected $primaryKey = 'id_master_mk'; 
 
     protected $fillable = [
         'kode_mk',
@@ -21,19 +21,8 @@ class MasterMatakuliah extends Model
         'deskripsi',
     ];
 
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
     protected $appends = ['sks_total'];
 
-    /**
-     * Accessor untuk sks_total.
-     * Meskipun di database adalah generated column, kita bisa definisikan accessor
-     * jika ingin memastikan nilainya selalu ada saat model di-serialize.
-     * Jika kolom virtual di DB sudah bekerja dengan baik, ini mungkin tidak wajib.
-     */
     public function getSksTotalAttribute()
     {
         return ($this->sks ?? 0);
@@ -47,7 +36,7 @@ class MasterMatakuliah extends Model
     }
 
     // Relasi: Satu MasterMatakuliah bisa ada di banyak JadwalKuliah (Matakuliah)
-    public function jadwalKuliah() // Menggunakan nama yang lebih deskriptif
+    public function jadwalKuliah() 
     {
         return $this->hasMany(Matakuliah::class, 'id_master_mk');
     }
