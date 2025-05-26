@@ -1,10 +1,9 @@
-{{-- resources/views/layouts/navigation.blade.php --}}
 <head>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <aside class="bg-white fixed inset-0 z-50 my-4 ml-4 h-[calc(100vh-32px)] w-72 rounded-xl transition-transform duration-300 xl:translate-x-0 -translate-x-80 shadow-md overflow-hidden border border-gray-200">
-    <div class="px-6 py-6 border-b border-white">
+    <div class="px-6 py-6 border-b border-white"> {{-- Consider changing border-white if you want a visible border --}}
         <a class="flex items-center" href="{{ route('admin.dashboard') }}">
             <div class="bg-blue-500 w-10 h-10 rounded-lg flex items-center justify-center">
                 <i class="fas fa-university text-white text-lg"></i>
@@ -16,7 +15,7 @@
         </a>
     </div>
     
-    <div class="px-4 py-5 overflow-y-auto h-[calc(100%-150px)]"> {{-- Added overflow-y-auto and height --}}
+    <div class="px-4 py-5 overflow-y-auto h-[calc(100%-150px)]">
         <nav>
             <ul class="space-y-1.5">
                 <li>
@@ -129,13 +128,33 @@
                         <div class="w-8 h-8 flex items-center justify-center">
                             <i class="fas fa-book-reader {{ request()->routeIs('admin.matakuliah.*') ? 'text-white' : 'text-blue-500' }}"></i>
                         </div>
-                        <span class="ml-3">Jadwal Kuliah</span> {{-- Diubah dari Matakuliah menjadi Jadwal Kuliah --}}
+                        <span class="ml-3">Jadwal Kuliah</span>
                         @if(request()->routeIs('admin.matakuliah.*'))
                         <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
                         @endif
                     </a>
                 </li>
-                {{-- Tambahkan FRS dan Nilai di sini jika sudah ada controllernya --}}
+                
+                {{-- PENAMBAHAN MENU BERITA --}}
+                <li class="pt-3 pb-1 px-4">
+                    <span class="text-xs font-semibold text-gray-400 uppercase">Konten & Informasi</span>
+                </li>
+                <li>
+                    <a href="{{ route('admin.berita.index') }}" 
+                       class="flex items-center px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200
+                             {{ request()->routeIs('admin.berita.*') 
+                                ? 'bg-blue-500 text-white shadow-sm' 
+                                : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
+                        <div class="w-8 h-8 flex items-center justify-center">
+                            <i class="fas fa-newspaper {{ request()->routeIs('admin.berita.*') ? 'text-white' : 'text-blue-500' }}"></i>
+                        </div>
+                        <span class="ml-3">Berita</span>
+                        @if(request()->routeIs('admin.berita.*'))
+                        <div class="ml-auto bg-white opacity-70 h-2 w-2 rounded-full"></div>
+                        @endif
+                    </a>
+                </li>
+                {{-- AKHIR PENAMBAHAN MENU BERITA --}}
 
 
                 {{-- Menu Pengguna --}}
@@ -201,7 +220,7 @@
                         </div>
                         <div class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-white"></div>
                     </div>
-                    <div class="flex-1 text-left"> {{-- Added text-left --}}
+                    <div class="flex-1 text-left">
                         <p class="text-sm font-medium text-gray-800 truncate">
                             {{ Auth::user()->name }}
                         </p>

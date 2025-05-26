@@ -14,6 +14,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TahunAjaranController;    // Controller Baru
 use App\Http\Controllers\ProdiController;           // Controller Baru
 use App\Http\Controllers\MasterMatakuliahController; // Controller Baru
+use App\Http\Controllers\BeritaController;
 
 // Halaman Utama
 Route::get('/', function () {
@@ -104,6 +105,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     // Route untuk Master Mata Kuliah
     Route::resource('mastermatakuliah', MasterMatakuliahController::class);
     // --- AKHIR PENAMBAHAN ROUTE BARU ---
+    Route::resource('berita', BeritaController::class);
 
 });
 

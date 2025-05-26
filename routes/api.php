@@ -10,14 +10,15 @@ use App\Http\Controllers\Mobile\Dosen\FrsController as DosenFrsController;
 use App\Http\Controllers\Mobile\Dosen\NilaiController as DosenNilaiController;
 use App\Http\Controllers\Mobile\Dosen\WaliController as DosenWaliController;
 use App\Http\Controllers\Mobile\Dosen\DosenDashboardController;
+use App\Http\Controllers\Mobile\Dosen\DosenBeritaController; // PENAMBAHAN: Controller Berita Dosen
 
-// Import Mahasiswa controllers (BARU)
+// Import Mahasiswa controllers
 use App\Http\Controllers\Mobile\Mahasiswa\ProfileController as MahasiswaProfileController;
 use App\Http\Controllers\Mobile\Mahasiswa\FrsController as MahasiswaFrsController;
 use App\Http\Controllers\Mobile\Mahasiswa\JadwalController as MahasiswaJadwalController;
 use App\Http\Controllers\Mobile\Mahasiswa\NilaiController as MahasiswaNilaiController;
-// Hapus MahasiswaController lama jika semua sudah dipindah:
-// use App\Http\Controllers\Mobile\MahasiswaController;
+use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaDashboardController; // Sudah ada sebelumnya
+use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaBeritaController; // PENAMBAHAN: Controller Berita Mahasiswa
 
 
 use Illuminate\Http\Request;
@@ -42,44 +43,55 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-// Mobile Mahasiswa Routes (DIPERBARUI)
-Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa')->group(function () {
+// Mobile Mahasiswa Routes
+Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa')->name('mobile.mahasiswa.')->group(function () {
     // Profile
-    Route::get('/profile', [MahasiswaProfileController::class, 'profile']);
+    Route::get('/profile', [MahasiswaProfileController::class, 'profile'])->name('profile');
     
     // FRS Management
-    Route::get('/matakuliah/available', [MahasiswaFrsController::class, 'getAvailableMatakuliah']); // Path diubah agar lebih deskriptif
-    Route::get('/frs', [MahasiswaFrsController::class, 'getFRS']);
-    Route::post('/frs', [MahasiswaFrsController::class, 'createFRS']);
-    Route::delete('/frs/{id_frs}', [MahasiswaFrsController::class, 'deleteFRS']); // Menggunakan {id_frs} agar konsisten
+    Route::get('/matakuliah/available', [MahasiswaFrsController::class, 'getAvailableMatakuliah'])->name('frs.availableMatakuliah');
+    Route::get('/frs', [MahasiswaFrsController::class, 'getMyFRS'])->name('frs.index'); // Diubah ke getMyFRS dan diberi nama index
+    Route::post('/frs', [MahasiswaFrsController::class, 'createFRS'])->name('frs.store');
+    Route::delete('/frs/{id_frs}', [MahasiswaFrsController::class, 'deleteFRS'])->name('frs.destroy');
     
     // Jadwal
-    Route::get('/jadwal', [MahasiswaJadwalController::class, 'getJadwal']);
+    Route::get('/jadwal', [MahasiswaJadwalController::class, 'getJadwal'])->name('jadwal.index');
+    Route::get('/dashboard/jadwal-hari-ini', [MahasiswaDashboardController::class, 'getJadwalHariIni'])->name('dashboard.jadwalHariIni');
     
     // Nilai
-    Route::get('/nilai', [MahasiswaNilaiController::class, 'getNilai']);
+    Route::get('/nilai', [MahasiswaNilaiController::class, 'getNilai'])->name('nilai.index');
+
+    // --- PENAMBAHAN ROUTE BERITA UNTUK MAHASISWA ---
+    Route::get('/berita', [MahasiswaBeritaController::class, 'index'])->name('berita.index');
+    Route::get('/berita/{slug}', [MahasiswaBeritaController::class, 'show'])->name('berita.show');
+    // --- AKHIR PENAMBAHAN ROUTE BERITA MAHASISWA ---
 });
 
 // Mobile Dosen Routes
-Route::middleware(['auth:sanctum', 'role:dosen'])->prefix('mobile/dosen')->group(function () {
+Route::middleware(['auth:sanctum', 'role:dosen'])->prefix('mobile/dosen')->name('mobile.dosen.')->group(function () {
     // Profile
-    Route::get('/profile', [DosenProfileController::class, 'profile']);
-    Route::put('/profile', [DosenProfileController::class, 'updateProfile']);
+    Route::get('/profile', [DosenProfileController::class, 'profile'])->name('profile');
+    Route::put('/profile', [DosenProfileController::class, 'updateProfile'])->name('profile.update');
     
     // Matakuliah & Jadwal
-    Route::get('/matakuliah', [DosenMatakuliahController::class, 'getMatakuliah']);
-    Route::get('/jadwal', [DosenMatakuliahController::class, 'getJadwal']);
-    Route::get('/dashboard/jadwal-hari-ini', [DosenDashboardController::class, 'getJadwalHariIni']);
+    Route::get('/matakuliah', [DosenMatakuliahController::class, 'getMatakuliah'])->name('matakuliah.index'); // Ini mungkin jadwal yang diampu
+    Route::get('/jadwal', [DosenMatakuliahController::class, 'getJadwal'])->name('jadwal.index'); // Ini mungkin juga jadwal yang diampu
+    Route::get('/dashboard/jadwal-hari-ini', [DosenDashboardController::class, 'getJadwalHariIni'])->name('dashboard.jadwalHariIni');
     
     // FRS Approval (for dosen wali)
-    Route::get('/frs/pending', [DosenFrsController::class, 'getPendingFRS']);
-    Route::put('/frs/approve', [DosenFrsController::class, 'approveFRS']);
-    Route::get('/frs/mahasiswa/{id_mahasiswa}', [DosenFrsController::class, 'getAllFrsForMahasiswa']);
+    Route::get('/frs/pending', [DosenFrsController::class, 'getPendingFRS'])->name('frs.pending');
+    Route::put('/frs/approve', [DosenFrsController::class, 'approveFRS'])->name('frs.approve'); // Menggunakan PUT lebih sesuai untuk update status
+    Route::get('/frs/mahasiswa/{id_mahasiswa}', [DosenFrsController::class, 'getAllFrsForMahasiswa'])->name('frs.mahasiswa');
     
     // Wali specific
-    Route::get('/mahasiswa-wali', [DosenWaliController::class, 'getMahasiswaWali']);
+    Route::get('/mahasiswa-wali', [DosenWaliController::class, 'getMahasiswaWali'])->name('wali.mahasiswa');
     
     // Nilai Management
-    Route::get('/matakuliah/{id_mk}/mahasiswa', [DosenNilaiController::class, 'getMahasiswaByMatakuliah']);
-    Route::put('/nilai', [DosenNilaiController::class, 'inputNilai']);
+    Route::get('/matakuliah/{id_mk_jadwal}/mahasiswa', [DosenNilaiController::class, 'getMahasiswaByMatakuliah'])->name('nilai.mahasiswaByMatakuliah'); // id_mk_jadwal lebih deskriptif
+    Route::put('/nilai', [DosenNilaiController::class, 'inputNilai'])->name('nilai.storeOrUpdate');
+
+    // --- PENAMBAHAN ROUTE BERITA UNTUK DOSEN ---
+    Route::get('/berita', [DosenBeritaController::class, 'index'])->name('berita.index');
+    Route::get('/berita/{slug}', [DosenBeritaController::class, 'show'])->name('berita.show');
+    // --- AKHIR PENAMBAHAN ROUTE BERITA DOSEN ---
 });
