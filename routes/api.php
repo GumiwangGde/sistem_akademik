@@ -80,6 +80,8 @@ Route::middleware(['auth:sanctum', 'role:dosen'])->prefix('mobile/dosen')->name(
     Route::get('/frs/pending', [DosenFrsController::class, 'getPendingFRS'])->name('frs.pending');
     Route::put('/frs/approve', [DosenFrsController::class, 'approveFRS'])->name('frs.approve'); // Menggunakan PUT lebih sesuai untuk update status
     Route::get('/frs/mahasiswa/{id_mahasiswa}', [DosenFrsController::class, 'getAllFrsForMahasiswa'])->name('frs.mahasiswa');
+
+    Route::put('/frs/{frs}/edit-by-wali', [DosenFrsController::class, 'editFrsByDosenWali'])->name('frs.editByWali');
     
     // Wali specific
     Route::get('/mahasiswa-wali', [DosenWaliController::class, 'getMahasiswaWali'])->name('wali.mahasiswa');
