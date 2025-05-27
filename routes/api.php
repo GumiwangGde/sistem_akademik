@@ -45,6 +45,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa')->name('mobile.mahasiswa.')->group(function () {
     // Profile
     Route::get('/profile', [MahasiswaProfileController::class, 'profile'])->name('profile');
+    Route::put('/profile', [MahasiswaProfileController::class, 'updateProfile'])->name('profile.update');
     
     // FRS Management
     Route::get('/matakuliah/available', [MahasiswaFrsController::class, 'getAvailableMatakuliah'])->name('frs.availableMatakuliah');
