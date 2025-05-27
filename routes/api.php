@@ -10,20 +10,17 @@ use App\Http\Controllers\Mobile\Dosen\FrsController as DosenFrsController;
 use App\Http\Controllers\Mobile\Dosen\NilaiController as DosenNilaiController;
 use App\Http\Controllers\Mobile\Dosen\WaliController as DosenWaliController;
 use App\Http\Controllers\Mobile\Dosen\DosenDashboardController;
-use App\Http\Controllers\Mobile\Dosen\DosenBeritaController; // PENAMBAHAN: Controller Berita Dosen
+use App\Http\Controllers\Mobile\Dosen\DosenBeritaController; 
 
 // Import Mahasiswa controllers
-use App\Http\Controllers\Mobile\Mahasiswa\ProfileController as MahasiswaProfileController;
 use App\Http\Controllers\Mobile\Mahasiswa\FrsController as MahasiswaFrsController;
 use App\Http\Controllers\Mobile\Mahasiswa\JadwalController as MahasiswaJadwalController;
 use App\Http\Controllers\Mobile\Mahasiswa\NilaiController as MahasiswaNilaiController;
-use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaDashboardController; // Sudah ada sebelumnya
-use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaBeritaController; // PENAMBAHAN: Controller Berita Mahasiswa
-
-
+use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaDashboardController; 
+use App\Http\Controllers\Mobile\Mahasiswa\ProfileController as MahasiswaProfileController;
+use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaBeritaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Contracts\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,7 +48,7 @@ Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa'
     
     // FRS Management
     Route::get('/matakuliah/available', [MahasiswaFrsController::class, 'getAvailableMatakuliah'])->name('frs.availableMatakuliah');
-    Route::get('/frs', [MahasiswaFrsController::class, 'getMyFRS'])->name('frs.index'); // Diubah ke getMyFRS dan diberi nama index
+    Route::get('/frs', [MahasiswaFrsController::class, 'getMyFRS'])->name('frs.index');
     Route::post('/frs', [MahasiswaFrsController::class, 'createFRS'])->name('frs.store');
     Route::delete('/frs/{id_frs}', [MahasiswaFrsController::class, 'deleteFRS'])->name('frs.destroy');
     
@@ -60,9 +57,7 @@ Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa'
     Route::get('/dashboard/jadwal-hari-ini', [MahasiswaDashboardController::class, 'getJadwalHariIni'])->name('dashboard.jadwalHariIni');
     
     // Nilai
-    Route::get('/nilai', [MahasiswaNilaiController::class, 'getNilai']);
-
-    Route::get('/dashboard/jadwal-hari-ini', [MahasiswaDashboardController::class, 'getJadwalHariIni']);
+    Route::get('/nilai', [MahasiswaNilaiController::class, 'getNilai'])->name('nilai.index');
 });
 
 // Mobile Dosen Routes

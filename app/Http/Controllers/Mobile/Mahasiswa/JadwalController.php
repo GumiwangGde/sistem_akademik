@@ -6,18 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\FRS;
 use App\Models\Mahasiswa;
-use App\Models\TahunAjaran; // Pastikan model ini di-import
+use App\Models\TahunAjaran; 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; // Untuk logging
+use Illuminate\Support\Facades\Log; 
 use Carbon\Carbon;
-use Illuminate\Support\Collection; // Import Collection untuk type hinting
+use Illuminate\Support\Collection; 
 
 class JadwalController extends Controller
 {
-    /**
-     * Helper untuk mendapatkan Tahun Ajaran yang aktif.
-     * @return \App\Models\TahunAjaran|null
-     */
     protected function getActiveTahunAjaran()
     {
         $activeTA = TahunAjaran::where('status', 'aktif')->first();
@@ -27,13 +23,6 @@ class JadwalController extends Controller
         return $activeTA;
     }
 
-    /**
-     * Get schedule (jadwal) for mahasiswa for the active academic year.
-     * Jadwal diambil dari FRS yang berstatus 'disetujui'.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getJadwal(Request $request)
     {
         $user = Auth::user();
@@ -102,14 +91,13 @@ class JadwalController extends Controller
         ->filter() 
         ->sortBy(function ($item) { 
             $hariOrder = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5, 'Sabtu' => 6, 'Minggu' => 7, null => 8];
-            // Pastikan $item tidak null sebelum mengakses 'hari' atau 'jam_mulai'
             if (is_null($item) || !isset($item['hari'])) {
-                return 8; // Urutkan item null atau tanpa hari ke paling akhir
+                return 8; 
             }
             return ($hariOrder[$item['hari']] ?? 8) . ($item['jam_mulai'] ?? '99:99');
         })
         ->groupBy('hari')
-        ->map(function (Collection $itemsPerHari) { // KOREKSI: Menambahkan type hint Illuminate\Support\Collection
+        ->map(function (Collection $itemsPerHari) { 
             return $itemsPerHari->sortBy('jam_mulai')->values();
         });
             

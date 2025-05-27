@@ -18,17 +18,10 @@ use Carbon\Carbon;
 
 class DosenController extends Controller
 {
-    /**
-     * Get authenticated dosen profile
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function profile(Request $request)
     {
         $user = $request->user();
         
-        // Get dosen data with user relationships
         $dosen = Dosen::with('user')->where('user_id', $user->id)->first();
             
         if (!$dosen) {
@@ -61,12 +54,6 @@ class DosenController extends Controller
         ]);
     }
     
-    /**
-     * Update dosen profile
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function updateProfile(Request $request)
     {
         $user = $request->user();
@@ -80,7 +67,6 @@ class DosenController extends Controller
             ], 404);
         }
         
-        // Validation rules
         $validator = Validator::make($request->all(), [
             'nama' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $user->id,

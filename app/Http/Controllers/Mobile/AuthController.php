@@ -10,12 +10,6 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends \App\Http\Controllers\Controller
 {
-    /**
-     * Handle mobile login request
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function login(Request $request)
     {
         $request->validate([
@@ -32,10 +26,8 @@ class AuthController extends \App\Http\Controllers\Controller
             ], 401);
         }
 
-        // Mendapatkan domain email
         $domain = substr(strrchr($request->email, '@'), 1);
         
-        // Menentukan role berdasarkan domain
         $allowed_domains = [
             'dosen' => ['it.lecturer.pens.ac.id'],
             'mahasiswa' => ['it.student.pens.ac.id']
@@ -55,14 +47,12 @@ class AuthController extends \App\Http\Controllers\Controller
             ], 403);
         }
 
-        // Memeriksa apakah user memiliki role yang sesuai
         if (!$user->hasRole($role)) {
             return response()->json([
                 'message' => 'Anda tidak memiliki akses untuk role ini'
             ], 403);
         }
 
-        // Generate token
         $token = $user->createToken($request->device_name)->plainTextToken;
 
         return response()->json([
@@ -72,13 +62,6 @@ class AuthController extends \App\Http\Controllers\Controller
             'message' => 'Login berhasil'
         ]);
     }
-
-    /**
-     * Handle mobile logout request
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -87,13 +70,6 @@ class AuthController extends \App\Http\Controllers\Controller
             'message' => 'Logout berhasil'
         ]);
     }
-
-    /**
-     * Get authenticated user
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function user(Request $request)
     {
         $user = $request->user();
