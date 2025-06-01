@@ -16,9 +16,10 @@ use App\Http\Controllers\Mobile\Dosen\DosenBeritaController;
 use App\Http\Controllers\Mobile\Mahasiswa\FrsController as MahasiswaFrsController;
 use App\Http\Controllers\Mobile\Mahasiswa\JadwalController as MahasiswaJadwalController;
 use App\Http\Controllers\Mobile\Mahasiswa\NilaiController as MahasiswaNilaiController;
-use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaDashboardController; 
 use App\Http\Controllers\Mobile\Mahasiswa\ProfileController as MahasiswaProfileController;
+use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaDashboardController; 
 use App\Http\Controllers\Mobile\Mahasiswa\MahasiswaBeritaController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -59,6 +60,10 @@ Route::middleware(['auth:sanctum', 'role:mahasiswa'])->prefix('mobile/mahasiswa'
     
     // Nilai
     Route::get('/nilai', [MahasiswaNilaiController::class, 'getNilai'])->name('nilai.index');
+
+    // Berita
+    Route::get('/berita', [MahasiswaBeritaController::class, 'index'])->name('berita.index');
+    Route::get('/berita/{slug}', [MahasiswaBeritaController::class, 'show'])->name('berita.show'); 
 });
 
 // Mobile Dosen Routes

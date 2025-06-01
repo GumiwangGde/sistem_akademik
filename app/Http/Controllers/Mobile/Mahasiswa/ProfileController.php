@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Mobile\Mahasiswa;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
@@ -54,24 +58,56 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function updatePassword(Request $request)
+    public function updateProfile(Request $request)
     {
         $user = Auth::user();
-
+        
         if (!$user) {
             return response()->json(['message' => 'Pengguna tidak terautentikasi.'], 401);
         }
 
-        $validatedData = $request->validate([
-            'current_password' => ['required', 'string', 'current_password'],
-            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers()->symbols(), 'confirmed'],
+        $validator = Validator::make($request->all(), [
+            'password' => 'sometimes|nullable|string|min:8|confirmed',
         ]);
 
-        $user->password = Hash::make($validatedData['password']);
-        $user->save();
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-        return response()->json([
-            'message' => 'Password berhasil diperbarui.'
-        ]);
+        DB::beginTransaction();
+        try {
+            $userUpdated = false;
+
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->input('password'));
+                $userUpdated = true;
+            }
+            
+            if ($userUpdated) {
+                $user->save();
+            } else {
+                DB::rollBack(); 
+                 return response()->json([
+                     'message' => 'Tidak ada data password yang valid dikirim untuk diperbarui.'
+                 ], 400); 
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Password berhasil diperbarui.'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Update Password Mahasiswa Gagal (Simplified): ' . $e->getMessage(), [
+                'user_id' => $user->id, 
+                'request_data' => $request->except('password', 'password_confirmation') 
+            ]);
+            return response()->json(['message' => 'Terjadi kesalahan saat memperbarui password.'], 500);
+        }
     }
 }
