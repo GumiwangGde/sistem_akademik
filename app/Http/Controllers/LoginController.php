@@ -5,34 +5,28 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Providers\RouteServiceProvider;
+use Illuminate\Foundation\Auth\AuthenticatesUsers; 
 
 class LoginController extends Controller
 {
-    /**
-     * Mengarahkan pengguna setelah login.
-     *
-     * @return string
-     */
     protected function redirectTo()
     {
-        $role = Auth::user()->role;
+        return route('admin.dashboard');
+    }
 
-        switch ($role) {
-            case 'admin':
-                return route('admin.dashboard');
-            case 'dosen':
-                return route('dosen.dashboard');
-            case 'mahasiswa':
-                return route('dashboard.mahasiswa');
-            default:
-                return route('dashboard');
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->role !== 'admin') {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect('/login') 
+                ->withErrors(['email' => 'Akses ditolak. Hanya admin yang diizinkan login melalui halaman ini.']);
         }
     }
 
-    /**
-     * Melakukan logout pengguna.
-     */
+
     public function logout(Request $request)
     {
         Auth::logout();

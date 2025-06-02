@@ -8,59 +8,44 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Support\Str; 
+use Illuminate\Validation\ValidationException; 
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
-    public function create(): View
+    public function create() 
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
     public function store(LoginRequest $request): RedirectResponse
     {
-        // Autentikasi pengguna
         $request->authenticate();
 
-        // Regenerasi sesi setelah login
-        $request->session()->regenerate();
-
-        // Tentukan role berdasarkan domain email
         $user = Auth::user();
-        
-        if (strpos($user->email, '@it.admin.pens.ac.id') !== false) {
-            $user->assignRole('admin');
-        } elseif (strpos($user->email, '@it.lecturer.pens.ac.id') !== false) {
-            $user->assignRole('dosen');
-        } elseif (strpos($user->email, '@it.student.pens.ac.id') !== false) {
-            $user->assignRole('mahasiswa');
-        }
+        $userEmail = strtolower($user->email); 
 
-        // Setelah login, arahkan ke dashboard sesuai dengan role
-        if (Auth::user()->hasRole('admin')) {
-            return redirect()->to('admin/dashboard'); // Arahkan ke dashboard admin
-        }
+        $adminDomain = 'it.admin.pens.ac.id';
 
-        if (Auth::user()->hasRole('dosen')) {
-            return redirect()->to('dosen'); // Arahkan ke dashboard dosen
-        }
+        if (Str::endsWith($userEmail, '@' . $adminDomain)) {
+            if (!$user->hasRole('admin')) { 
+                 $user->assignRole('admin');
+            }
 
-        if (Auth::user()->hasRole('mahasiswa')) {
-            return redirect()->to('dashboard'); // Arahkan ke dashboard mahasiswa
-        }
+            $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+            return redirect()->intended(route('admin.dashboard')); 
+        } else {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akses ditolak. Anda tidak memiliki izin untuk login melalui halaman ini.',
+            ]);
+        }
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
